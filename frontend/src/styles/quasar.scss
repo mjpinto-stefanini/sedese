@@ -1,0 +1,30 @@
+@import "./quasar.variables.scss";
+@import "~quasar-styl";
+// @import '~quasar-addon-styl';
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700&display=swap");
+
+* {
+  font-family: "Poppins", sans-serif;
+}
+
+/* Change the white to any color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+
+.q-stepper__dot {
+  background: transparent;
+  font-size: 24px;
+}
+
+.q-stepper__dot .q-icon {
+  color: $grey-5;
+}
+
+.q-stepper__tab--done .q-stepper__dot .q-icon,
+.q-stepper__tab--active .q-stepper__dot .q-icon {
+  color: $primary;
+}

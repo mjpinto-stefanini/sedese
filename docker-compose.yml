@@ -1,0 +1,49 @@
+version: '3.2'
+
+services:
+
+  frontend:
+    #build:
+    #  context: ./docker
+    image: ghcr.io/mjpinto-stefanini/node16-sedese:latest
+    labels:
+      - traefik.http.routers.sedese.rule=Host(`sedese.stefanini.test`)
+    volumes:
+      - ./frontend:/app
+    environment:
+      - PROJECT_WEBROOT=/src/public
+    ports:
+      - '8081:8080'
+    networks:
+      - default
+
+  backend:
+    image: ghcr.io/mjpinto-stefanini/php82-sedese:latest
+    labels:
+      - traefik.http.routers.api-sedese.rule=Host(`api-sedese.stefanini.test`)
+    volumes:
+      - ./backend:/src
+    environment:
+      - PROJECT_WEBROOT=/src/public
+    networks:
+      - default
+
+  database:
+    image: mariadb:latest
+    labels:
+      - traefik.http.routers.mysql-sedese.rule=Host(`mysql-sedese.test`)
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "sedese"
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/dumps:/var/dumps
+    networks:
+      - default
+
+networks:
+  default:
+    name: dev-network
+  
