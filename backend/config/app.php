@@ -54,9 +54,10 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://200.198.62.82:9000/api/v1'),
-
-    'asset_url' => env('ASSET_URL', 'http://200.198.62.82'),
+    //'url' => env('APP_URL', 'http://200.198.62.82:9000/api/v1'),
+    'url' => env('APP_URL', ''),
+    //'asset_url' => env('ASSET_URL', 'http://200.198.62.82'),
+    'asset_url' => env('ASSET_URL', ''),
 
     /*
     |--------------------------------------------------------------------------

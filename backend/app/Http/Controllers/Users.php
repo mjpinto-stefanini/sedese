@@ -158,7 +158,7 @@ class Users extends Controller
             'gender_identity' => $request['personal']['genderIdentity'],
             'gender_identity_others' => $request['personal']['genderIdentityOthers'],
             'rg' => $request['personal']['RG'],
-            'issuing_body' => $request['personal']['issuingBody'],
+            'issuing_body' => $request['personal']['issuingBody'] ?? '',
             'uf' => $request['personal']['uf'],
             'education' => $request['personal']['education'],
             'profession' => $request['personal']['profession'],
@@ -199,8 +199,14 @@ class Users extends Controller
             ];
         }
 
-        if (isset($request['contact']['isWhatsapp'])) {
-            $contactData['cell_phone_whatsapp'] = $request['contact']['cell_phone'];
+        $isWhatsapp = false;
+
+        if ($request['contact']['cell_phone_whatsapp'] == 'Sim') {
+            $isWhatsapp = true;
+        }
+
+        if (isset($request['contact']['cell_phone_whatsapp'])) {
+            $contactData['cell_phone_whatsapp'] = 'Não';
         }
 
         $contactData = [
@@ -210,7 +216,7 @@ class Users extends Controller
             'cell_phone_whatsapp' => $request['contact']['cell_phone_whatsapp'],
             'institutional_phone' => $request['contact']['institutional_phone'],
             'institutional_email' => $request['contact']['institutional_email'],
-            'is_whatsapp' => $request['contact']['isWhatsapp'],
+            'isWhatsapp' => $isWhatsapp,
         ];
 
         $contactResult = Contact::query()->create($contactData);
@@ -264,7 +270,7 @@ class Users extends Controller
             'user_id' => $user['id'],
             'regional' => $request['professional']['regional']['label'],
             'lotacao' => $request['professional']['lotacao']['label'],
-            'superintendencia' => $request['professional']['superintendencia']['label'],
+            'superintendencia' => $request['professional']['superintendencia']['label'] ?? '',
             'diretoria_regional_des_social' => $request['professional']['diretoriaRegionalDesSocial'],
             'protecao_social_basica' => $request['professional']['protecaoSocialBasica'],
             'protecao_social_especial_estadual' => $request['professional']['protecaoSocialEspecialEstadual'],
