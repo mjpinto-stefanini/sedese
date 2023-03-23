@@ -93,7 +93,6 @@
 							<q-icon name="mdi-email-outline" class="cursor-pointer" />
 						</template>
 					</q-input>
-					<!-- TODO: Verificar a possibilidade de evitar copia e cola -->
 					<q-input
 						outlined
 						autocomplete="off"
