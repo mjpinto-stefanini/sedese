@@ -6,6 +6,7 @@
 					<q-input
 						v-model="form.name"
 						label="Nome e sobrenome"
+						name="name"
 						outlined
 						clear-icon="close"
 						clearable
@@ -33,6 +34,7 @@
 					<q-input
 						v-model="form.socialName"
 						label="Nome Social"
+						name="socialName"
 						outlined
 						clear-icon="close"
 						clearable
@@ -83,6 +85,7 @@
 				<div class="col-5">
 					<q-input
 						v-model="form.RG"
+						name="RG"
 						label="Numero do RG"
 						outlined
 						mask="##.###.###-#"
@@ -209,6 +212,10 @@
 <script>
 export default {
 	name: "PersonalData",
+	setup() {
+
+		//const RG = ref(null)
+	},
 	data() {
 		return {
 			form: {
@@ -317,26 +324,26 @@ export default {
 		};
 	},
 	methods: {
-			isRequired(value) {
-					return !!value || "Campo obrigatório";
-			},
-			isNumber(value) {
-					return (
-						(value && /^[\d.-]+$/.test(value)) || "Somente números"
-					);
-			},
-			isMax12(value) {
-					return (
-						(value && value.length <= 12) || "Máximo de 12 caracteres"
-					);
-			},
-			parseStringFilter(text) {
-			const er = /[^a-z0-9]/gi;
-			return text
-				.normalize("NFD")
-				.replace(/[\u0300-\u036f]/g, "")
-				.replace(er, "")
-				.toLowerCase();
+		isRequired(value) {
+			return !!value || "Campo obrigatório";
+		},
+		isNumber(value) {
+			return (
+				(value && /^[\d.-]+$/.test(value)) || "Somente números"
+			);
+		},
+		isMax12(value) {
+			return (
+				(value && value.length <= 12) || "Máximo de 12 caracteres"
+			);
+		},
+		parseStringFilter(text) {
+		const er = /[^a-z0-9]/gi;
+		return text
+			.normalize("NFD")
+			.replace(/[\u0300-\u036f]/g, "")
+			.replace(er, "")
+			.toLowerCase();
 		},
 		onEducationFilter(val, update) {
 			if (val === "") {
@@ -403,6 +410,10 @@ export default {
 		},
 	},
 	watch: {
+		socialName(value) {
+			this.isRequired(value);
+			this.errors.push("User name is empty");
+		},
 		form: {
 			handler() {
 				this.$emit("personal", this.form);

@@ -119,7 +119,7 @@
                         />
                     </div>
 
-                    
+
                     <div class="col-12" v-if="form.regional.value === 1">
                         <q-select
                           v-model="form.funcao"

@@ -80,7 +80,7 @@
 					padding="md xl"
 				/>
 				<q-btn
-					@click="step === 4 ? sendForm() : $refs.stepper.next()"
+					@click="validForm(step, $refs) "
 					color="primary"
 					:label="step === 4 ? 'Salvar' : 'Avançar'"
 					no-caps
@@ -91,8 +91,9 @@
 		</q-card>
 	</q-page>
 </template>
-
+<!--@click="step === 4 ? sendForm() : $refs.stepper.next()"-->
 <script>
+import { Notify } from 'quasar';
 import PersonalData from "../components/form/PersonalData.vue";
 import AddressData from "@/components/form/AddressData.vue";
 import ContactData from "@/components/form/ContactData.vue";
@@ -100,6 +101,8 @@ import ProfessionalData from "@/components/form/ProfessionalData.vue";
 export default {
 	name: "MainPage",
 	data() {
+		console.log('personalData', PersonalData);
+
 		return {
 			step: 1,
 			personalData: {},
@@ -121,6 +124,55 @@ export default {
 		},
 	},
 	methods: {
+		async testesss(personalData) {
+			console.log('personalDatapersonalDatapersonalDatapersonalDatapersonalData', personalData);
+			let erro = 0;
+			/*for (let value of Object.values(personalData)) {
+				if (!isEmpty(personalData[value])) {  ++erro; }
+				console.log('value', value);
+			}*/
+
+			Object.keys(personalData).forEach(key => {
+				//console.log(`AAAkey: ${key}, value: ${personalData[key]}`);
+				if (isVisibleAndNotEmpty(key) === false) {  ++erro; }
+			});
+			console.log('erroerro', erro);
+			console.log('typeof personalData', typeof personalData);
+			/*
+			personalData.forEach(function(nome, i) {
+				console.log('[forEach]', nome, i);
+			})*/
+			return erro;
+		},
+		async validPersonalData($refs) {
+			const errroReturn = this.testesss(this.personalData);
+			const cast = Promise.resolve(errroReturn);
+			//.then(function(result) {
+			cast.then(function (value) {
+				if (value == 0) {
+					$refs.stepper.next();
+				}
+			}).catch(
+				console.log('ops valuevalue')
+			);
+		},
+		validForm(step, $refs) {
+			this.validPersonalData($refs);
+			/*
+			if (result) {
+				$refs.stepper.next();
+			}
+			console.log('resultresultresult', result);
+			*/
+
+			//this.personalData.$refs.form.validate();
+			//this.personalData.validate();
+			//console.log('this.$refs', this.$refs);
+
+			//$event => step === 4 ? sendForm() : $refs.stepper.mext()
+			//$event => step === 4 ? sendForm() : $refs.stepper.mext()
+
+		},
 		setData() {
 			this.jsonData = {
 				personal: this.personalData,
@@ -201,4 +253,64 @@ export default {
 		/* RepresentationsData, */
 	},
 };
+
+function isVisibleAndNotEmpty(element)
+{
+	let elementFind = '[name = "' + element + '"]';
+	console.log('elementFind', elementFind);
+
+	if (document.querySelector(elementFind) === null) {
+		return null;
+	}
+
+	console.log('document.querySelector(elementFind).value', document.querySelector(elementFind).value);
+	let el = document.querySelector(elementFind);
+	console.log('elelelel', el);
+
+	/*
+	document.querySelector(elementFind).classList.add("q-field--error");
+
+	document.body.classList.add('bg-light')
+	*/
+	Notify.create({
+		timeout: 2000,
+		position: 'center',
+		color: 'primary',
+		message: 'Preencher todos os campos'
+	});
+
+	console.log('elel', el);
+	if (el === null || el === undefined) {
+		return false;
+	}
+
+    let t1 = el.currentStyle ? el.currentStyle.visibility : getComputedStyle(el, null).visibility;
+	let t2 = el.currentStyle ? el.currentStyle.display : getComputedStyle(el, null).display;
+
+    if (t1 === "hidden" || t2 === "none") {
+        return false;
+	}
+
+    while (!(/body/i).test(el)) {
+        el = el.parentNode;
+        t1 = el.currentStyle ? el.currentStyle.visibility : getComputedStyle(el, null).visibility;
+        t2 = el.currentStyle ? el.currentStyle.display : getComputedStyle(el, null).display;
+        if (t1 === "hidden" || t2 === "none") {
+            return false;
+        }
+	}
+
+	if (!isEmpty(document.querySelector(elementFind).value)) {
+		return false;
+	}
+    return true;
+}
+
+function isEmpty(input) {
+	if (input === '' || input === null) {
+		return false;
+	}
+	return true;
+}
+
 </script>
