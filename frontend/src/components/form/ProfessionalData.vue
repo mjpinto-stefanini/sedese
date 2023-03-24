@@ -119,7 +119,7 @@
                         />
                     </div>
 
-                    
+
                     <div class="col-12" v-if="form.regional.value === 1">
                         <q-select
                           v-model="form.funcao"
@@ -536,7 +536,7 @@ export default {
             creasRegionalList: [
                 {value: 1, label: "CREAS Regional Alto Jequitinhonha"},
                 {value: 2, label: "CREAS Regional Médio/Baixo Jequitinhonha"},
-                {value: 3, label: "CREAS Regional Mocuri"},
+                {value: 3, label: "CREAS Regional Mucuri"},
                 {value: 4, label: "CREAS Regional Vale do Rio Doce"},
             ],
 
