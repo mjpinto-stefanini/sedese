@@ -531,7 +531,6 @@ export default {
                 {value: 1, label: "Estadual"},
                 {value: 2, label: "Municipal"},
             ],
-
             /* ESTADUAL */
             creasRegionalList: [
                 {value: 1, label: "CREAS Regional Alto Jequitinhonha"},
