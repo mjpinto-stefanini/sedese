@@ -85,10 +85,10 @@
 						v-model="form.RG"
 						label="Numero do RG"
 						outlined
-						mask="##.###.###-#"
+						mask="##############################"
 						clear-icon="close"
 						clearable
-						:rules="[isRequired, isMax12, isNumber]"
+						:rules="[isRequired, isNumber]"
 					/>
 				</div>
 				<div class="col-4">
