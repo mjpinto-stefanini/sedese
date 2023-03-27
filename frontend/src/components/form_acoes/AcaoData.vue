@@ -9,6 +9,8 @@
                       outlined
                       clear-icon="close"
                       clearable
+                      :rules="[isRequired, isNumber]"
+                      mask="####"
                     />
                 </div>
                 <div class="col-8">
@@ -72,6 +74,8 @@
                       outlined
                       clear-icon="close"
                       clearable
+                      :rules="[isRequired, isNumber]"
+                      mask="#######"
                     />
                 </div>
                 <div class="col-4">
@@ -81,6 +85,8 @@
                       outlined
                       clear-icon="close"
                       clearable
+                      :rules="[isRequired, isDate]"
+                      mask="##/##/####"
                     />
                 </div>
                 <div class="col-4">
@@ -90,6 +96,8 @@
                       outlined
                       clear-icon="close"
                       clearable
+                      :rules="[isRequired, isDate]"
+                      mask="##/##/####"
                     />
                 </div>
                 <div class="col-6">
@@ -162,6 +170,20 @@ export default {
         }
     },
     methods: {
+
+      isRequired(value) {
+        return !!value || "Campo obrigatório";
+      },
+      isNumber(value) {
+        return (
+            (value && /^\d+$/.test(value)) || "Somente números"
+        );
+      },
+      isDate(value) {
+        return (
+            (value && /^[0-9]{2}[/]{1}[0-9]{2}[/]{1}[0-9]{4}$/.test(value)) || "Somente números"
+        );
+      },
 
         async getTipologias() { // http://200.198.62.82:9000/api/v1/tipologias
             try {
