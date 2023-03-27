@@ -3492,7 +3492,7 @@ class DatabaseSeeder extends Seeder
                 'regiao_administrativa' => 1,
             ],
             [
-                'nome' => 'Secretaria Executiva do CEAS',
+                'nome' => 'Ceas',
                 'regiao_administrativa' => 1,
             ],
             [
