@@ -3,15 +3,22 @@ version: '3.2'
 services:
 
   frontend:
-    #build:
-    #  context: ./docker
-    image: ghcr.io/mjpinto-stefanini/node16-sedese:latest
+    build:
+      context: ./frontend/
+      dockerfile: node.dockerfile
+    image: sedese-frontend
+    container_name: sedese-frontend
+    tty: true
+    working_dir: /app
+    command: npm run dev
     labels:
       - traefik.http.routers.sedese.rule=Host(`sedese.stefanini.test`)
     volumes:
-      - ./frontend:/app
+      - ./frontend/:/app
+      - /app/node_modules
     environment:
       - PROJECT_WEBROOT=/src/public
+      - NODE_ENV=development
     ports:
       - '8081:8080'
     networks:
@@ -46,4 +53,3 @@ services:
 networks:
   default:
     name: dev-network
-  
