@@ -81,8 +81,9 @@
 
 					<q-input
 						outlined
-						autocomplete="false"
+						autocomplete="off"
 						v-model="form.email"
+            oncopy="return false" onpaste="return false" oncut="return false"
 						label="Email"
 						type="email"
 						:rules="[isRequired, isEmail]"
@@ -92,11 +93,11 @@
 							<q-icon name="mdi-email-outline" class="cursor-pointer" />
 						</template>
 					</q-input>
-					<!-- TODO: Verificar a possibilidade de evitar copia e cola -->
 					<q-input
 						outlined
-						autocomplete="false"
+						autocomplete="off"
 						v-model="form.email_confirmation"
+            oncopy="return false" onpaste="return false" oncut="return false"
 						label="Email Confirmação"
 						type="email"
 						:rules="[isRequired, isEmail, emailMatch]"
@@ -109,7 +110,7 @@
 
 					<q-input
 						outlined
-						autocomplete="false"
+						autocomplete="off"
 						v-model="form.password"
 						lazy-rules
 						:rules="[isRequired]"
