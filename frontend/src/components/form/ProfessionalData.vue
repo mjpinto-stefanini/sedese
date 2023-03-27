@@ -412,7 +412,7 @@
                     />
                 </div>
 
-                <div class="col-12">
+                <div class="col-12" v-if="form.regional.value === 2">
                     <q-toggle
                       v-model="form.possuiRepresentacao"
                       label="Possui também alguma representação em conselho de assistência social (municipal ou estadual)?" />
