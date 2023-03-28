@@ -48,22 +48,27 @@ export default {
           });
       }
     },
-    async onForgotPassword() {
+    async forgotPassword() {
       this.loadingForgotPassword = true;
       try {
         const {data, status} = await this.$http.post(
           "auth/forgot",
           this.form
         );
+          console.log('data', data);
+
+          console.log('status', status);
         if (status === 200 || status === 201) {
-            this.$router.push({ name: "SignIn" });
             this.$q.notify({
-                message: data.response.data.message,
+                message: data.message,
                 type: "positive",
                 position: "top",
-            });
+            }, 5000);
+            this.$router.push({ name: "SignIn" });
+
         }
       }  catch (error) {
+          console.log('error', error);
           this.$q.notify({
               message: error.response.data.message,
               color: "negative",
