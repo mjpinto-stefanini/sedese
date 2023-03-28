@@ -8,6 +8,8 @@
 						label="Email*"
 						outlined
 						clear-icon="close"
+						name="email"
+						for="email"
 						disable
 						clearable
 						type="email"
@@ -18,6 +20,8 @@
 					<q-input
 						v-model="form.phone"
 						label="Telefone Residencial"
+						name="phone"
+						for="phone"
 						outlined
 						clear-icon="close"
 						mask="(##) ####-####"
@@ -30,6 +34,8 @@
 					<q-input
 						v-model="form.cell_phone"
 						label="Nº Celular*"
+						name="cell_phone"
+						for="cell_phone"
 						outlined
 						clear-icon="close"
 						mask="(##) # ####-####"
@@ -40,12 +46,15 @@
 					</q-input>
 				</div>
 				<div class="col-6">
-						<q-select
-								v-model="form.cell_phone_whatsapp"
-								label="Este número possui WhatsApp?"
-								:options="['Sim', 'Não']"
-								outlined
-						/>
+					<q-select
+						v-model="form.cell_phone_whatsapp"
+						name="cell_phone_whatsapp"
+						for="cell_phone_whatsapp"
+						label="Este número possui WhatsApp?"
+						:options="['Sim', 'Não']"
+						:rules="[isRequired]"
+						outlined
+					/>
 				</div>
 				<div class="col-12">
 					<q-input
@@ -88,54 +97,55 @@ export default {
 				institutional_email: "",
                 cell_phone_whatsapp: [],
 				error: false,
+				checkZip: "1"
 			},
 		};
 	},
-		methods: {
-				isRequired(value) {
-						return !!value || "Campo obrigatório";
-				},
-				isCellPhoneNumber(value) {
-						return (
-							(value && /^\(\d{2}\) \d \d{4}-\d{4}$/.test(value)) || "Não permitido outros caracteres"
-						);
-				},
-                isPhoneNumber(value) {
-                        return (
-                            (value && /^\(\d{2}\) \d{4}-\d{4}$/.test(value)) || "Não permitido outros caracteres"
-                        );
-                },
-				isNumber(value) {
-						return (
-							(value && /^\d+$/.test(value)) || "Somente números"
-						);
-				},
-                notLessThanNormal(value) {
-                    return (
-                      (value && value.length <= 14) || "Máximo de 17 caracteres"
-                    );
-                },
-				notLessThan(value) {
-						return (
-							(value && value.length <= 17) || "Máximo de 17 caracteres"
-						);
-				},
-				notMoreThan(value) {
-						return (
-							(value && value.length >= 11) || "Mínimo de 11 caracteres"
-						);
-				},
-                notMoreThanNormal(value) {
-                    return (
-                        (value && value.length >= 14) || "Mínimo de 11 caracteres"
-                    );
-                },
-				isEmail(value) {
-						return (
-							(value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido"
-						);
-				},
+	methods: {
+		isRequired(value) {
+			return !!value || "Campo obrigatório";
 		},
+		isCellPhoneNumber(value) {
+			return (
+				(value && /^\(\d{2}\) \d \d{4}-\d{4}$/.test(value)) || "Não permitido outros caracteres"
+			);
+		},
+		isPhoneNumber(value) {
+			return (
+				(value && /^\(\d{2}\) \d{4}-\d{4}$/.test(value)) || "Não permitido outros caracteres"
+			);
+		},
+		isNumber(value) {
+			return (
+				(value && /^\d+$/.test(value)) || "Somente números"
+			);
+		},
+		notLessThanNormal(value) {
+			return (
+				(value && value.length <= 14) || "Máximo de 14 caracteres"
+			);
+		},
+		notLessThan(value) {
+			return (
+				(value && value.length <= 17) || "Máximo de 17 caracteres"
+			);
+		},
+		notMoreThan(value) {
+			return (
+				(value && value.length >= 11) || "Mínimo de 11 caracteres"
+			);
+		},
+		notMoreThanNormal(value) {
+			return (
+				(value && value.length >= 14) || "Mínimo de 14 caracteres"
+			);
+		},
+		isEmail(value) {
+			return (
+				(value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido"
+			);
+		},
+	},
 	watch: {
 		form: {
 			handler() {

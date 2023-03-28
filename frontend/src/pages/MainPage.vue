@@ -91,7 +91,7 @@
 		</q-card>
 	</q-page>
 </template>
-<!--@click="step === 4 ? sendForm() : $refs.stepper.next()"-->
+
 <script>
 import { Notify } from 'quasar';
 import PersonalData from "../components/form/PersonalData.vue";
@@ -101,8 +101,6 @@ import ProfessionalData from "@/components/form/ProfessionalData.vue";
 export default {
 	name: "MainPage",
 	data() {
-		console.log('personalData', PersonalData);
-
 		return {
 			step: 1,
 			personalData: {},
@@ -124,62 +122,15 @@ export default {
 		},
 	},
 	methods: {
-		async testesss(personalData) {
-			console.log('personalDatapersonalDatapersonalDatapersonalDatapersonalData', personalData);
-			let erro = 0;
-			/*for (let value of Object.values(personalData)) {
-				if (!isEmpty(personalData[value])) {  ++erro; }
-				console.log('value', value);
-			}*/
-
-			Object.keys(personalData).forEach(key => {
-				//console.log(`AAAkey: ${key}, value: ${personalData[key]}`);
-				if (isVisibleAndNotEmpty(key) === false) {  ++erro; }
-			});
-			console.log('erroerro', erro);
-			console.log('typeof personalData', typeof personalData);
-			/*
-			personalData.forEach(function(nome, i) {
-				console.log('[forEach]', nome, i);
-			})*/
-			return erro;
-		},
-		async validPersonalData($refs) {
-			const errroReturn = this.testesss(this.personalData);
-			const cast = Promise.resolve(errroReturn);
-			//.then(function(result) {
-			cast.then(function (value) {
-				if (value == 0) {
-					$refs.stepper.next();
-				}
-			}).catch(
-				console.log('ops valuevalue')
-			);
-		},
-		validForm(step, $refs) {
-			this.validPersonalData($refs);
-			/*
-			if (result) {
-				$refs.stepper.next();
+		forms(step) {
+			const formFromStep = {
+				1: this.personalData,
+				2: this.addressData,
+				3: this.contactData,
+				4: this.professionalData,
 			}
-			console.log('resultresultresult', result);
-			*/
 
-			//this.personalData.$refs.form.validate();
-			//this.personalData.validate();
-			//console.log('this.$refs', this.$refs);
-
-			//$event => step === 4 ? sendForm() : $refs.stepper.mext()
-			//$event => step === 4 ? sendForm() : $refs.stepper.mext()
-
-		},
-		setData() {
-			this.jsonData = {
-				personal: this.personalData,
-				address: this.addressData,
-				contact: this.contactData,
-				professional: this.professionalData,
-			};
+			return formFromStep[step];
 		},
 		async sendForm() {
 			const values = {
@@ -195,6 +146,7 @@ export default {
 					`users/${user_id}/secondstage`,
 					values
 				);
+				console.warn('status', status);
 				if (status === 201 || status === 200) {
 					this.$q.notify({
 						message: "Dados salvos com sucesso!",
@@ -204,12 +156,55 @@ export default {
 				}
 			} catch (error) {
 				this.$q.notify({
-						//message: "Erro ao salvar os dados!",
 					message: error.response.data.message,
 					color: "negative",
 					position: "top",
 				});
 			}
+		},
+		async checkAllInputs(formFields) {
+			if (Object.keys(formFields).length === 0) {
+				Notify.create({
+					timeout: 2000,
+					position: 'center',
+					color: 'danger',
+					message: 'Por favor, preencha todos os campos'
+				});
+				return 1;
+			}
+
+			let erro = 0;
+
+			Object.keys(formFields).forEach(key => {
+				if (isVisibleAndNotEmpty(key) === false) {  ++erro; }
+			});
+
+			return erro;
+		},
+		async resolveCheckForm(step) {
+			let selectForm = this.forms(step);
+
+			const errroReturn = this.checkAllInputs(selectForm);
+			const resolveResult = Promise.resolve(errroReturn);
+
+			return resolveResult;
+		},
+		async validForm(step, $refs) {
+			const dados = await this.resolveCheckForm(step);
+			if (dados == 0 && step <= 3) {
+				$refs.stepper.next();
+			}
+			if (dados == 0 && step === 4) {
+				this.sendForm();
+			}
+		},
+		setData() {
+			this.jsonData = {
+				personal: this.personalData,
+				address: this.addressData,
+				contact: this.contactData,
+				professional: this.professionalData,
+			};
 		},
 	},
 	watch: {
@@ -256,30 +251,12 @@ export default {
 
 function isVisibleAndNotEmpty(element)
 {
-	let elementFind = '[name = "' + element + '"]';
-	console.log('elementFind', elementFind);
-
-	if (document.querySelector(elementFind) === null) {
+	if (document.getElementById(element) === null) {
 		return null;
 	}
 
-	console.log('document.querySelector(elementFind).value', document.querySelector(elementFind).value);
-	let el = document.querySelector(elementFind);
-	console.log('elelelel', el);
+	let el = document.getElementById(element);
 
-	/*
-	document.querySelector(elementFind).classList.add("q-field--error");
-
-	document.body.classList.add('bg-light')
-	*/
-	Notify.create({
-		timeout: 2000,
-		position: 'center',
-		color: 'primary',
-		message: 'Preencher todos os campos'
-	});
-
-	console.log('elel', el);
 	if (el === null || el === undefined) {
 		return false;
 	}
@@ -300,9 +277,20 @@ function isVisibleAndNotEmpty(element)
         }
 	}
 
-	if (!isEmpty(document.querySelector(elementFind).value)) {
+	let checkInputValue = document.getElementById(element).value;
+
+	if (checkInputValue === '') {
+		checkInputValue = document.querySelector('[name = "' + element + '"]').value
+	}
+
+	if (!isEmpty(checkInputValue)) {
+		document.querySelector('[for = "' + element + '"]').classList.remove('q-field--float', 'q-field--labeled', 'q-field--with-bottom');
+		document.querySelector('[for = "' + element + '"] div div').classList.add('text-negative');
+		document.querySelector('[for = "' + element + '"]').classList.add('q-field', 'row', 'no-wrap', 'items-start', 'q-field--outlined', 'q-select', 'q-field--auto-height', 'q-select--with-input', 'q-select--without-chips', 'q-select--single', 'q-field--labeled', 'q-field--error', 'q-field--highlighted', 'q-field--with-bottom');
+
 		return false;
 	}
+
     return true;
 }
 
@@ -312,5 +300,4 @@ function isEmpty(input) {
 	}
 	return true;
 }
-
 </script>

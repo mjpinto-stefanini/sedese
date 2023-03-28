@@ -5,6 +5,7 @@
 				<div class="col-12">
 					<q-input
 						v-model="form.name"
+						for="name"
 						label="Nome e sobrenome"
 						name="name"
 						outlined
@@ -35,6 +36,7 @@
 						v-model="form.socialName"
 						label="Nome Social"
 						name="socialName"
+						for="socialName"
 						outlined
 						clear-icon="close"
 						clearable
@@ -48,6 +50,8 @@
 							v-model="form.genderIdentity"
 							:options="genderIdentityList"
 							label="Identidade de genero"
+							name="genderIdentity"
+							for="genderIdentity"
 							outlined
 							clear-icon="close"
 							clearable
@@ -74,6 +78,8 @@
 					<div class="col-8 q-pl-sm" v-if="activeGenderIdentityOthers">
 						<q-input
 							v-model="form.genderIdentityOthers"
+							name="genderIdentityOthers"
+							for="genderIdentityOthers"
 							label="Outros"
 							outlined
 							clear-icon="close"
@@ -86,6 +92,7 @@
 					<q-input
 						v-model="form.RG"
 						name="RG"
+						for="RG"
 						label="Numero do RG"
 						outlined
 						mask="##.###.###-#"
@@ -98,6 +105,8 @@
 					<q-input
 						v-model="form.issuingBody"
 						label="Orgão emissor"
+						name="issuingBody"
+						for="issuingBody"
 						outlined
 						clear-icon="close"
 						clearable
@@ -109,6 +118,8 @@
 						v-model="form.uf"
 						:options="ufFiltered"
 						label="UF"
+						for="uf"
+						name="uf"
 						outlined
 						use-input
 						input-debounce="0"
@@ -120,6 +131,8 @@
 					<q-select
 						v-model="form.education"
 						:options="educationFiltered"
+						name="education"
+						for="education"
 						label="Escolaridade"
 						outlined
 						use-input
@@ -131,30 +144,34 @@
 					/>
 				</div>
 				<div class="col-12">
-						<q-select
-							v-model="form.profession"
-							:options="professionFiltered"
-							label="Profissão"
-							outlined
-							use-input
-							input-debounce="0"
-							@filter="onProfessionFilter"
-							clear-icon="close"
-							clearable
-							:rules="[isRequired]"
-						/>
+					<q-select
+						v-model="form.profession"
+						:options="professionFiltered"
+						label="Profissão"
+						name="profession"
+						for="profession"
+						outlined
+						use-input
+						input-debounce="0"
+						@filter="onProfessionFilter"
+						clear-icon="close"
+						clearable
+						:rules="[isRequired]"
+					/>
 				</div>
 				<div class="col-12" v-if="form.profession === 'Outros'">
-						<q-input
-							v-model="form.profissionOthers"
-							placeholder="Informe a outra profissão"
-							outlined
-							counter
-							maxlength="60"
-							clear-icon="close"
-							clearable
-							:rules="[isRequired]"
-						/>
+					<q-input
+						v-model="form.profissionOthers"
+						placeholder="Informe a outra profissão"
+						name="profissionOthers"
+						for="profissionOthers"
+						outlined
+						counter
+						maxlength="60"
+						clear-icon="close"
+						clearable
+						:rules="[isRequired]"
+					/>
 				</div>
 				<div class="col-12">
 					<q-toggle v-model="isDeficiency" label="Possui alguma deficiência" />
@@ -163,6 +180,8 @@
 					<div :class="activeDeficiencyOthers ? 'col-4' : 'col-12'">
 						<q-select
 							v-model="form.deficiency"
+							name="deficiency"
+							for="deficiency"
 							:options="deficiencyFiltered"
 							label="Tipo de deficiência"
 							outlined
@@ -177,6 +196,8 @@
 					<div class="col-12" v-if="form.deficiency === 'Outros'">
 						<q-input
 							v-model="form.deficiencyOthers"
+							name="deficiencyOthers"
+							for="deficiencyOthers"
 							placeholder="informe o outro tipo de deficiência"
 							outlined
 							counter
@@ -189,19 +210,24 @@
 				</div>
 				<div class="col-12 row" v-if="isDeficiency">
 					<div class="col-12">
-							<q-toggle v-model="isDeficiencyStructure" label="Necessita de estrutura para participar da ação?" />
+						<q-toggle
+							v-model="isDeficiencyStructure"
+							label="Necessita de estrutura para participar da ação?"
+						/>
 					</div>
 					<div class="col-12 q-pl-sm" v-if="isDeficiencyStructure" style="margin-left: -0.5em; margin-top: 1em;">
-							<q-input
-									v-model="form.deficiencyStructure"
-									placeholder="informe caso precise de uma estrutura de acesso."
-									outlined
-									counter
-									maxlength="200"
-									clear-icon="close"
-									clearable
-									:rules="[isRequired]"
-							/>
+						<q-input
+							v-model="form.deficiencyStructure"
+							placeholder="informe caso precise de uma estrutura de acesso."
+							outlined
+							name="deficiencyStructure"
+							for="deficiencyStructure"
+							counter
+							maxlength="200"
+							clear-icon="close"
+							clearable
+							:rules="[isRequired]"
+						/>
 					</div>
 				</div>
 			</div>
@@ -212,12 +238,10 @@
 <script>
 export default {
 	name: "PersonalData",
-	setup() {
-
-		//const RG = ref(null)
-	},
 	data() {
 		return {
+			genderIdentity: "",
+			deficiency: "",
 			form: {
 				name: "",
 				socialName: "",
@@ -234,7 +258,6 @@ export default {
 				deficiencyOthers: "",
 				deficiencyStructure: "",
 			},
-
 			genderIdentityList: [
 				"Homem (cis ou trans)",
 				"Mulher (cis ou trans)",
@@ -410,19 +433,15 @@ export default {
 		},
 	},
 	watch: {
-		socialName(value) {
-			this.isRequired(value);
-			this.errors.push("User name is empty");
-		},
 		form: {
 			handler() {
 				this.$emit("personal", this.form);
 			},
 			deep: true,
-		},
+		}
 	},
 	created() {
 		this.form.name = JSON.parse(localStorage.getItem("user")).name;
-	},
+	}
 };
 </script>
