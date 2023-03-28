@@ -608,7 +608,6 @@ export default {
                 {value: 1, label: "Estadual"},
                 {value: 2, label: "Municipal"},
             ],
-
             /* ESTADUAL */
             creasRegionalList: [
                 {value: 1, label: "CREAS Regional Alto Jequitinhonha"},
@@ -705,7 +704,6 @@ export default {
                 "Uberlândia",
                 "Varginha",
             ],
-
             /* MUNICIPAL */
             orgaoList: [
                 {value: 1, label: "Secretaria Municipal de Assistência Social"},
@@ -808,14 +806,12 @@ export default {
                 "Apenas Membro",
             ],
             representacaoRepresentacaoList: ["Governamental", "Não governamental"],
-
             representacaoSegmentoList: [
                 "Representante de Governo",
                 "Representante dos Usuários ou de organização de usuários da assistência social",
                 "Representante de entidades e organizações de assistência Social",
                 "Representante entidades de trabalhadores do setor",
             ],
-
             representacaoAreaRepresentadaList: [
                 "Assistência Social",
                 "Saúde",
