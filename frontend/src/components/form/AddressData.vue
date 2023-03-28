@@ -14,7 +14,6 @@
 						mask="#####-###"
 						@blur="getAddressByZipCode"
 						:rules="[isRequired]"
-						value="0"
 					/>
 				</div>
 				<div class="col-12">
@@ -181,10 +180,6 @@ export default {
 			deep: true,
 		},
 	},
-	/*
-	created() {
-		this.form.state = 'SP';
-	},*/
 };
 </script>
 
