@@ -17,28 +17,19 @@
                     <q-input
                       v-model="form_acao.nome"
                       label="Nome"
+                      maxlength="200"
                       outlined
                       clear-icon="close"
                       clearable
                     />
                 </div>
-                <div class="col-6">
+                <div class="col-12">
                     <q-select
-                      v-model="form_acao.tipo"
-                      :options="tipoFiltered"
-                      label="Tipo"
-                      outlined
-                      use-input
-                      input-debounce="0"
-                      clear-icon="close"
-                      clearable
-                    />
-                </div>
-                <div class="col-6">
-                    <q-input
                       v-model="form_acao.tematica"
                       label="Tematica"
+                      :options="tematicaList"
                       outlined
+                      use-input
                       clear-icon="close"
                       clearable
                     />
@@ -115,7 +106,7 @@
                 <div class="col-6">
                     <q-select
                       v-model="form_acao.modalidade"
-                      :options="areasEnvFiltered"
+                      :options="areasList"
                       label="Areas envolvidas/responsaveis"
                       outlined
                       use-input
@@ -167,6 +158,73 @@ export default {
                 { label: "Não se aplica", value: "acao_regionalizada_nsa" },
             ],
             areasEnvFiltered: [],
+            tematicaList: [
+              'ATUAÇÃO NO CONTEXTO DE COVID-19',
+              'BENEFÍCIO DE PRESTAÇÃO CONTINUADA (BPC)',
+              'BENEFÍCIOS EVENTUAIS',
+              'BOLSA MERENDA',
+              'CADASTRO ÚNICO E PROGRAMA BOLSA FAMÍLIA',
+              'CALAMIDADE PÚBLICA OU EMERGÊNCIAS',
+              'CONTROLE SOCIAL',
+              'DIAGNOSTICO SOCIOTERRITORIAL, INDICADORES, MONITORAMENTO E AVALIAÇÃO DO SUAS',
+              'DISTRIBUIÇÃO DE CESTAS BÁSICAS PELA SEDESE',
+              'ENTIDADES SOCIOASSISTENCIAIS',
+              'GESTÃO DO SUAS',
+              'GESTÃO FINANCEIRA E ORÇAMENTÁRIA (RECURSOS DE COFINANCIAMENTO FEDERAL UTILIZAÇÃO, PRESTAÇÃO DE CONTAS, ETC)',
+              'IGD PBF',
+              'IGD SUAS',
+              'ORIENTAÇÕES GERAIS SOBRE A PROTEÇÃO SOCIAL BÁSICA',
+              'ORIENTAÇÕES GERAIS SOBRE A PROTEÇÃO SOCIAL ESPECIAL',
+              'ORIENTAÇÕES GERAIS SOBRE A PROTEÇÃO SOCIAL ESPECIAL DE ALTA COMPLEXIDADE ORIENTAÇÕES GERAIS SOBRE A PROTEÇÃO SOCIAL ESPECIAL DE E MÉDIA COMPLEXIDADE',
+              'PAEFI -SERVIÇO DE PROTEÇÃO E ATENDIMENTO ESPECIALIZADO A FAMILIAS E INDIVIDUOS',
+              'PISO MINEIRO (UTILIZAÇÃO, PLANO DE SERVIÇOS, DEMONSTRATIVO, ETC); PREENCHIMENTO DE SISTEMAS DE INFORMAÇÃO DO SUAS',
+              'PROGRAMA ACESSUAS TRABALHO',
+              'PROGRAMA BPC NA ESCOLA',
+              'PROGRAMA PERCURSOS GERAIS - APROXIMACAO SUAS',
+              'PSAC - ADULTOS E FAMÍLIAS',
+              'PSAC - CRIANÇAS E ADOLESCENTES',
+              'PSAC - IDOSOS',
+              'PSAC - MULHER EM SITUAÇÃO DE VIOLÊNCIA',
+              'PSAC - PESSOAS COM DEFICIÊNCIA',
+              'PSB - PAIF - SERVIÇO DE PROTEÇÃO E ATENDIMENTO INTEGRAL A FAMILIAS',
+              'PSB - SCFV - SERVIÇO DE CONVIVÊNCIA E FORTALECIMENTO DE VÍNCULOS E SISC.',
+              'PSB - SERVIÇO DE PROTEÇÃO SOCIAL BÁSICA NO DOMICILIO PARA PESSOAS COM DEFICIENCIA E IDOSAS: PSEMC - CERTIDÕES DA FEBEM',
+              'PSEMC - MEDIDAS SOCIOEDUCATIVAS EM MEIO ABERTA',
+              'PSEMC - POPULAÇÃO EM SITUAÇÃO DE RUA PSEMC - POVOS E COMUNIDADES TRADICIONAIS: PSEMC - PROGRAMA DE ERRADICAÇÃO DO TRABALHO INFANTIL (PETI)',
+              'PSEMC - VIOLÊNCIA CONTRA A PESSOA COM DEFICIÊNCIA',
+              'PSEMC - VIOLÊNCIA CONTRA CRIANÇAS E ADOLESCENTES (GERAIS)',
+              'PSEMC - VIOLÊNCIA CONTRA IDOSA',
+              'PSEMC - VIOLÊNCIA CONTRA MULHER',
+              'PSEMC - VIOLÊNCIA SEXUAL CONTRA CRIANÇAS E ADOLESCENTES',
+              'RECURSOS EMERGENCIAI PARA ENFRENTAMENTO AO COVID19',
+              'REDE CUIDAR',
+              'RENDA MINAS',
+              'SERVIÇO DE ACOLHIMENTO EM REPULICA',
+              'SERVIÇOS SOCIOASSISTENCIAIS NO PERÍODO ELEITORAL',
+              'SISTEMAS DE GERENCIAMENTO DO CADCINICO E PBF (V.7, SIBEC, SICON, SIGPBF, CECAD, ETC)',
+              'SUAS E O SISTEMA DE JUSTIÇA TRABALHO ESCRAVO',
+              'TRÁFICO HUMANO',
+              'VIGILÂNCIA SOCIOASSISTENCIAL',
+              'ORIENTAÇÕES GERAIS SOBRE A EDUCAÇÃO PERMANENTE NO SUAS',
+              'AUXÍLIO EMERGENCIAL MINEIRA',
+              'MROSC',
+              'VIGILÂNCIA SOCIOASSISTENCIAL',
+              'TRABALHO SOCIAL COM FAMÍLIAS E BENEFÍCIOS SOCIOASSISTENCIAS',
+              'AUXÍLIO BRASIL',
+              'OUTROS',
+            ],
+          areasList: [
+            'Subsecretaria de Assistência Social',
+            'Superintendência de Proteção Social Básica; Diretoria de Serviços e Benefícios Socioassistenciais',
+            'Diretoria de Gestão do Cadastro Único e Programas Socioassistenciais; Superintendência de Proteção Social Especial',
+            'Diretoria de Proteção Social Especial de Média Complexidade',
+            'Diretoria de Proteção Social Especial de Alta Complexidade',
+            'Superintendência de Vigilância e Capacitação',
+            'Diretoria de Vigilância Socioassistencial',
+            'Diretoria de Educação Permanente do SUAS',
+            'Diretoria de Gestão Descentralizada e Regulação do SUAS',
+            'Assessoria de gestão do Fundo Estadual de Assistência Social',
+          ],
         }
     },
     methods: {
