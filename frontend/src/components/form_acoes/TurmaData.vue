@@ -244,7 +244,7 @@
 </template>
 
 <script>
-//import { date } from 'quasar';
+
 export  default {
 		name: "FormTurmaData",
 		data() {
