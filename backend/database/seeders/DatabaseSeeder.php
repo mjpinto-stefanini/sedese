@@ -3499,6 +3499,10 @@ class DatabaseSeeder extends Seeder
                 'nome' => 'CREAS Regional',
                 'regiao_administrativa' => 1,
             ],
+            [
+                'nome' => 'Outros Públicos',
+                'regiao_administrativa' => 1,
+            ],
         ];
         foreach ($ambitos as $ambito) {
             AmbitoAtuacao::create($ambito);
