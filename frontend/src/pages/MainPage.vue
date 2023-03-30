@@ -80,7 +80,7 @@
 					padding="md xl"
 				/>
 				<q-btn
-					@click="step === 4 ? sendForm() : $refs.stepper.next()"
+					@click="validForm(step, $refs) "
 					color="primary"
 					:label="step === 4 ? 'Salvar' : 'Avançar'"
 					no-caps
@@ -93,6 +93,7 @@
 </template>
 
 <script>
+import { Notify } from 'quasar';
 import PersonalData from "../components/form/PersonalData.vue";
 import AddressData from "@/components/form/AddressData.vue";
 import ContactData from "@/components/form/ContactData.vue";
@@ -121,13 +122,15 @@ export default {
 		},
 	},
 	methods: {
-		setData() {
-			this.jsonData = {
-				personal: this.personalData,
-				address: this.addressData,
-				contact: this.contactData,
-				professional: this.professionalData,
-			};
+		forms(step) {
+			const formFromStep = {
+				1: this.personalData,
+				2: this.addressData,
+				3: this.contactData,
+				4: this.professionalData,
+			}
+
+			return formFromStep[step];
 		},
 		async sendForm() {
 			const values = {
@@ -143,6 +146,7 @@ export default {
 					`users/${user_id}/secondstage`,
 					values
 				);
+				console.warn('status', status);
 				if (status === 201 || status === 200) {
 					this.$q.notify({
 						message: "Dados salvos com sucesso!",
@@ -152,12 +156,55 @@ export default {
 				}
 			} catch (error) {
 				this.$q.notify({
-						//message: "Erro ao salvar os dados!",
 					message: error.response.data.message,
 					color: "negative",
 					position: "top",
 				});
 			}
+		},
+		async checkAllInputs(formFields) {
+			if (Object.keys(formFields).length === 0) {
+				Notify.create({
+					timeout: 2000,
+					position: 'center',
+					color: 'danger',
+					message: 'Por favor, preencha todos os campos'
+				});
+				return 1;
+			}
+
+			let erro = 0;
+
+			Object.keys(formFields).forEach(key => {
+				if (isVisibleAndNotEmpty(key) === false) {  ++erro; }
+			});
+
+			return erro;
+		},
+		async resolveCheckForm(step) {
+			let selectForm = this.forms(step);
+
+			const errroReturn = this.checkAllInputs(selectForm);
+			const resolveResult = Promise.resolve(errroReturn);
+
+			return resolveResult;
+		},
+		async validForm(step, $refs) {
+			const dados = await this.resolveCheckForm(step);
+			if (dados == 0 && step <= 3) {
+				$refs.stepper.next();
+			}
+			if (dados == 0 && step === 4) {
+				this.sendForm();
+			}
+		},
+		setData() {
+			this.jsonData = {
+				personal: this.personalData,
+				address: this.addressData,
+				contact: this.contactData,
+				professional: this.professionalData,
+			};
 		},
 	},
 	watch: {
@@ -201,4 +248,56 @@ export default {
 		/* RepresentationsData, */
 	},
 };
+
+function isVisibleAndNotEmpty(element)
+{
+	if (document.getElementById(element) === null) {
+		return null;
+	}
+
+	let el = document.getElementById(element);
+
+	if (el === null || el === undefined) {
+		return false;
+	}
+
+    let t1 = el.currentStyle ? el.currentStyle.visibility : getComputedStyle(el, null).visibility;
+	let t2 = el.currentStyle ? el.currentStyle.display : getComputedStyle(el, null).display;
+
+    if (t1 === "hidden" || t2 === "none") {
+        return false;
+	}
+
+    while (!(/body/i).test(el)) {
+        el = el.parentNode;
+        t1 = el.currentStyle ? el.currentStyle.visibility : getComputedStyle(el, null).visibility;
+        t2 = el.currentStyle ? el.currentStyle.display : getComputedStyle(el, null).display;
+        if (t1 === "hidden" || t2 === "none") {
+            return false;
+        }
+	}
+
+	let checkInputValue = document.getElementById(element).value;
+
+	if (checkInputValue === '') {
+		checkInputValue = document.querySelector('[name = "' + element + '"]').value
+	}
+
+	if (!isEmpty(checkInputValue)) {
+		document.querySelector('[for = "' + element + '"]').classList.remove('q-field--float', 'q-field--labeled', 'q-field--with-bottom');
+		document.querySelector('[for = "' + element + '"] div div').classList.add('text-negative');
+		document.querySelector('[for = "' + element + '"]').classList.add('q-field', 'row', 'no-wrap', 'items-start', 'q-field--outlined', 'q-select', 'q-field--auto-height', 'q-select--with-input', 'q-select--without-chips', 'q-select--single', 'q-field--labeled', 'q-field--error', 'q-field--highlighted', 'q-field--with-bottom');
+
+		return false;
+	}
+
+    return true;
+}
+
+function isEmpty(input) {
+	if (input === '' || input === null) {
+		return false;
+	}
+	return true;
+}
 </script>

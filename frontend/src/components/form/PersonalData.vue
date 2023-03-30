@@ -5,7 +5,9 @@
 				<div class="col-12">
 					<q-input
 						v-model="form.name"
+						for="name"
 						label="Nome e sobrenome"
+						name="name"
 						outlined
 						clear-icon="close"
 						clearable
@@ -33,6 +35,8 @@
 					<q-input
 						v-model="form.socialName"
 						label="Nome Social"
+						name="socialName"
+						for="socialName"
 						outlined
 						clear-icon="close"
 						clearable
@@ -46,6 +50,8 @@
 							v-model="form.genderIdentity"
 							:options="genderIdentityList"
 							label="Identidade de genero"
+							name="genderIdentity"
+							for="genderIdentity"
 							outlined
 							clear-icon="close"
 							clearable
@@ -72,6 +78,8 @@
 					<div class="col-8 q-pl-sm" v-if="activeGenderIdentityOthers">
 						<q-input
 							v-model="form.genderIdentityOthers"
+							name="genderIdentityOthers"
+							for="genderIdentityOthers"
 							label="Outros"
 							outlined
 							clear-icon="close"
@@ -83,6 +91,8 @@
 				<div class="col-5">
 					<q-input
 						v-model="form.RG"
+						name="RG"
+						for="RG"
 						label="Numero do RG"
 						outlined
 						mask="##############################"
@@ -95,6 +105,8 @@
 					<q-input
 						v-model="form.issuingBody"
 						label="Orgão emissor"
+						name="issuingBody"
+						for="issuingBody"
 						outlined
 						clear-icon="close"
 						clearable
@@ -106,6 +118,8 @@
 						v-model="form.uf"
 						:options="ufFiltered"
 						label="UF"
+						for="uf"
+						name="uf"
 						outlined
 						use-input
 						input-debounce="0"
@@ -117,6 +131,8 @@
 					<q-select
 						v-model="form.education"
 						:options="educationFiltered"
+						name="education"
+						for="education"
 						label="Escolaridade"
 						outlined
 						use-input
@@ -128,30 +144,34 @@
 					/>
 				</div>
 				<div class="col-12">
-						<q-select
-							v-model="form.profession"
-							:options="professionFiltered"
-							label="Profissão"
-							outlined
-							use-input
-							input-debounce="0"
-							@filter="onProfessionFilter"
-							clear-icon="close"
-							clearable
-							:rules="[isRequired]"
-						/>
+					<q-select
+						v-model="form.profession"
+						:options="professionFiltered"
+						label="Profissão"
+						name="profession"
+						for="profession"
+						outlined
+						use-input
+						input-debounce="0"
+						@filter="onProfessionFilter"
+						clear-icon="close"
+						clearable
+						:rules="[isRequired]"
+					/>
 				</div>
 				<div class="col-12" v-if="form.profession === 'Outros'">
-						<q-input
-							v-model="form.profissionOthers"
-							placeholder="Informe a outra profissão"
-							outlined
-							counter
-							maxlength="60"
-							clear-icon="close"
-							clearable
-							:rules="[isRequired]"
-						/>
+					<q-input
+						v-model="form.profissionOthers"
+						placeholder="Informe a outra profissão"
+						name="profissionOthers"
+						for="profissionOthers"
+						outlined
+						counter
+						maxlength="60"
+						clear-icon="close"
+						clearable
+						:rules="[isRequired]"
+					/>
 				</div>
 				<div class="col-12">
 					<q-toggle v-model="isDeficiency" label="Possui alguma deficiência" />
@@ -160,6 +180,8 @@
 					<div :class="activeDeficiencyOthers ? 'col-4' : 'col-12'">
 						<q-select
 							v-model="form.deficiency"
+							name="deficiency"
+							for="deficiency"
 							:options="deficiencyFiltered"
 							label="Tipo de deficiência"
 							outlined
@@ -174,6 +196,8 @@
 					<div class="col-12" v-if="form.deficiency === 'Outros'">
 						<q-input
 							v-model="form.deficiencyOthers"
+							name="deficiencyOthers"
+							for="deficiencyOthers"
 							placeholder="informe o outro tipo de deficiência"
 							outlined
 							counter
@@ -186,19 +210,24 @@
 				</div>
 				<div class="col-12 row" v-if="isDeficiency">
 					<div class="col-12">
-							<q-toggle v-model="isDeficiencyStructure" label="Necessita de estrutura para participar da ação?" />
+						<q-toggle
+							v-model="isDeficiencyStructure"
+							label="Necessita de estrutura para participar da ação?"
+						/>
 					</div>
 					<div class="col-12 q-pl-sm" v-if="isDeficiencyStructure" style="margin-left: -0.5em; margin-top: 1em;">
-							<q-input
-									v-model="form.deficiencyStructure"
-									placeholder="informe caso precise de uma estrutura de acesso."
-									outlined
-									counter
-									maxlength="200"
-									clear-icon="close"
-									clearable
-									:rules="[isRequired]"
-							/>
+						<q-input
+							v-model="form.deficiencyStructure"
+							placeholder="informe caso precise de uma estrutura de acesso."
+							outlined
+							name="deficiencyStructure"
+							for="deficiencyStructure"
+							counter
+							maxlength="200"
+							clear-icon="close"
+							clearable
+							:rules="[isRequired]"
+						/>
 					</div>
 				</div>
 			</div>
@@ -211,6 +240,8 @@ export default {
 	name: "PersonalData",
 	data() {
 		return {
+			genderIdentity: "",
+			deficiency: "",
 			form: {
 				name: "",
 				socialName: "",
@@ -227,7 +258,6 @@ export default {
 				deficiencyOthers: "",
 				deficiencyStructure: "",
 			},
-
 			genderIdentityList: [
 				"Homem (cis ou trans)",
 				"Mulher (cis ou trans)",
@@ -317,26 +347,26 @@ export default {
 		};
 	},
 	methods: {
-			isRequired(value) {
-					return !!value || "Campo obrigatório";
-			},
-			isNumber(value) {
-					return (
-						(value && /^[\d.-]+$/.test(value)) || "Somente números"
-					);
-			},
-			isMax12(value) {
-					return (
-						(value && value.length <= 12) || "Máximo de 12 caracteres"
-					);
-			},
-			parseStringFilter(text) {
-			const er = /[^a-z0-9]/gi;
-			return text
-				.normalize("NFD")
-				.replace(/[\u0300-\u036f]/g, "")
-				.replace(er, "")
-				.toLowerCase();
+		isRequired(value) {
+			return !!value || "Campo obrigatório";
+		},
+		isNumber(value) {
+			return (
+				(value && /^[\d.-]+$/.test(value)) || "Somente números"
+			);
+		},
+		isMax12(value) {
+			return (
+				(value && value.length <= 12) || "Máximo de 12 caracteres"
+			);
+		},
+		parseStringFilter(text) {
+		const er = /[^a-z0-9]/gi;
+		return text
+			.normalize("NFD")
+			.replace(/[\u0300-\u036f]/g, "")
+			.replace(er, "")
+			.toLowerCase();
 		},
 		onEducationFilter(val, update) {
 			if (val === "") {
@@ -408,10 +438,10 @@ export default {
 				this.$emit("personal", this.form);
 			},
 			deep: true,
-		},
+		}
 	},
 	created() {
 		this.form.name = JSON.parse(localStorage.getItem("user")).name;
-	},
+	}
 };
 </script>
