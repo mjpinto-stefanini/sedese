@@ -161,7 +161,7 @@ class Users extends Controller
             'issuing_body' => $request['personal']['issuingBody'] ?? '',
             'uf' => $request['personal']['uf'],
             'education' => $request['personal']['education'],
-            'profession' => $request['personal']['profession'],
+            'profission' => $request['personal']['profession'],
             'profission_others' => $request['personal']['profissionOthers'],
             'is_deficiency' => $request['personal']['isDeficiency'],
             'deficiency' => $request['personal']['deficiency'],

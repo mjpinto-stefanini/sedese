@@ -118,6 +118,16 @@
 							@click="openModal(props)"
 						/>
 					</div>
+					<div>
+						<q-btn
+							color="primary"
+							label="Editar"
+							no-caps
+							unelevated
+							padding="sm xl"
+							@click="$router.replace('/user/' + props.row.id )"
+						/>
+					</div>
 				</q-td>
 			</template>
 			<template v-slot:body-cell-service="props">

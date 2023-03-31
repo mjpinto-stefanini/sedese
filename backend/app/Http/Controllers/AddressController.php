@@ -54,4 +54,11 @@ class AddressController extends Controller
         $address->delete();
         return response()->json(null, self::HTTP_NO_CONTENT);
     }
+
+    public function addressUser($user_id)
+    {
+        $personal = Address::query()->where('user_id', $user_id)->first();
+        return response()->json($personal, self::HTTP_OK);
+    }
+
 }
