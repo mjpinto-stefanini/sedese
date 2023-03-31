@@ -85,6 +85,17 @@ methods: {
               (value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido"
             );
         },
+
+
+  async onForgotPassword() {
+    let response = await this.forgotPassword();
+    if (response?.response?.status === 201) {
+      this.$q.notify({
+        type: response.response.data.type,
+        message: response.response.data.message,
+      });
+    }
+  },
     }
 };
 </script>

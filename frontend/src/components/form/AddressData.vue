@@ -6,6 +6,8 @@
 					<q-input
 						v-model="form.zip_code"
 						label="Cep"
+						name="zip_code"
+						for="zip_code"
 						outlined
 						clear-icon="close"
 						clearable
@@ -18,6 +20,8 @@
 					<q-input
 						v-model="form.street"
 						label="Logradouro"
+						name="street"
+						for="street"
 						outlined
 						clear-icon="close"
 						clearable
@@ -28,6 +32,8 @@
 					<q-input
 						v-model="form.number"
 						label="Numero"
+						name="number"
+						for="number"
 						outlined
 						clear-icon="close"
 						clearable
@@ -48,6 +54,8 @@
 					<q-input
 						v-model="form.city"
 						label="Cidade"
+						name="city"
+						for="city"
 						outlined
 						clear-icon="close"
 						clearable
@@ -59,6 +67,8 @@
 						v-model="form.state"
 						:options="stateFiltered"
 						label="UF"
+						name="state"
+						for="state"
 						outlined
 						use-input
 						input-debounce="0"
@@ -123,14 +133,14 @@ export default {
 		};
 	},
 	methods: {
-			isRequired(value) {
-					return !!value || "Campo obrigatório";
-			},
-			isNumber(value) {
-					return (
-						(value && /^\d+$/.test(value)) || "Somente números"
-					);
-			},
+		isRequired(value) {
+			return !!value || "Campo obrigatório";
+		},
+		isNumber(value) {
+			return (
+				(value && /^\d+$/.test(value)) || "Somente números"
+			);
+		},
 		onStateFilter(val, update) {
 			if (val === "") {
 				update(() => {

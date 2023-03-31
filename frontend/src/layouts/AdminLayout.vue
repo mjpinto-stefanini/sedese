@@ -33,7 +33,7 @@
                 <q-expansion-item
                   expand-separator
                   icon="event_note"
-                  label="Ações"
+                  label="Ações de Apoio Técnico"
                 >
                     <q-card>
                         <q-card-section>
