@@ -144,15 +144,6 @@ class Users extends Controller
     {
         $errormsg = [];
 
-/*
-        return response()->json([
-            'status' => 'error',
-            'personal' => $request['personal'],
-            'contact' => $request['contact'],
-            'address' => $request['address'],
-            'professional' => $request['professional'],
-        ], self::HTTP_NOT_FOUND);
-*/
         $user = User::query()->find($id);
         if (!$user) {
             return response()->json([
@@ -178,7 +169,6 @@ class Users extends Controller
             'deficiency_others' => $request['personal']['deficiencyOthers'],
             'deficiency_structure' => $request['personal']['deficiencyStructure'],
         ];
-
 
         $personalResult = Personal::query()->create($personalData);
         if (!$personalResult) {
@@ -239,7 +229,7 @@ class Users extends Controller
         }
 
         /*
-             "professional":{
+            "professional":{
                 "regional":{
                     "value":1,
                     "label":"Estadual"
@@ -273,10 +263,7 @@ class Users extends Controller
             }
 
             php artisan make:migration add_lotacao_to_professionals_table --table=professionals
-
-
- */
-            //
+        */
 
         $professionalData = [
             'user_id' => $user['id'],
@@ -305,9 +292,7 @@ class Users extends Controller
             'representacao' => $request['professional']['possuiRepresentacao'] ?? '',
             'area_representada' => $request['professional']['areaRepresentada'] ?? '',
             'area_representada_outros' => $request['professional']['areaRepresentadaOutro'] ?? '',
-
             'cargo' => $request['professional']['cargo']['label'] ?? '',
-
             'representante' => $request['professional']['representante']['label'] ?? '',
             'representacao_titularidade' => $request['professional']['representacaoTitularidade'] ?? '',
             'representacao_segmento' => $request['professional']['representacaoSegmento'] ?? '',
@@ -318,41 +303,11 @@ class Users extends Controller
             'funcao_outro' => $request['professional']['funcaoOutro'] ?? '',
             'vinculo_empregaticio_outro' => $request['professional']['vinculoEmpregaticioOutro'] ?? '',
             'municipio_id' => $request['professional']['municipio']['id'] ?? null,
-
             'servicos_programa_outro' => $request['professional']['servicosProgramaOutro'] ?? '',
             'servicos_programa' => $request['professional']['servicosPrograma']['label'] ?? '',
             'beneficios_municipal_outro' => $request['professional']['beneficiosMunicipalOutro'] ?? '',
             'beneficios_municipal' => $request['professional']['beneficiosMunicipal'] ?? '',
-
-            //novos campos
         ];
-        /*
-        return response()->json([
-            'status' => 'error',
-            'professionalData' => $professionalData,
-            'personal' => $request['personal'],
-            'contact' => $request['contact'],
-            'address' => $request['address'],
-            'professional' => $request['professional'],
-        ], self::HTTP_NOT_FOUND);
-        */
-        /*
-        Adicionar ao migration:
-            beneficios_municipal
-            beneficios_municipal_outro
-            servicos_programa
-            servicos_programa_outro
-            municipio_id NULL
-            vinculo_empregaticio_outro
-            funcao_outro
-            representacao_area_representada
-            representacao_area_representada_outros
-            representacao_conselho
-            representacao_representacao
-            representacao_segmento
-            representacao_titularidade
-            representante
-        */
 
         $professionalResult = Professional::query()->create($professionalData);
         if (!$professionalResult) {
@@ -386,7 +341,6 @@ class Users extends Controller
      */
     public function confirmEmail(string $token): JsonResponse
     {
-
         $user = User::query()->where('remember_token', $token)->first();
         if ($user) {
             $user->email_verified_at = Carbon::now();
