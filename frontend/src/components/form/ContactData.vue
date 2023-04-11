@@ -20,12 +20,10 @@
 					<q-input
 						v-model="form.phone"
 						label="Telefone Residencial"
-						name="phone"
-						for="phone"
 						outlined
 						clear-icon="close"
 						mask="(##) ####-####"
-						:rules="[isRequired, isPhoneNumber, notLessThanNormal, notMoreThanNormal]"
+						:rules="[isPhoneNumber, notLessThanNormal, notMoreThanNormal]"
 						clearable
 						type="tel"
 					/>

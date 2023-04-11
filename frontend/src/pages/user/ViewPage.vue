@@ -1,177 +1,250 @@
 <template>
     <q-page class="bg-grey-1">
         <div class="q-pa-md">
-            <q-card class="my-card">
-                <q-card-section>
-                    <div class="text-h6">
-                        {{ user.name }}
-                        <q-chip dense size="sm"
-                            :text-color="user.is_active ? 'white' : 'dark'"
-                            :label="user.is_active ? 'Ativado' : 'Desativado'"
-                            :color="user.is_active ? 'green' : 'gray'"
-                        />
+            <div class="row">
+                <div class="col-sm-4 q-pa-xs">
+                    <q-card class="my-card">
+                        <q-card-section>
+                            <div class="text-h6">
+                                <q-icon name="sym_o_person" color="primary"/> {{ user.name }}
+                            </div>
+                            <div>
+                                <q-chip size="sm"
+                                    :text-color="user.is_active ? 'white' : 'dark'"
+                                    :label="user.is_active ? 'Ativado' : 'Desativado'"
+                                    :color="user.is_active ? 'green' : 'gray'"
+                                />
+                                <q-chip v-if="user.type_admin == 1" size="sm"
+                                    :text-color="'white'"
+                                    :label="'Super Admin / Equipe DEP'"
+                                    :color="'primary'"
+                                />
+                                <q-chip v-if="user.type_admin == 2" size="sm"
+                                    :text-color="'white'"
+                                    :label="'SUBAS / Diretorias Regionais'"
+                                    :color="'primary'"
+                                />
+                                <q-chip v-if="user.type_admin == 3" size="sm"
+                                    :text-color="'white'"
+                                    :label="'Outros parceiros / Participantes'"
+                                    :color="'primary'"
+                                />
+                            </div>
+                        </q-card-section>
+                        <q-card-section>
+                            <div class="row">
+                                <div class="col-sm-12 q-pa-xs" v-if="user.servico">
+                                    <span class="text-grey">Ambito de Atuação</span> {{ user.servico }}
+                                </div>
+                                <div class="col-sm-12 q-pa-xs" v-if="user.secretaria">
+                                    <span class="text-grey">Secretaria</span> {{ user.secretaria }}
+                                </div>
+                                <div class="col-sm-12 q-pa-xs" v-if="user.name">
+                                    <span class="text-grey">Nome</span> {{ user.name }}
+                                </div>
+                                <div class="col-sm-12 q-pa-xs" v-if="personal.social_name">
+                                    <span class="text-grey">Nome Social</span> {{ personal.social_name }}
+                                </div>
+                                <div class="col-sm-12 q-pa-xs" v-if="personal.gender_identity">
+                                    <span class="text-grey">Identidade de Gênero</span> {{ personal.gender_identity }}
+                                </div>
+                                <div class="col-sm-12 q-pa-xs" v-if="personal.social_name">
+                                    <span class="text-grey">Nome Social</span> {{ personal.social_name }}
+                                </div>
+                                <div class="col-sm-12 q-pa-xs" v-if="user.cpf">
+                                    <span class="text-grey">CPF</span> {{ user.cpf }}
+                                </div>
+                                <div class="col-sm-12 q-pa-xs" v-if="personal.rg">
+                                    <span class="text-grey">RG</span> {{ personal.rg }}
+                                </div>
+                                <div class="col-sm-12 q-pa-xs" v-if="personal.issuing_body">
+                                    <span class="text-grey">Orgão emissor</span> {{ personal.issuing_body }}
+                                </div>
+                                <div class="col-sm-12 q-pa-xs" v-if="personal.uf">
+                                    <span class="text-grey">UF</span> {{ personal.uf }}
+                                </div>
+                                <div class="col-sm-12 q-pa-xs" v-if="personal.education">
+                                    <span class="text-grey">Escolaridade</span> {{ personal.education }}
+                                </div>
+                                <div class="col-sm-12 q-pa-xs" v-if="personal.profission !== 'Outros' && personal.profission">
+                                    <span class="text-grey">Profissão</span> {{ personal.profission }}
+                                </div>
+                                <div class="col-sm-12 q-pa-xs" v-if="personal.profission === 'Outros'">
+                                    <span class="text-grey">Profissão</span> {{ personal.profission_others }}
+                                </div>
+                                <div class="col-sm-12 q-pa-xs" v-if="personal.is_deficiency">
+                                    <span class="text-grey">Deficiência</span> <span v-if="personal.deficiency !== 'Outros'"> {{ personal.deficiency }}</span><span v-if="personal.deficiency === 'Outros'"> {{ personal.deficiency_others }}</span>
+                                </div>
+                                <div class="col-sm-12 q-pa-xs" v-if="personal.deficiency_structure">
+                                    <span class="text-grey">Necessita de estrutura para participar da ação?</span> {{ personal.deficiency_structure }}
+                                </div>
+                            </div>
+                        </q-card-section>
+                    </q-card>
+                </div>
+                <div class="col-sm-8 q-pa-xs">
+                    <div class="col-sm-12">
+                        <q-card class="my-card">
+                            <q-card-section>
+                                <div class="text-h6">
+                                    <q-icon name="sym_o_home_work" color="primary"/> Dados Residenciais
+                                </div>
+                            </q-card-section>
+                            <q-card-section>
+                                <div class="row" v-if="address.id">
+                                    <div class="col-sm-6 q-pa-xs">
+                                        <span class="text-grey">CEP</span> {{ address.zip_code }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs">
+                                        <span class="text-grey">Logradouro</span> {{ address.street }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs">
+                                        <span class="text-grey">Número</span> {{ address.number }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs">
+                                        <span class="text-grey">Bairro</span> {{ address.neighborhood }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="address.complement">
+                                        <span class="text-grey">Complemento</span> {{ address.complement }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs">
+                                        <span class="text-grey">Cidade</span> {{ address.city }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs">
+                                        <span class="text-grey">UF</span> {{ address.state }}
+                                    </div>
+                                </div>
+                                <div class="row" v-if="!address.id">
+                                    Não Cadastrado
+                                </div>
+                            </q-card-section>
+                        </q-card>
                     </div>
-                    <div class="text-weight-thin">{{ user.email }}</div>
-                </q-card-section>
+                    <div class="col-sm-12 q-pt-sm">
+                        <q-card class="my-card">
+                            <q-card-section>
+                                <div class="text-h6">
+                                    <q-icon name="sym_o_call" color="primary"/> Contato
+                                </div>
+                            </q-card-section>
+                            <q-card-section>
+                                <div class="row">
+                                    <div class="col-sm-6 q-pa-xs">
+                                        <span class="text-grey">E-mail</span> {{ user.email }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="contact.phone">
+                                        <span class="text-grey">Telefone Residencial</span> {{ contact.phone }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="contact.cell_phone">
+                                        <span class="text-grey">Celular</span> {{ contact.cell_phone }} - <span class="text-grey">Whatsapp</span> {{ contact.cell_phone_whatsapp }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="contact.institutional_phone">
+                                        <span class="text-grey">Telefone Institucional</span> {{ contact.institutional_phone }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="contact.institutional_email">
+                                        <span class="text-grey">E-mail Institucional</span> {{ contact.institutional_email }}
+                                    </div>
+                                </div>
+                            </q-card-section>
+                        </q-card>
+                    </div>
+                    <div class="col-sm-12 q-pt-sm">
+                        <q-card class="my-card">
+                            <q-card-section>
+                                <div class="text-h6">
+                                    <q-icon name="sym_o_work" color="primary"/> Profissionais
+                                </div>
+                            </q-card-section>
+                            <q-card-section>
+                                <div class="row" v-if="professional.id">
+                                    <div class="col-sm-6 q-pa-xs">
+                                        <span class="text-grey">Região Administrativa</span> {{ professional.regional }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.lotacao">
+                                        <span class="text-grey">Lotação</span> {{ professional.lotacao }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.superintendencia">
+                                        <span class="text-grey">Superintendência</span> {{ professional.superintendencia }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.protecao_social_basica">
+                                        <span class="text-grey">Diretorias</span> {{ professional.protecao_social_basica }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.protecao_social_especial">
+                                        <span class="text-grey">Proteção Social Especial</span> {{ professional.protecao_social_especial }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.vigilancia_capacitacao">
+                                        <span class="text-grey">Diretorias</span> {{ professional.vigilancia_capacitacao }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.vinculo_empregaticio">
+                                        <span class="text-grey">Vínculo Empregatício</span> {{ professional.vinculo_empregaticio }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.funcao">
+                                        <span class="text-grey">Função</span> {{ professional.funcao }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.diretoria_regional_des_social">
+                                        <span class="text-grey">Diretoria Regional DES Social</span> {{ professional.diretoria_regional_des_social }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.creas_regional">
+                                        <span class="text-grey">CREAS Regional</span> {{ professional.creas_regional }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.exe_creas_funcao">
+                                        <span class="text-grey">Exe CREAS - Função</span> {{ professional.exe_creas_funcao }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.exe_creas_vinc_empreg">
+                                        <span class="text-grey">Exe CREAS - Vinculo Empregaticio</span> {{ professional.exe_creas_vinc_empreg }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.outros_publicos">
+                                        <span class="text-grey">Outros públicos</span> {{ professional.outros_publicos }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.outros_publicos_others">
+                                        <span class="text-grey">Outros públicos</span> {{ professional.outros_publicos_others }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.parceiros">
+                                        <span class="text-grey">Parceiros</span> {{ professional.parceiros }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.orgao">
+                                        <span class="text-grey">Orgão</span> {{ professional.orgao }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.area_de_atuacao">
+                                        <span class="text-grey">Área de Atuação</span> {{ professional.area_de_atuacao }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.protecao_social_basica_municipal">
+                                        <span class="text-grey">Proteção Social Básica Municipal</span> {{ professional.protecao_social_basica_municipal }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.beneficios_socioassistenciais">
+                                        <span class="text-grey">Beneficios Socio Assistenciais</span> {{ professional.beneficios_socioassistenciais }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.protecao_social_especial_municipal">
+                                        <span class="text-grey">Proteção Social Especial Municipal</span> {{ professional.protecao_social_especial_municipal }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.social_especial_municipal_media_complexidade">
+                                        <span class="text-grey">Social Especial Municipal Média Complexidade</span> {{ professional.social_especial_municipal_media_complexidade }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.social_especial_municipal_alta_complexidade">
+                                        <span class="text-grey">Social Especial Municipal Alta Complexidade</span> {{ professional.social_especial_municipal_alta_complexidade }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.representacao == '1'">
+                                        <span class="text-grey">Representação</span> Sim
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.area_representada">
+                                        <span class="text-grey">Área Representada</span> {{ professional.area_representada }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.area_representada_outros">
+                                        <span class="text-grey">Área Representada Outros</span> {{ professional.area_representada_outros }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.cargo">
+                                        <span class="text-grey">Cargo</span> {{ professional.cargo }}
+                                    </div>
 
-                <q-tabs v-model="tab" class="text-primary">
-                    <q-tab class="col-sm-3" label="Dados Pessoais" icon="sym_o_person" name="dados_pessoais" />
-                    <q-tab class="col-sm-3" label="Residenciais"  icon="sym_o_home_work" name="residenciais" />
-                    <q-tab class="col-sm-3" label="Contato"  icon="sym_o_call" name="contato" />
-                    <q-tab class="col-sm-3" label="Profissionais"  icon="sym_o_work" name="profissionais" />
-                </q-tabs>
-
-                <q-separator />
-
-                <q-tab-panels v-model="tab" animated>
-                    <q-tab-panel name="dados_pessoais">
-                        <div class="row">
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>Ambito de Atuação</b> {{ user.servico }}
-                            </div>
-                            <div class="col-sm-8 q-pa-xs">
-                                <b>Secretaria</b> {{ user.secretaria }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>Nome</b> {{ user.name }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs" v-if="personal.social_name">
-                                <b>Nome Social</b> {{ personal.social_name }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>Identidade de Gênero</b> {{ personal.gender_identity }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs" v-if="personal.social_name">
-                                <b>Nome Social</b> {{ personal.social_name }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>CPF</b> {{ user.cpf }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>RG</b> {{ personal.rg }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>Orgão emissor</b> {{ personal.issuing_body }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>UF</b> {{ personal.uf }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>Escolaridade</b> {{ personal.education }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs" v-if="personal.profission !== 'Outros'">
-                                <b>Profissão</b> {{ personal.profission }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs" v-if="personal.profission === 'Outros'">
-                                <b>Profissão</b> {{ personal.profission_others }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs" v-if="personal.is_deficiency">
-                                <b>Deficiência</b> <span v-if="personal.deficiency !== 'Outros'"> {{ personal.deficiency }}</span><span v-if="personal.deficiency === 'Outros'"> {{ personal.deficiency_others }}</span>
-                            </div>
-                            <div class="col-sm-4 q-pa-xs" v-if="personal.deficiency_structure">
-                                <b>Necessita de estrutura para participar da ação?</b> {{ personal.deficiency_structure }}
-                            </div>
-
-                        </div>
-                    </q-tab-panel>
-                    <q-tab-panel name="residenciais">
-                        <div class="row">
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>CEP</b> {{ address.zip_code }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>Logradouro</b> {{ address.street }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>Número</b> {{ address.number }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>Bairro</b> {{ address.neighborhood }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs" v-if="address.complement">
-                                <b>Complemento</b> {{ address.complement }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>Cidade</b> {{ address.city }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>UF</b> {{ address.state }}
-                            </div>
-                        </div>
-                    </q-tab-panel>
-
-                    <q-tab-panel name="contato">
-                        <div class="row">
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>E-mail</b> {{ user.email }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs" v-if="contact.phone">
-                                <b>Telefone Residencial</b> {{ contact.phone }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs" v-if="contact.cell_phone">
-                                <b>Celular</b> {{ contact.cell_phone }} - Whatsapp {{ contact.cell_phone_whatsapp }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs" v-if="contact.institutional_phone">
-                                <b>Telefone Institucional</b> {{ contact.institutional_phone }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs" v-if="contact.institutional_email">
-                                <b>E-mail Institucional</b> {{ contact.institutional_email }}
-                            </div>
-                        </div>
-                    </q-tab-panel>
-
-                    <q-tab-panel name="profissionais">
-                        <div class="row">
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>Região Administrativa</b> {{ professional.regional }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>Lotação</b> {{ professional.lotacao }}
-                            </div>
-                            <div class="col-sm-4 q-pa-xs">
-                                <b>Unidade</b> {{ professional.lotacao }}
-                            </div>
-
-                        </div>
-
-
-                         {{ professional }}
-                         ----------
-                        id: "b2675665-6bbe-407f-acd0-ac03d40c6fa3",
-user_id: "a877492c-e482-44b9-bdb2-45466bf482a2",
-
-superintendencia: "",
-
-protecao_social_basica: null,
-protecao_social_especial: null,
-vigilancia_capacitacao: null,
-vinculo_empregaticio: "Temporário",
-funcao: "Assessor(a)",
-diretoria_regional_des_social: null,
-creas_regional: null,
-exe_creas_funcao: null,
-exe_creas_vinc_empreg: null,
-outros_publicos: null,
-outros_publicos_others: null,
-parceiros: null,
-orgao: null,
-area_de_atuacao: null,
-protecao_social_basica_municipal: null,
-beneficios_socioassistenciais: null,
-protecao_social_especial_municipal: null,
-social_especial_municipal_media_complexidade: null,
-social_especial_municipal_alta_complexidade: null,
-representacao: null,
-area_representada: null,
-area_representada_outros: null,
-cargo: null,
-created_at: "2023-03-23T15:29:49.000000Z",
-updated_at: "2023-03-23T15:29:49.000000Z"
-                    </q-tab-panel>
-
-
-                </q-tab-panels>
-            </q-card>
+                                </div>
+                                <div class="row" v-if="!professional.id">
+                                    Não Cadastrado
+                                </div>
+                            </q-card-section>
+                        </q-card>
+                    </div>
+                </div>
+            </div>
         </div>
     </q-page>
 
@@ -179,6 +252,7 @@ updated_at: "2023-03-23T15:29:49.000000Z"
 
 <script>
 import { ref } from 'vue'
+import accountMixin from "../../mixins/accountMixin";
 
 export default {
     setup () {
@@ -187,6 +261,7 @@ export default {
         }
     },
     name: "ViewPageUser",
+	mixins: [accountMixin],
     data() {
         console.log('this.$route.params.id', this.$route.params.id);
         return {
@@ -202,7 +277,7 @@ export default {
     methods: {
         async getUserData() {
             try {
-                const { data, status } = await this.$http.get(`${this.baseURL}users/${this.UserId}/user`);
+                const { data, status } = await this.apiUser(this.UserId, 'users');
 
                 if (data) {
                     this.user = data;
@@ -234,7 +309,7 @@ export default {
         },
         async getUserPersonal() {
             try {
-                const { data, status } = await this.$http.get(`${this.baseURL}personal/${this.UserId}/user`);
+                const { data, status } = await this.apiUser(this.UserId, 'personal');
                 if (data) { this.personal = data; }
                 if (status !== 200) { console.warn('Error personal'); }
             } catch (error) {
@@ -247,8 +322,7 @@ export default {
         },
         async getUserContact() {
             try {
-                const { data, status } = await this.$http.get(`${this.baseURL}contact/${this.UserId}/user`);
-
+                const { data, status } = await this.apiUser(this.UserId, 'contact');
                 if (data) { this.contact = data; }
                 if (status !== 200) { console.warn('Error contact'); }
             } catch (error) {
@@ -261,8 +335,7 @@ export default {
         },
         async getUserAddress() {
             try {
-                const { data, status } = await this.$http.get(`${this.baseURL}address/${this.UserId}/user`);
-
+                const { data, status } = await this.apiUser(this.UserId, 'address');
                 if (data) { this.address = data; }
                 if (status !== 200) { console.warn('Error address'); }
             } catch (error) {
@@ -275,8 +348,7 @@ export default {
         },
         async getUserProfessionals() {
             try {
-                const { data, status } = await this.$http.get(`${this.baseURL}professionals/${this.UserId}/user`);
-
+                const { data, status } = await this.apiUser(this.UserId, 'professionals');
                 if (data) { this.professional = data; }
                 if (status !== 200) { console.warn('Error professional'); }
             } catch (error) {
@@ -289,7 +361,7 @@ export default {
         },
         async getSecretary(id) {
             try {
-                const { data, status } = await this.$http.get(`ambitoatuacao/show/${id}`);
+                const { data, status } = await this.apiGlobal(`ambitoatuacao/show/${id}`);
                 if (data) { this.user.secretaria = data.nome; }
                 if (status !== 200) { console.warn('Error secretaria'); }
             } catch (error) {
@@ -305,123 +377,14 @@ export default {
 		this.getUserData();
 	},
 }
-/*
-const User = {
-    template: '<div>User {{ $route.params.id }}</div>',
-}
-*/
-/*
-import AcaoData from "../components/form_acoes/AcaoData.vue";
-import PoloData from "@/components/form_acoes/PoloData.vue";
-import TurmaData from "@/components/form_acoes/TurmaData.vue";
-export default {
-    name: "NewActionPage",
-    data() {
-        return {
-            step: 1,
-            acaoData: {},
-            poloData: {},
-            turmaData: {},
-            jsonData: "",
-        };
-    },
-    computed: {
-        finalData() {
-            let jsonData = {
-                acao: this.acaoData,
-                polo: this.poloData,
-                turma: this.turmaData,
-            };
-            return jsonData;
-        },
-    },
-    methods: {
-        setData() {
-            this.jsonData = {
-                acao: this.acaoData,
-                polo: this.poloData,
-                turma: this.turmaData,
-            };
-        },
-        async sendForm() {
-            const values = {
-                acao: { ...this.acaoData},
-                polo: { ...this.poloData},
-                turma: { ...this.turmaData},
-            };
-
-            try {
-                const user_id = JSON.parse(localStorage.getItem("user")).id;
-                const { status, data } = await this.$http.patch(
-                  `users/${user_id}/secondstage`,
-                  values
-                );
-                if (status === 201 || status === 200) {
-                    this.$q.notify({
-                        message: "Dados salvos com sucesso!",
-                        color: "positive",
-                        position: "top",
-                    });
-                    console.log(data);
-                }
-            }   catch (error) {
-                this.$q.notify({
-                    message: error.response.data.message,
-                    color: "negative",
-                    position: "top",
-                });
-            }
-        },
-    },
-    watch: {
-        personalData: {
-            handler() {
-                // this.setData();
-                console.log("personalData");
-            },
-            deep: true,
-        },
-        addressData: {
-            handler() {
-                this.setData();
-            },
-            deep: true,
-        },
-        contactData: {
-            handler() {
-                this.setData();
-            },
-            deep: true,
-        },
-        representationData: {
-            handler() {
-                this.setData();
-            },
-            deep: true,
-        },
-        professionalData: {
-            handler() {
-                this.setData();
-            },
-            deep: true,
-        },
-    },
-
-    components: {
-        AcaoData,
-        PoloData,
-        TurmaData,
-    },
-};
-*/
 </script>
 <style lang="sass" scoped>
-.my-card
-    width: 100%
-.column > div
-    padding: 10px 15px
-    background: rgba(86, 61, 124, .15)
-    border: 1px solid rgba(86, 61, 124, .2)
-.column + .column
-    margin-top: 1rem
+    .my-card
+        width: 100%
+    .column > div
+        padding: 10px 15px
+        background: rgba(86, 61, 124, .15)
+        border: 1px solid rgba(86, 61, 124, .2)
+    .column + .column
+        margin-top: 1rem
 </style>

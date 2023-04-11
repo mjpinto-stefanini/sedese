@@ -3699,7 +3699,7 @@ class DatabaseSeeder extends Seeder
             'Diretoria Regional de Ituiutaba',
             'Diretoria Regional de Juiz de Fora',
             'Diretoria Regional de Metropolitana (BH)',
-            'Diretoria Regional de Montes Claroes',
+            'Diretoria Regional de Montes Claros',
             'Diretoria Regional de Muriaé',
             'Diretoria Regional de Paracatu',
             'Diretoria Regional de Passos',
