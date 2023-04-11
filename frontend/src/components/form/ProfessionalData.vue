@@ -690,7 +690,7 @@ export default {
                 "Ituiutaba",
                 "Juiz de Fora",
                 "Metropolitana",
-                "Montes Claroes",
+                "Montes Claros",
                 "Muriaé",
                 "Paracatu",
                 "Passos",

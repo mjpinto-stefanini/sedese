@@ -102,6 +102,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/show/{id}', [PersonalController::class, 'show']);
         Route::put('/update/{id}', [PersonalController::class, 'update']);
         Route::delete('/destroy/{id}', [PersonalController::class, 'destroy']);
+        Route::get('/{id}/user', [PersonalController::class, 'personalUser']);
     });
 
     Route::prefix('address')->group(function () {
@@ -110,6 +111,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/show/{id}', [AddressController::class, 'show']);
         Route::put('/update/{id}', [AddressController::class, 'update']);
         Route::delete('/destroy/{id}', [AddressController::class, 'destroy']);
+        Route::get('/{id}/user', [AddressController::class, 'addressUser']);
     });
 
     Route::prefix('contact')->group(function () {
@@ -118,6 +120,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/show/{id}', [ContactController::class, 'show']);
         Route::put('/update/{id}', [ContactController::class, 'update']);
         Route::delete('/destroy/{id}', [ContactController::class, 'destroy']);
+        Route::get('/{id}/user', [ContactController::class, 'contactUser']);
     });
 
     Route::prefix('respresentation')->group(function () {
@@ -150,6 +153,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/show/{id}', [ProfessionalController::class, 'show']);
         Route::put('/update/{id}', [ProfessionalController::class, 'update']);
         Route::delete('/destroy/{id}', [ProfessionalController::class, 'destroy']);
+        Route::get('/{id}/user', [ProfessionalController::class, 'professionalsUser']);
     });
 
     Route::prefix('acoes')->group(function () {

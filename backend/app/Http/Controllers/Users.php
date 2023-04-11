@@ -143,6 +143,7 @@ class Users extends Controller
     public function secondStage(Request $request, string $id): JsonResponse
     {
         $errormsg = [];
+
         $user = User::query()->find($id);
         if (!$user) {
             return response()->json([
@@ -161,14 +162,13 @@ class Users extends Controller
             'issuing_body' => $request['personal']['issuingBody'] ?? '',
             'uf' => $request['personal']['uf'],
             'education' => $request['personal']['education'],
-            'profession' => $request['personal']['profession'],
+            'profission' => $request['personal']['profession'],
             'profission_others' => $request['personal']['profissionOthers'],
             'is_deficiency' => $request['personal']['isDeficiency'],
             'deficiency' => $request['personal']['deficiency'],
             'deficiency_others' => $request['personal']['deficiencyOthers'],
             'deficiency_structure' => $request['personal']['deficiencyStructure'],
         ];
-
 
         $personalResult = Personal::query()->create($personalData);
         if (!$personalResult) {
@@ -229,7 +229,7 @@ class Users extends Controller
         }
 
         /*
-             "professional":{
+            "professional":{
                 "regional":{
                     "value":1,
                     "label":"Estadual"
@@ -263,32 +263,50 @@ class Users extends Controller
             }
 
             php artisan make:migration add_lotacao_to_professionals_table --table=professionals
+        */
 
-
- */
         $professionalData = [
             'user_id' => $user['id'],
-            'regional' => $request['professional']['regional']['label'],
-            'lotacao' => $request['professional']['lotacao']['label'],
+            'regional' => $request['professional']['regional']['label'] ?? '',
             'superintendencia' => $request['professional']['superintendencia']['label'] ?? '',
-            'diretoria_regional_des_social' => $request['professional']['diretoriaRegionalDesSocial'],
-            'protecao_social_basica' => $request['professional']['protecaoSocialBasica'],
-            'protecao_social_especial_estadual' => $request['professional']['protecaoSocialEspecialEstadual'],
-            'vigilancia_capacitacao' => $request['professional']['vigilanciaCapacitacao'],
-            'vinculo_empregaticio' => $request['professional']['vinculoEmpregaticio'],
-            'vinculo_empregaticio_outro' => $request['professional']['vinculoEmpregaticioOutro'],
-            'funcao' => $request['professional']['funcao'],
-            'orgao' => $request['professional']['orgao'],
-            'area_de_atuacao' => $request['professional']['areadeAtuacao'],
-            'beneficios_municipal' => $request['professional']['beneficiosMunicipal'],
-            'beneficios_municipal_outro' => $request['professional']['beneficiosMunicipalOutro'],
-            'protecao_social_especial_municipal' => $request['professional']['protecaoSocialEspecialMunicipal'],
-            'servicos_programa' => $request['professional']['servicosPrograma'],
-            'servicos_programa_outro' => $request['professional']['servicosProgramaOutro'],
-            'representante' => $request['professional']['representante'],
-            'area_representada' => $request['professional']['areaRepresentada'],
-            'area_representada_outro' => $request['professional']['areaRepresentadaOutro'],
-            'cargo' => $request['professional']['cargo'],
+            'lotacao' => $request['professional']['lotacao']['label'] ?? '',
+            'protecao_social_basica' => $request['professional']['protecaoSocialBasica'] ?? '',
+            'protecao_social_especial' => $request['professional']['protecaoSocialEspecialEstadual'] ?? '',
+            'vigilancia_capacitacao' => $request['professional']['vigilanciaCapacitacao'] ?? '',
+            'vinculo_empregaticio' => $request['professional']['vinculoEmpregaticio'] ?? '',
+            'funcao' => $request['professional']['funcao'] ?? '',
+            'diretoria_regional_des_social' => $request['professional']['diretoriaRegionalDesSocial'] ?? '',
+            'creas_regional' => $request['professional']['creasRegional'] ?? '',
+            'exe_creas_funcao' => '',
+            'exe_creas_vinc_empreg' => '',
+            'outros_publicos' => $request['professional']['outrosPublicos']['label'] ?? '',
+            'outros_publicos_others' => $request['professional']['outrosPublicosOutro'] ?? '',
+            'parceiros' => $request['professional']['parceirosInscInterna']['label'] ?? '',
+            'orgao' => $request['professional']['orgao']['label'] ?? '',
+            'area_de_atuacao' => $request['professional']['areadeAtuacao']['label'] ?? '',
+            'protecao_social_basica_municipal' => '',
+            'beneficios_socioassistenciais' => '',
+            'protecao_social_especial_municipal' => $request['professional']['protecaoSocialEspecialMunicipal']['label'] ?? '',
+            'social_especial_municipal_media_complexidade' => $request['professional']['socialEspecialMunicipalMediaComplexidade'] ?? '',
+            'social_especial_municipal_alta_complexidade' => $request['professional']['socialEspecialMunicipalAltaComplexidade'] ?? '',
+            'representacao' => $request['professional']['possuiRepresentacao'] ?? '',
+            'area_representada' => $request['professional']['areaRepresentada'] ?? '',
+            'area_representada_outros' => $request['professional']['areaRepresentadaOutro'] ?? '',
+            'cargo' => $request['professional']['cargo']['label'] ?? '',
+            'representante' => $request['professional']['representante']['label'] ?? '',
+            'representacao_titularidade' => $request['professional']['representacaoTitularidade'] ?? '',
+            'representacao_segmento' => $request['professional']['representacaoSegmento'] ?? '',
+            'representacao_representacao' => $request['professional']['representacaoRepresentacao'] ?? '',
+            'representacao_conselho' => $request['professional']['representacaoConselho'] ?? '',
+            'representacao_area_representada_outros' => $request['professional']['outrosRepresentacaoAreaRepresentada'] ?? '',
+            'representacao_area_representada' => $request['professional']['representacaoAreaRepresentada'] ?? '',
+            'funcao_outro' => $request['professional']['funcaoOutro'] ?? '',
+            'vinculo_empregaticio_outro' => $request['professional']['vinculoEmpregaticioOutro'] ?? '',
+            'municipio_id' => $request['professional']['municipio']['id'] ?? null,
+            'servicos_programa_outro' => $request['professional']['servicosProgramaOutro'] ?? '',
+            'servicos_programa' => $request['professional']['servicosPrograma']['label'] ?? '',
+            'beneficios_municipal_outro' => $request['professional']['beneficiosMunicipalOutro'] ?? '',
+            'beneficios_municipal' => $request['professional']['beneficiosMunicipal'] ?? '',
         ];
 
         $professionalResult = Professional::query()->create($professionalData);
@@ -309,7 +327,11 @@ class Users extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Second Stage done'
+            'message' => 'Second Stage done',
+            'personal' => $request['personal'],
+            'contact' => $request['contact'],
+            'address' => $request['address'],
+            'professional' => $request['professional'],
         ], self::HTTP_CREATED);
     }
 
@@ -319,7 +341,6 @@ class Users extends Controller
      */
     public function confirmEmail(string $token): JsonResponse
     {
-
         $user = User::query()->where('remember_token', $token)->first();
         if ($user) {
             $user->email_verified_at = Carbon::now();

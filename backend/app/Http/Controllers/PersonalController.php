@@ -77,4 +77,10 @@ class PersonalController extends Controller
 
         return response()->json(null, self::HTTP_OK);
     }
+
+    public function personalUser($user_id)
+    {
+        $personal = Personal::query()->where('user_id', $user_id)->first();
+        return response()->json($personal, self::HTTP_OK);
+    }
 }

@@ -64,7 +64,8 @@
 				<!-- {{ selectedUser }} -->
 
 				<q-card-actions align="right">
-					<q-btn
+					<!--
+						<q-btn
 						color="negative"
 						label="Resetar Senha"
 						no-caps
@@ -73,6 +74,7 @@
 						@click="dialog = true"
 						v-close-popup
 					/>
+				-->
 					<q-btn
 						color="primary"
 						label="Salvar"
@@ -86,7 +88,7 @@
 		</q-dialog>
 
 		<q-toolbar>
-			<q-toolbar-title> Lista de usuários </q-toolbar-title>
+			<q-toolbar-title> Lista de usuários</q-toolbar-title>
 			<q-btn flat round dense icon="apps" class="q-mr-xs" />
 			<q-btn flat round dense icon="more_vert" />
 		</q-toolbar>
@@ -108,21 +110,47 @@
 
 			<template v-slot:body-cell-id="props">
 				<q-td :props="props">
-					<div class="q-gutter-sm">
-						<q-btn
-							color="primary"
-							label="Editar"
-							no-caps
-							unelevated
-							padding="sm xl"
-							@click="openModal(props)"
-						/>
+					<div class="row">
+						<div class="q-gutter-xs q-pa-xs">
+							<q-btn
+								size="sm"
+								color="primary"
+								no-caps
+								unelevated
+								padding="sm"
+								@click="openModal(props)"
+								icon="sym_o_edit"
+							/>
+							<q-tooltip
+								class="bg-primary text-caption"
+								:offset="[10, 10]"
+								style="max-width: 600px"
+								>Editar Pefil de Acesso do Usuário
+							</q-tooltip>
+						</div>
+						<div class="q-gutter-xs q-pa-xs">
+							<q-btn
+								size="sm"
+								color="secondary"
+								no-caps
+								unelevated
+								padding="sm"
+								@click="$router.replace('/user/' + props.row.id )"
+								icon="visibility"
+							/>
+							<q-tooltip
+								class="bg-secondary text-caption"
+								:offset="[10, 10]"
+								style="max-width: 600px"
+								>Ver Dados do Usuário
+							</q-tooltip>
+						</div>
 					</div>
 				</q-td>
 			</template>
 			<template v-slot:body-cell-service="props">
 				<q-td :props="props">
-					<q-chip
+					<q-chip size="sm"
 						:label="props.row.service"
 						:color="props.row.service === 'Estadual' ? 'green' : 'blue'"
 						text-color="white"
@@ -132,12 +160,13 @@
 			<template v-slot:body-cell-type_admin="props">
 				<q-td :props="props">
 					<q-chip
-						:text-color="props.row.type_admin === 'Usuário' ? 'black' : 'white'"
+						size="sm"
+						:text-color="props.row.type_admin === 'Outros parceiros / Participantes' ? 'black' : 'white'"
 						:label="props.row.type_admin"
 						:color="
-							props.row.type_admin === 'Administrador'
+							props.row.type_admin === 'Super Admin / Equipe DEP'
 								? 'red'
-								: props.row.type_admin === 'Operador'
+								: props.row.type_admin === 'SUBAS / Diretorias Regionais'
 								? 'orange'
 								: 'gray'
 						"
@@ -164,6 +193,7 @@
 				<q-td :props="props">
 					<div class="q-gutter-sm">
 						<q-chip
+							size="sm"
 							:text-color="props.row.is_active ? 'white' : 'dark'"
 							:label="props.row.is_active ? 'Ativado' : 'Desativado'"
 							:color="props.row.is_active ? 'green' : 'gray'"
@@ -188,9 +218,9 @@ export default {
 				is_active: false,
 			},
 			optionsUser: [
-				{ label: "Diretor", value: "1" },
-				{ label: "Operador", value: "2" },
-				{ label: "Usuário", value: "3" },
+				{ label: "Super Admin / Equipe DEP", value: "1" }, //Diretor
+				{ label: "SUBAS / Diretorias Regionais", value: "2" }, //Operador
+				{ label: "Outros parceiros / Participantes", value: "3" }, //Usuário
 			],
 			columns: [
 				{
@@ -204,6 +234,13 @@ export default {
 					name: "name",
 					label: "Nome",
 					field: "name",
+					align: "left",
+					sortable: true,
+				},
+				{
+					name: "type_admin",
+					label: "Perfil",
+					field: "type_admin",
 					align: "left",
 					sortable: true,
 				},
@@ -225,7 +262,7 @@ export default {
 					name: "id",
 					label: "Ações",
 					field: "id",
-					align: "center",
+					align: "left",
 					sortable: true,
 				},
 			],
@@ -245,14 +282,14 @@ export default {
 			try {
 				console.log(data.type_admin);
 				const { status } = await this.$http.patch(
-					`users/${this.selectedUser.id}/`,
+					`users/${this.selectedUser.id}/user`,
 					data
 				);
 				if (status === 200) {
 					this.$q.notify({
 						message: "Usuário atualizado com sucesso!",
-						color: "green-4",
-						textColor: "white",
+						color: "green",
+						position: "top",
 						icon: "check_circle",
 					});
 					this.rows = [];
@@ -291,10 +328,10 @@ export default {
 							is_active: !!user.is_active,
 							type_admin:
 								user.type_admin === "1"
-									? "Administrador"
+									? "Super Admin / Equipe DEP"
 									: user.type_admin === "2"
-									? "Operador"
-									: "Usuário",
+									? "SUBAS / Diretorias Regionais"
+									: "Outros parceiros / Participantes",
 							created: new Date(user.created_at).toLocaleString("pt-BR"),
 						});
 					});

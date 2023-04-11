@@ -156,6 +156,10 @@ export default {
 		},
 		async getAddressByZipCode() {
 			try {
+				this.$q.loading.show({
+					message: 'Buscando endereço',
+					backgroundColor: 'indigo',
+				});
 				const { data, status } = await axios.get(
 					`${this.baseUrlViaCep}${this.form.zip_code}/json/`
 				);
@@ -166,9 +170,11 @@ export default {
 					this.form.city = data.localidade;
 					this.form.state = data.uf;
 					this.$refs.number.focus();
+					this.$q.loading.hide();
 				}
 			} catch (error) {
 				console.log(error);
+				this.$q.loading.hide();
 			}
 		},
 	},

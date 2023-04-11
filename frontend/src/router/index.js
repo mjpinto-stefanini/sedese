@@ -66,38 +66,44 @@ const routes = [
 		path: "",
 		component: () =>
 			import(/* webpackChunkName: "main" */ "@/layouts/AdminLayout.vue"),
-		children: [
-			{
-				path: "users",
-				name: "Users",
-				component: () =>
-					import(/* webpackChunkName: "main" */ "@/pages/UsersPage.vue"),
-			},
-			{
-				path: "createaction",
-				name: "NewActionPage",
-				component: () =>
-					import(/* webpackChunkName: "main" */ "@/pages/NewActionPage.vue"),
-			},
-			{
-				path: "acoes",
-				name: "Actions",
-				component: () =>
-					import(/* webpackChunkName: "main" */ "@/pages/ActionsPage.vue"),
-			},
-			{
-				path: "createclass",
-				name: "NewClassPage",
-				component: () =>
-					import(/* webpackChunkName: "main" */ "@/pages/NewClassPage.vue"),
-			},
-			{
-				path: "turmas",
-				name: "Classes",
-				component: () =>
-					import(/* webpackChunkName: "main" */ "@/pages/ClassesPage.vue"),
-			},
-		],
+			children: [
+				{
+					path: "users",
+					name: "Users",
+					component: () =>
+						import(/* webpackChunkName: "main" */ "@/pages/UsersPage.vue"),
+				},
+				{
+					path: "user/:id",
+					name: "User",
+					component: () =>
+						import(/* webpackChunkName: "main" */ "@/pages/user/ViewPage.vue"),
+				},
+				{
+					path: "createaction",
+					name: "NewActionPage",
+					component: () =>
+						import(/* webpackChunkName: "main" */ "@/pages/NewActionPage.vue"),
+				},
+				{
+					path: "acoes",
+					name: "Actions",
+					component: () =>
+						import(/* webpackChunkName: "main" */ "@/pages/ActionsPage.vue"),
+				},
+				{
+					path: "createclass",
+					name: "NewClassPage",
+					component: () =>
+						import(/* webpackChunkName: "main" */ "@/pages/NewClassPage.vue"),
+				},
+				{
+					path: "turmas",
+					name: "Classes",
+					component: () =>
+						import(/* webpackChunkName: "main" */ "@/pages/ClassesPage.vue"),
+				},
+			],
 	},
 	{
 		path: "/:catchAll(.*)",

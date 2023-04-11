@@ -65,7 +65,6 @@ class AmbitoAtuacaoController extends Controller
         return response()->json('Ambito de Atuação deletado com sucesso!', Response::HTTP_OK);
     }
 
-
     public function ShowRegiaoAdministrativa($id): JsonResponse
     {
 

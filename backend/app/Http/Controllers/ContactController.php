@@ -68,4 +68,10 @@ class ContactController extends Controller
         $contact->delete();
         return response()->json($contact, self::HTTP_OK);
     }
+
+    public function contactUser($user_id)
+    {
+        $contact = Contact::query()->where('user_id', $user_id)->first();
+        return response()->json($contact, self::HTTP_OK);
+    }
 }

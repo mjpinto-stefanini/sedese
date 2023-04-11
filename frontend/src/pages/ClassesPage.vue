@@ -280,7 +280,7 @@ export default {
 				if (status === 200) {
 					this.$q.notify({
 						message: "Usuário atualizado com sucesso!",
-						color: "green-4",
+						color: "green",
 						textColor: "white",
 						icon: "check_circle",
 					});

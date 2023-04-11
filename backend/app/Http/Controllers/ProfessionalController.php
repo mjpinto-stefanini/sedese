@@ -87,4 +87,11 @@ class ProfessionalController extends Controller
             'message' => 'Professional deleted',
         ], self::HTTP_OK);
     }
+
+    public function professionalsUser($user_id)
+    {
+        $personal = Professional::query()->where('user_id', $user_id)->first();
+        return response()->json($personal, self::HTTP_OK);
+    }
+
 }
