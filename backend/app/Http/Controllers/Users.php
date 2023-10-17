@@ -3,27 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Mail\Bemvindo;
-use App\Mail\RecoverPassword;
 use App\Models\Address;
 use App\Models\Contact;
 use App\Models\Personal;
 use App\Models\AmbitoAtuacao;
 use App\Models\User;
+use App\Models\TipoPerfil;
 use App\Models\Professional;
+use App\Models\UserPerfilStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
-use JetBrains\PhpStorm\NoReturn;
-
-// TODO: Pemrissionamento no back.
-// TODO: Consultas de permissão, via back.
+use App\Mail\Confirmation;
 
 class Users extends Controller
 {
 
-    // TODO: Ativar o middleware de autenticação quando for implementar o PROD
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['secondStage']]);
+    }
 
     public function list(): JsonResponse
     {
@@ -38,7 +38,7 @@ class Users extends Controller
 
     public function get(string $id): JsonResponse
     {
-        $user = User::query()->find($id);
+        $user = User::findOrFail($id);
         if (!$user) {
             return response()->json([
                 'status' => 'error',
@@ -50,8 +50,7 @@ class Users extends Controller
 
     public function updateuser(Request $request, string $id): JsonResponse
     {
-
-        $user = User::query()->find($id);
+        $user = User::findOrFail($id);
         if (!$user) {
             return response()->json([
                 'status' => 'error',
@@ -68,87 +67,14 @@ class Users extends Controller
         return response()->json($user, self::HTTP_OK);
     }
 
-    /*
-        {
-            "personal":{
-                "name":"Andre Abreu Cinquenta",
-                "socialName":"Andre Abreu",
-                "genderIdentity":"Homem (cis ou trans)",
-                "genderIdentityOthers":"",
-                "RG":"107022410",
-                "issuingBody":"DETRAN",
-                "uf":"RJ",
-                "education":"Pós-Graduação Lato-Sensu Incompleta",
-                "profession":"Outros",
-                "profissionOthers":"",
-                "isDeficiency":false,
-                "deficiency":"Outros",
-                "deficiencyOthers":"",
-                "deficiencyStructure":"Letras maiores"
-            },
-            "address":{
-                "zip_code":"21931-390",
-                "street":"Rua Rui Vaz Pinto",
-                "number":"15",
-                "complement":"apto 302",
-                "neighborhood":"Jardim Guanabara",
-                "city":"Rio de Janeiro",
-                "state":"RJ"
-            },
-            "contact":{
-                "email":"andre.abreu+50@gmail.com",
-                "phone":"(021) 9 9799-0964",
-                "cell_phone":"(021) 9 9799-0964",
-                "cell_phone_whatsapp":"",
-                "institutional_phone":"",
-                "institutional_email":"aabreu@stefanini.com",
-                "isWhatsapp":true,
-                "error":false
-            },
-            "professional":{
-                "regional":{
-                    "value":1,
-                    "label":"Estadual"
-                },
-                "lotacao":{
-                    "value":1,
-                    "label":"Subsecretaria de Assistência Social"
-                },
-                "superintendencia":{
-                    "value":2,
-                    "label":"Superintendência de Proteção Social Especial"
-                },
-                "diretoriaRegionalDesSocial":"",
-                "protecaoSocialBasica":"",
-                "protecaoSocialEspecialEstadual":"Diretoria de Proteção Social Especial de Média Complexidade",
-                "vigilanciaCapacitacao":"",
-                "vinculoEmpregaticio":"Comissionado",
-                "vinculoEmpregaticioOutro":"",
-                "funcao":"Coordenação",
-                "orgao":"",
-                "areadeAtuacao":"",
-                "beneficiosMunicipal":"",
-                "beneficiosMunicipalOutro":"",
-                "protecaoSocialEspecialMunicipal":"",
-                "servicosPrograma":"",
-                "servicosProgramaOutro":"",
-                "representante":"",
-                "areaRepresentada":"",
-                "areaRepresentadaOutro":"",
-                "cargo":""
-            }
-        }
-     */
-
     public function secondStage(Request $request, string $id): JsonResponse
     {
         $errormsg = [];
-
-        $user = User::query()->find($id);
+        $user = User::findOrFail($id);
         if (!$user) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'User not found 3',
+                'message' => 'User not found',
             ], self::HTTP_NOT_FOUND);
         }
 
@@ -184,7 +110,7 @@ class Users extends Controller
             'zip_code' => $request['address']['zip_code'],
             'street' => $request['address']['street'],
             'number' => $request['address']['number'],
-            'complement' => $request['address']['complement'],
+            'complement' => $request['address']['complement'] ?? '',
             'neighborhood' => $request['address']['neighborhood'],
             'city' => $request['address']['city'],
             'state' => $request['address']['state'],
@@ -228,42 +154,33 @@ class Users extends Controller
             ];
         }
 
-        /*
-            "professional":{
-                "regional":{
-                    "value":1,
-                    "label":"Estadual"
-                },
-                "lotacao":{
-                    "value":1,
-                    "label":"Subsecretaria de Assistência Social"
-                },
-                "superintendencia":{
-                    "value":2,
-                    "label":"Superintendência de Proteção Social Especial"
-                },
-                "diretoriaRegionalDesSocial":"",
-                "protecaoSocialBasica":"",
-                "protecaoSocialEspecialEstadual":"Diretoria de Proteção Social Especial de Média Complexidade",
-                "vigilanciaCapacitacao":"",
-                "vinculoEmpregaticio":"Comissionado",
-                "vinculoEmpregaticioOutro":"",
-                "funcao":"Coordenação",
-                "orgao":"",
-                "areadeAtuacao":"",
-                "beneficiosMunicipal":"",
-                "beneficiosMunicipalOutro":"",
-                "protecaoSocialEspecialMunicipal":"",
-                "servicosPrograma":"",
-                "servicosProgramaOutro":"",
-                "representante":"",
-                "areaRepresentada":"",
-                "areaRepresentadaOutro":"",
-                "cargo":""
-            }
+        $representacao =  '';
+        if (isset($request['professional']['ceas_representacao'])) {
+            $representacao = $request['professional']['ceas_representacao'];
+        } elseif (isset($request['professional']['representante']['label'])) {
+            $representacao = $request['professional']['representante']['label'];
+        }
 
-            php artisan make:migration add_lotacao_to_professionals_table --table=professionals
-        */
+        $representante = '';
+        if (isset($request['professional']['representante']['label'])) {
+            $representante = $request['professional']['representante']['label'];
+        }
+        
+        $representacaoTitularidade = '';
+        if (isset($request['professional']['representacaoTitularidade'])) {
+            $representacaoTitularidade = $request['professional']['representacaoTitularidade'];
+        } elseif(isset($request['profissional']['ceas_titularidade'])) {
+            $representacaoTitularidade = $request['profissional']['ceas_titularidade'];
+        }
+
+        $representacaoSegmento = '';
+        if (isset($request['professional']['representacaoSegmento'])) {
+            $representacaoSegmento = $request['professional']['representacaoSegmento'];
+        } elseif (isset($request['professional']['seguimento_governo'])) {
+            $representacaoSegmento = $request['professional']['seguimento_governo'];
+        } elseif (isset($request['professional']['ceas_segmento'])) {
+            $representacaoSegmento = $request['professional']['ceas_segmento'];
+        }
 
         $professionalData = [
             'user_id' => $user['id'],
@@ -289,13 +206,13 @@ class Users extends Controller
             'protecao_social_especial_municipal' => $request['professional']['protecaoSocialEspecialMunicipal']['label'] ?? '',
             'social_especial_municipal_media_complexidade' => $request['professional']['socialEspecialMunicipalMediaComplexidade'] ?? '',
             'social_especial_municipal_alta_complexidade' => $request['professional']['socialEspecialMunicipalAltaComplexidade'] ?? '',
-            'representacao' => $request['professional']['possuiRepresentacao'] ?? '',
+            'representacao' => $representacao,
             'area_representada' => $request['professional']['areaRepresentada'] ?? '',
             'area_representada_outros' => $request['professional']['areaRepresentadaOutro'] ?? '',
             'cargo' => $request['professional']['cargo']['label'] ?? '',
-            'representante' => $request['professional']['representante']['label'] ?? '',
-            'representacao_titularidade' => $request['professional']['representacaoTitularidade'] ?? '',
-            'representacao_segmento' => $request['professional']['representacaoSegmento'] ?? '',
+            'representante' => $representante,
+            'representacao_titularidade' => $representacaoTitularidade,
+            'representacao_segmento' => $representacaoSegmento,
             'representacao_representacao' => $request['professional']['representacaoRepresentacao'] ?? '',
             'representacao_conselho' => $request['professional']['representacaoConselho'] ?? '',
             'representacao_area_representada_outros' => $request['professional']['outrosRepresentacaoAreaRepresentada'] ?? '',
@@ -324,6 +241,14 @@ class Users extends Controller
 
         $user['second_stage'] = true;
         $user->save();
+
+        // enviando email de confirmação para o usuário
+        $mailData = [
+            'name' => $user['name'],
+            'email' => $user['email'],
+            'token' => $user['rememberToken'],
+        ];
+        Mail::to($user['email'])->send(new Confirmation($mailData));
 
         return response()->json([
             'status' => 'success',

@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('personals', function (Blueprint $table) {
-            //
+            $table->dropColumn('deficiency_structure');
         });
     }
 };

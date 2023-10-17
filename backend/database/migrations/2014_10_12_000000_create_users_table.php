@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('password')->comment('Senha');
             $table->rememberToken()->comment('Token de recuperação de senha');
             $table->timestamps();
-            $table->boolean('is_active')->default(true)->comment('Usuário ativo');
+            $table->boolean('is_active')->default(false)->comment('Usuário ativo');
             $table->boolean('is_admin')->default(false)->comment('Usuário administrador');
             $table->boolean('is_superuser')->default(false)->comment('Usuário super administrador');
         });

@@ -263,7 +263,6 @@ export default {
     name: "ViewPageUser",
 	mixins: [accountMixin],
     data() {
-        console.log('this.$route.params.id', this.$route.params.id);
         return {
             baseURL: process.env.VUE_APP_API_URL,
             UserId: this.$route.params.id,
@@ -278,7 +277,7 @@ export default {
         async getUserData() {
             try {
                 const { data, status } = await this.apiUser(this.UserId, 'users');
-
+                console.log(data);
                 if (data) {
                     this.user = data;
                     this.user.servico = 'Municipal';

@@ -8,7 +8,10 @@ use Illuminate\Http\JsonResponse;
 
 class AcoesController extends Controller
 {
-
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
 
     /**
      * @return JsonResponse

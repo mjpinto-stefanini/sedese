@@ -7,9 +7,10 @@ use Illuminate\Http\Request;
 
 class TurmaEnderecoController extends Controller
 {
-
-//    // TODO: Ativar o middleware de autenticação quando for implementar o PROD
-
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
 
     public function index()
     {

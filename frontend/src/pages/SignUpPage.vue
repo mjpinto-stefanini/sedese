@@ -1,4 +1,4 @@
-<template>
+'<template>
 	<q-page class="flex flex-center bg-grey-1">
 		<q-form @submit="onRegister">
 			<q-card flat bordered style="width: 448px" class="q-pa-md">
@@ -25,7 +25,7 @@
 						outlined
 						v-model="form.secretary"
 						:options="filterSecretaries"
-						:label="form.service.value === 2 ? 'Município' : 'Secretaria'"
+						:label="form.service.value === 2 ? 'Município' : 'Lotação'"
 						@filter="filterFn"
 						:rules="[isRequired]"
 						lazy-rules
@@ -128,10 +128,30 @@
 							/>
 						</template>
 					</q-input>
+					<q-input
+						outlined
+						autocomplete="off"
+						v-model="form.password_confirmation"
+						lazy-rules
+						:rules="[isRequired, passwordMatch]"
+						label="Confirmar sua Senha"
+						:type="showPassword ? 'text' : 'password'"
+					>
+						<template v-slot:prepend>
+							<q-icon name="mdi-form-textbox-password" class="cursor-pointer" />
+						</template>
+						<template v-slot:append>
+							<q-icon
+								:name="showPassword ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
+								class="cursor-pointer"
+								@click="showPassword = !showPassword"
+							/>
+						</template>
+					</q-input>
 				</q-card-section>
 				<q-card-section class="q-pt-none">
 					<q-btn
-						label="Criar conta"
+						label="Continuar"
 						color="primary"
 						class="full-width q-py-md q-mb-md"
 						no-caps
@@ -171,6 +191,7 @@ export default {
 				email: null,
 				email_confirmation: null,
 				password: null,
+				password_confirmation: null,
 			},
 			showPassword: false,
 			allSecretaries: [],
@@ -183,7 +204,7 @@ export default {
 	},
 	methods: {
 		debug(v) {
-			console.log(v)
+			console.log('teste')
 		},
 		isRequired(value) {
 			return !!value || "Campo obrigatório";
@@ -217,10 +238,16 @@ export default {
 		},
         emailMatch(value) {
             if (value !== this.form.email) {
-                return "Os campos de email devem ser iguais";
+                return "Os emails informados não conferem, favor, preencher o campo novamente.";
             }
             return true;
         },
+		passwordMatch(value) {
+			if (value !== this.form.password) {
+				return "As senhas informadas não conferem, favor, preencher o campo novamente.";
+			}
+			return true;
+		},
         filterFn(val, update) {
             if (val === "") {
                 update(() => {
@@ -237,13 +264,30 @@ export default {
         },
 
         async onRegister() {
-            let response = await this.signUp();
-            if (response?.response?.status === 201) {
+            try {
+				const {status} = await this.$http.post("auth/register",this.form);
+				if (status === 200 || status === 201) {
+					// this.$q.notify({
+					// 	message: "Usuario registrado, em instantes você receberá um email com as instruções para ativar sua conta",
+					// 	type: "positive",
+					// }, 5000);
+					const { data, status } = await this.$http.post("auth/login", this.form);
+					console.log(data, status);
+                    if (status === 200 || status === 201) {
+                        // antes de continuar com os dados cadastrais, é setado o usuárioe sua autenticação
+                        localStorage.setItem("token", data.authorization.token);
+                        localStorage.setItem("user", JSON.stringify(data.user));
+					    // e ira para pagina main
+                        this.$router.push({ name: "Main" });
+                    }
+				}
+			} catch(error) {
                 this.$q.notify({
-                    type: response.response.data.type,
-                    message: response.response.data.message,
-                });
-            }
+					message: error.response.data.message,
+					color: "negative",
+					position: "top",
+				});
+			}
         },
 
         async getSecretaries() {
@@ -263,7 +307,7 @@ export default {
                     });
                     this.filterSecretaries = this.allSecretaries;
                 }
-            }   catch (error) {
+            } catch (error) {
                 this.$q.notify({
                     message: error.response.data.message,
                     color: "negative",
@@ -285,3 +329,4 @@ export default {
 </script>
 
 <style></style>
+'

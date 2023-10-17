@@ -16,7 +16,7 @@
 						:rules="[isRequired]"
 					/>
 				</div>
-				<div class="col-12">
+				<div class="col-4">
 					<q-input
 						v-model="form.street"
 						label="Logradouro"
@@ -31,7 +31,7 @@
 				<div class="col-4">
 					<q-input
 						v-model="form.number"
-						label="Numero"
+						label="Número"
 						name="number"
 						for="number"
 						outlined
@@ -41,7 +41,7 @@
 						:rules="[isRequired, isNumber]"
 					/>
 				</div>
-				<div class="col-8">
+				<div class="col-4">
 					<q-input
 						v-model="form.complement"
 						label="Complemeto"
@@ -50,7 +50,19 @@
 						clearable
 					/>
 				</div>
-				<div class="col-8">
+				<div class="col-4">
+					<q-input
+						v-model="form.neighborhood"
+						label="Bairro"
+						name="neighborhood"
+						for="neighborhood"
+						outlined
+						clear-icon="close"
+						clearable
+						:rules="[isRequired]"
+					/>
+				</div>
+				<div class="col-4">
 					<q-input
 						v-model="form.city"
 						label="Cidade"

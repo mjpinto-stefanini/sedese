@@ -2,7 +2,7 @@
 	<q-card flat>
 		<q-card-section>
 			<div class="row q-col-gutter-md">
-				<div class="col-12">
+				<div class="col-8">
 					<q-input
 						v-model="form.name"
 						for="name"
@@ -13,6 +13,19 @@
 						clearable
 						:rules="[isRequired, (v) =>
 								/^[a-zA-ZÀ-ÿ ]+$/.test(v) || 'Nome deve conter apenas letras',]"
+					/>
+				</div>
+				<div class="col-4">
+					<q-input
+						v-model="form.dataNascimento"
+						hint="Data de Nascimento"
+						name="dataNascimento"
+						for="dataNascimento"
+						type="date"
+						filled
+						outlined
+						clear-icon="close"
+						clearable
 					/>
 				</div>
 				<div class="col-12">

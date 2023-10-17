@@ -12,6 +12,7 @@ use App\Models\Profissao;
 use App\Models\AcoesTematica;
 use App\Models\AcoesAreaEnvolvida;
 use App\Models\AcoesTipologia;
+use App\Models\TipoPerfil;
 
 class DatabaseSeeder extends Seeder
 {
@@ -32,6 +33,7 @@ class DatabaseSeeder extends Seeder
                 'is_active' => true,
                 'type_admin' => User::USER_ADMINISTRADOR,
                 'cpf' => '123.456.789-03',
+                'birthday' => '1990-01-01'
             ],
             [
                 'name' => 'Andre Abreu',
@@ -42,6 +44,7 @@ class DatabaseSeeder extends Seeder
                 'is_active' => true,
                 'type_admin' => User::USER_ADMINISTRADOR,
                 'cpf' => '123.456.789-03',
+                'birthday' => '1990-01-01'
             ],
             [
                 'name' => 'User',
@@ -52,6 +55,7 @@ class DatabaseSeeder extends Seeder
                 'is_active' => true,
                 'type_admin' => User::USER_USUARIO,
                 'cpf' => '123.456.789-03',
+                'birthday' => '1990-01-01'
             ]
         ];
         foreach ($users as $user) {
@@ -3719,5 +3723,8 @@ class DatabaseSeeder extends Seeder
                 'nome' => $acoesAreaEnvolvida,
             ]);
         }
+
+        TipoPerfil::create(['id' => 1,'nome' => 'Responsável técnico']);
+        TipoPerfil::create(['id' => 2,'nome' => 'Participante']);
     }
 }

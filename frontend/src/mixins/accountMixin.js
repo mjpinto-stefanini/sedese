@@ -27,10 +27,7 @@ export default {
 		},
 		async signUp() {
 			try {
-				const {status } = await this.$http.post(
-					"auth/register",
-					this.form
-				);
+				const {status} = await this.$http.post("auth/register",this.form);
 				if (status === 200 || status === 201) {
 					this.$q.notify({
 						message: "Usuario registrado, em instantes você receberá um email com as instruções para ativar sua conta",
@@ -38,7 +35,7 @@ export default {
 					}, 5000);
 					this.$router.push({ name: "SignIn" });
 				}
-			}  catch (error) {
+			} catch (error) {
 				this.$q.notify({
 					message: error.response.data.message,
 					color: "negative",
@@ -53,9 +50,7 @@ export default {
 					"auth/forgot",
 					this.form
 				);
-				console.log('data', data);
 
-				console.log('status', status);
 				if (status === 200 || status === 201) {
 					this.$q.notify({
 						message: data.message,
@@ -66,7 +61,6 @@ export default {
 
 				}
 			}  catch (error) {
-				console.log('error', error);
 				this.$q.notify({
 					message: error.response.data.message,
 					color: "negative",

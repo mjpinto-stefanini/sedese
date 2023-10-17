@@ -125,7 +125,6 @@ export default {
 	},
 
 	mounted() {
-        console.log(this.$route)
         if (this.$route.query.message && this.$route.query.type) {
             this.$q.notify({
                 type: this.$route.query.type,
