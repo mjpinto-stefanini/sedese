@@ -13,6 +13,7 @@ use App\Models\AcoesTematica;
 use App\Models\AcoesAreaEnvolvida;
 use App\Models\AcoesTipologia;
 use App\Models\TipoPerfil;
+use App\Models\UserPerfilStatus;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,6 +26,7 @@ class DatabaseSeeder extends Seeder
     {
         $users = [
             [
+                'id' => '485cad85-b3ee-48d2-b791-6aac05f878cf',
                 'name' => 'Admin',
                 'email' => 'admin@admin.com',
                 'password' => bcrypt('1q2w3e4r'),
@@ -36,6 +38,7 @@ class DatabaseSeeder extends Seeder
                 'birthday' => '1990-01-01'
             ],
             [
+                'id' => '545879d0-6ecd-4343-9f47-304f42a5cd12',
                 'name' => 'Andre Abreu',
                 'email' => 'aabreu@stefanini.com',
                 'password' => bcrypt('1q2w3e4r'),
@@ -47,6 +50,7 @@ class DatabaseSeeder extends Seeder
                 'birthday' => '1990-01-01'
             ],
             [
+                'id' => '67f85f5f-6142-4c71-98d6-eb21f2f69c81',
                 'name' => 'User',
                 'email' => 'user@user.com',
                 'password' => bcrypt('12345678'),
@@ -61,6 +65,27 @@ class DatabaseSeeder extends Seeder
         foreach ($users as $user) {
             User::create($user);
         }
+        // cadastrando dentro da seed o tipo de perfil
+        TipoPerfil::create(['id' => 1,'nome' => 'Responsável técnico']);
+        TipoPerfil::create(['id' => 2,'nome' => 'Participante']);
+        $usersTiposPerfils = [
+            [
+                'user_id' => '485cad85-b3ee-48d2-b791-6aac05f878cf',
+                'tipo_perfil_id' => '1',
+                'status' => 1,
+            ],[
+                'user_id' => '545879d0-6ecd-4343-9f47-304f42a5cd12',
+                'tipo_perfil_id' => '1',
+                'status' => 1,
+            ],[
+                'user_id' => '67f85f5f-6142-4c71-98d6-eb21f2f69c81',
+                'tipo_perfil_id' => '2',
+                'status' => 1,
+            ]
+        ];
+        foreach ($usersTiposPerfils as $tipoUs):
+            UserPerfilStatus::create($tipoUs);
+        endforeach;
 
         $ambitos = [
             [
@@ -3724,7 +3749,5 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        TipoPerfil::create(['id' => 1,'nome' => 'Responsável técnico']);
-        TipoPerfil::create(['id' => 2,'nome' => 'Participante']);
     }
 }
