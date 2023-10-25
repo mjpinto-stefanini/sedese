@@ -31,6 +31,13 @@ class AuthController extends Controller
         ]);
         $credentials = $request->only('email', 'password');
         $user = User::where('email', $credentials['email'])->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'type' => 'negative',
+                'message' => 'Usuário não encontrado. Por favor, verifique o e-email se está correto.'
+            ], self::HTTP_METHOD_NOT_ALLOWED);
+        }
         if ($user->is_active === 0) {
             return response()->json([
                 'status' => 'error',
@@ -38,6 +45,7 @@ class AuthController extends Controller
                 'message' => 'Seu e-mail não foi confirmado. Verifique a caixa de entrada ou spam, do e-mail cadastrado. Caso não tenha recebido, entre em contato conosco, através do e-mail “dgtep@social.mg.gov.br“.'
             ], self::HTTP_METHOD_NOT_ALLOWED);
         }
+
         $userPerfilStatus = UserPerfilStatus::where('user_id', $user->id)->first();
         if ($userPerfilStatus->status === UserPerfilStatus::STATUS_PENDENTE || $userPerfilStatus->status === UserPerfilStatus::STATUS_INATIVO) {
             return response()->json([
