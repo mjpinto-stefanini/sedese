@@ -47,6 +47,15 @@ class AuthController extends Controller
         }
 
         $userPerfilStatus = UserPerfilStatus::where('user_id', $user->id)->first();
+        if (!$userPerfilStatus) {
+            if ($user->is_active === 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'type' => 'negative',
+                    'message' => 'Falha ao verificar seu Perfil. Entre em contato conosco, através do e-mail “dgtep@social.mg.gov.br“.'
+                ], self::HTTP_METHOD_NOT_ALLOWED);
+            }
+        }
         if ($userPerfilStatus->status === UserPerfilStatus::STATUS_PENDENTE || $userPerfilStatus->status === UserPerfilStatus::STATUS_INATIVO) {
             return response()->json([
                 'status' => 'error',
