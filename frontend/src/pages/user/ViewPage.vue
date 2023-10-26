@@ -33,9 +33,6 @@
                         </q-card-section>
                         <q-card-section>
                             <div class="row">
-                                <div class="col-sm-12 q-pa-xs" v-if="user.servico">
-                                    <span class="text-grey">Ambito de Atuação</span> {{ user.servico }}
-                                </div>
                                 <div class="col-sm-12 q-pa-xs" v-if="user.secretaria">
                                     <span class="text-grey">Secretaria</span> {{ user.secretaria }}
                                 </div>
@@ -50,6 +47,9 @@
                                 </div>
                                 <div class="col-sm-12 q-pa-xs" v-if="personal.social_name">
                                     <span class="text-grey">Nome Social</span> {{ personal.social_name }}
+                                </div>
+                                <div class="col-sm-12 q-pa-xs" v-if="user.birthday">
+                                    <span class="text-grey">Data de nascimento</span> {{ user.birthday_txt }}
                                 </div>
                                 <div class="col-sm-12 q-pa-xs" v-if="user.cpf">
                                     <span class="text-grey">CPF</span> {{ user.cpf }}
@@ -158,7 +158,7 @@
                             <q-card-section>
                                 <div class="row" v-if="professional.id">
                                     <div class="col-sm-6 q-pa-xs">
-                                        <span class="text-grey">Região Administrativa</span> {{ professional.regional }}
+                                        <span class="text-grey">Âmbito de atuação</span> {{ professional.regional }}
                                     </div>
                                     <div class="col-sm-6 q-pa-xs" v-if="professional.lotacao">
                                         <span class="text-grey">Lotação</span> {{ professional.lotacao }}
@@ -170,7 +170,7 @@
                                         <span class="text-grey">Diretorias</span> {{ professional.protecao_social_basica }}
                                     </div>
                                     <div class="col-sm-6 q-pa-xs" v-if="professional.protecao_social_especial">
-                                        <span class="text-grey">Proteção Social Especial</span> {{ professional.protecao_social_especial }}
+                                        <span class="text-grey">Diretoria</span> {{ professional.protecao_social_especial }}
                                     </div>
                                     <div class="col-sm-6 q-pa-xs" v-if="professional.vigilancia_capacitacao">
                                         <span class="text-grey">Diretorias</span> {{ professional.vigilancia_capacitacao }}
@@ -215,7 +215,7 @@
                                         <span class="text-grey">Beneficios Socio Assistenciais</span> {{ professional.beneficios_socioassistenciais }}
                                     </div>
                                     <div class="col-sm-6 q-pa-xs" v-if="professional.protecao_social_especial_municipal">
-                                        <span class="text-grey">Proteção Social Especial Municipal</span> {{ professional.protecao_social_especial_municipal }}
+                                        <span class="text-grey">Diretoria Municipal</span> {{ professional.protecao_social_especial_municipal }}
                                     </div>
                                     <div class="col-sm-6 q-pa-xs" v-if="professional.social_especial_municipal_media_complexidade">
                                         <span class="text-grey">Social Especial Municipal Média Complexidade</span> {{ professional.social_especial_municipal_media_complexidade }}
@@ -231,6 +231,15 @@
                                     </div>
                                     <div class="col-sm-6 q-pa-xs" v-if="professional.area_representada_outros">
                                         <span class="text-grey">Área Representada Outros</span> {{ professional.area_representada_outros }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.representante">
+                                        <span class="text-grey">Representação</span> {{ professional.representante }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.representacao_titularidade">
+                                        <span class="text-grey">Titularidade</span> {{ professional.representacao_titularidade }}
+                                    </div>
+                                    <div class="col-sm-6 q-pa-xs" v-if="professional.representacao_segmento">
+                                        <span class="text-grey">Segmento</span> {{ professional.representacao_segmento }}
                                     </div>
                                     <div class="col-sm-6 q-pa-xs" v-if="professional.cargo">
                                         <span class="text-grey">Cargo</span> {{ professional.cargo }}
@@ -264,7 +273,7 @@ export default {
 	mixins: [accountMixin],
     data() {
         return {
-            baseURL: process.env.VUE_APP_API_URL,
+            baseURL: 'http://localhost:9001/api/v1/',
             UserId: this.$route.params.id,
             user: [],
             contact: [],

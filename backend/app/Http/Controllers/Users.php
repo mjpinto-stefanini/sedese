@@ -38,7 +38,10 @@ class Users extends Controller
 
     public function get(string $id): JsonResponse
     {
-        $user = User::findOrFail($id);
+        $dateFormat = '%d/%m/%Y'; 
+        //$user = User::findOrFail($id);
+        $user = User::selectRaw("*, DATE_FORMAT(birthday, ?) as birthday_txt", [$dateFormat])
+        ->findOrFail($id);
         if (!$user) {
             return response()->json([
                 'status' => 'error',

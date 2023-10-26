@@ -203,9 +203,6 @@ export default {
 		};
 	},
 	methods: {
-		debug(v) {
-			console.log('teste')
-		},
 		isRequired(value) {
 			return !!value || "Campo obrigatório";
 		},
@@ -277,7 +274,6 @@ export default {
                         // antes de continuar com os dados cadastrais, é setado o usuárioe sua autenticação
                         localStorage.setItem("token", data.authorization.token);
                         localStorage.setItem("user", JSON.stringify(data.user));
-					    // e ira para pagina main
                         this.$router.push({ name: "Main" });
                     }
 				}
@@ -309,7 +305,7 @@ export default {
                 }
             } catch (error) {
                 this.$q.notify({
-                    message: error.response.data.message,
+                    message: error.message,
                     color: "negative",
                     position: "top",
                 });
