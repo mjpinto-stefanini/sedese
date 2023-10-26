@@ -1,4 +1,4 @@
-'<template>
+<template>
 	<q-page class="flex flex-center bg-grey-1">
 		<q-form @submit="onRegister">
 			<q-card flat bordered style="width: 448px" class="q-pa-md">
@@ -325,4 +325,3 @@ export default {
 </script>
 
 <style></style>
-'

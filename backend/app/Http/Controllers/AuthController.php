@@ -56,12 +56,14 @@ class AuthController extends Controller
                 ], self::HTTP_METHOD_NOT_ALLOWED);
             }
         }
-        if ($userPerfilStatus->status === UserPerfilStatus::STATUS_PENDENTE || $userPerfilStatus->status === UserPerfilStatus::STATUS_INATIVO) {
-            return response()->json([
-                'status' => 'error',
-                'type' => 'negative',
-                'message' => 'Seu cadastro está pendente de confirmação. Quando for aprovado, você receberá um e-mail, caso tenha dúvidas, entre em contato, através do e-mail “dgtep@social.mg.gov.br“'
-            ], self::HTTP_METHOD_NOT_ALLOWED);
+        if ($user->second_stage === false) {
+            if ($userPerfilStatus->status === UserPerfilStatus::STATUS_PENDENTE || $userPerfilStatus->status === UserPerfilStatus::STATUS_INATIVO) {
+                return response()->json([
+                    'status' => 'error',
+                    'type' => 'negative',
+                    'message' => 'Seu cadastro está pendente de confirmação. Quando for aprovado, você receberá um e-mail, caso tenha dúvidas, entre em contato, através do e-mail “dgtep@social.mg.gov.br“'
+                ], self::HTTP_METHOD_NOT_ALLOWED);
+            }
         }
 
         $token = Auth::attempt($credentials);
@@ -146,7 +148,8 @@ class AuthController extends Controller
             'secretary' => $request->input('secretary.value'),
             'type_admin' => User::USER_USUARIO,
             'is_active' => 1,
-            'remember_token' => Str::uuid()
+            'remember_token' => Str::uuid(),
+            'second_stage' => false,
         ];
 
         // Obtenha os dados necessários para aplicar as regras
@@ -158,24 +161,10 @@ class AuthController extends Controller
         $participanteList = ['ceas', 'creas regional', 'outros públicos'];
         $respTecnico = ['subsecretaria de assistência social', 'diretoria regional de desenvolvimento social'];
 
-        if ($ambitoAtuacao === 'estado') {
-            if (in_array($lotacaoTipo, $respTecnico)) {
-                $perfil = TipoPerfil::RESPONSAVEL_TECNICO;
-            } elseif (in_array($lotacaoTipo, $participanteList)) {
-                $perfil = TipoPerfil::PARTICIPANTE;
-            }
-        } else {
-            $perfil = TipoPerfil::PARTICIPANTE;
-        }
-
-        $statusPerfil = null;
-        if ($perfil === TipoPerfil::PARTICIPANTE) {
-            $statusPerfil = UserPerfilStatus::STATUS_ATIVO;
-        } else {
-            $perfil = UserPerfilStatus::STATUS_PENDENTE;
-        }
-
+        $perfil = ($ambitoAtuacao === 'estado' && in_array($lotacaoTipo, $respTecnico)) ? TipoPerfil::RESPONSAVEL_TECNICO : (in_array($lotacaoTipo, $participanteList) ? TipoPerfil::PARTICIPANTE : TipoPerfil::PARTICIPANTE);
+        $statusPerfil = ($perfil === TipoPerfil::PARTICIPANTE) ? UserPerfilStatus::STATUS_ATIVO : UserPerfilStatus::STATUS_PENDENTE;
         $user = User::create($userData);
+        
 
         // criando o tipo de usuário por perfil deixando ele ativo
         UserPerfilStatus::create([

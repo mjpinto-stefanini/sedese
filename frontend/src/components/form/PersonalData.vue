@@ -26,6 +26,7 @@
 						outlined
 						clear-icon="close"
 						clearable
+						:rules="[isRequired]"
 					/>
 				</div>
 				<div class="col-12">

@@ -97,6 +97,7 @@ class Users extends Controller
             'deficiency' => $request['personal']['deficiency'],
             'deficiency_others' => $request['personal']['deficiencyOthers'],
             'deficiency_structure' => $request['personal']['deficiencyStructure'],
+            'birthday' => $request['personal']['dataNascimento'],
         ];
 
         $personalResult = Personal::query()->create($personalData);
@@ -245,13 +246,18 @@ class Users extends Controller
         $user['second_stage'] = true;
         $user->save();
 
+        $msg = [];
         // enviando email de confirmação para o usuário
-        $mailData = [
-            'name' => $user['name'],
-            'email' => $user['email'],
-            'token' => $user['rememberToken'],
-        ];
-        Mail::to($user['email'])->send(new Confirmation($mailData));
+        try {
+            $mailData = [
+                'name' => $user['name'],
+                'email' => $user['email'],
+                'token' => $user['rememberToken'],
+            ];
+            Mail::to($user['email'])->send(new Confirmation($mailData));
+        } catch (\Exception $e) {
+            $msg = response()->json($e->getMessage(), $e->getCode());
+        }
 
         return response()->json([
             'status' => 'success',
