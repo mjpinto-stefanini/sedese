@@ -8,8 +8,10 @@ use Illuminate\Http\Request;
 
 class ProfessionalController extends Controller
 {
-
-//    // TODO: Ativar o middleware de autenticação quando for implementar o PROD
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
 
     /**
      * @return JsonResponse

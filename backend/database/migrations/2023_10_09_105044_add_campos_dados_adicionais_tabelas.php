@@ -13,8 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->boolean('second_stage')->default(false);
+        Schema::create('tipo_perfil', function (Blueprint $table) {
+            $table->id();
+            $table->string('nome');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('second_stage');
-        });
+        Schema::dropIfExists('tipo_perfil');
     }
 };

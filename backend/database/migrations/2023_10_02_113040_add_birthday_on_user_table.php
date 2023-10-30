@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('second_stage')->default(false);
+            $table->dateTime('birthday')->nullable()->comment('Data de Nascimento do Usuário')->after('email');
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('second_stage');
+            $table->dropColumn('birthday');
         });
     }
 };

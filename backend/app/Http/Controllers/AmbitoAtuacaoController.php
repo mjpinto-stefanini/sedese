@@ -11,8 +11,10 @@ use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class AmbitoAtuacaoController extends Controller
 {
-
-
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['ShowRegiaoAdministrativa']]);
+    }
 
     public function index(): JsonResponse
     {

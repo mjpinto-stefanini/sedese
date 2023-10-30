@@ -6,7 +6,7 @@
                     <q-select
                         v-model="form.regional"
                         :options="regionalList"
-                        label="Região Administrativa"
+                        label="Região Administrativa*"
                         name="regional"
                         for="regional"
                         outlined
@@ -31,7 +31,7 @@
                         <q-select
                             v-model="form.lotacao"
                             :options="filterLotacao"
-                            label="Lotação"
+                            label="Lotação*"
                             name="lotacao"
                             for="lotacao"
                             outlined
@@ -44,7 +44,7 @@
                         <q-select
                             v-model="form.superintendencia"
                             :options="superintendenciaList"
-                            label="Superintendência/Assessoria"
+                            label="Superintendência/Assessoria*"
                             name="superintendencia"
                             for="superintendencia"
                             outlined
@@ -56,7 +56,7 @@
                         <q-select
                             v-model="form.diretoriaRegionalDesSocial"
                             :options="diretoriaRegionalDesSocialList"
-                            label="Diretorias"
+                            label="Diretorias*"
                             name="diretoriaRegionalDesSocial"
                             for="diretoriaRegionalDesSocial"
                             outlined
@@ -68,7 +68,7 @@
                         <q-select
                             v-model="form.creasRegional"
                             :options="creasRegionalList"
-                            label="Unidade"
+                            label="Unidade*"
                             name="creasRegional"
                             for="creasRegional"
                             outlined
@@ -81,7 +81,7 @@
                             :options="outrosPublicosList"
                             name="outrosPublicos"
                             for="outrosPublicos"
-                            label="Órgão de Atuação"
+                            label="Órgão de Atuação*"
                             outlined
                             :rules="[isRequired]"
                         />
@@ -89,7 +89,7 @@
                     <div class="col-12" v-if="form.outrosPublicos.value === 8">
                         <q-input
                             v-model="form.outrosPublicosOutro"
-                            label="Informe qual é o seu órgão de atuação"
+                            label="Informe qual é o seu órgão de atuação*"
                             name="outrosPublicosOutro"
                             for="outrosPublicosOutro"
                             outlined
@@ -100,7 +100,7 @@
                         <q-select
                             v-model="form.parceirosInscInterna"
                             :options="parceirosInscInternaList"
-                            label="Parceiros"
+                            label="Parceiros*"
                             name="parceirosInscInterna"
                             for="parceirosInscInterna"
                             outlined
@@ -111,7 +111,7 @@
                         <q-select
                             v-model="form.protecaoSocialBasica"
                             :options="protecaoSocialBasicaList"
-                            label="Diretorias"
+                            label="Diretorias*"
                             name="protecaoSocialBasica"
                             for="protecaoSocialBasica"
                             outlined
@@ -122,7 +122,7 @@
                         <q-select
                             v-model="form.protecaoSocialEspecialEstadual"
                             :options="protecaoSocialEspecialEstadualList"
-                            label="Diretorias"
+                            label="Diretorias*"
                             name="protecaoSocialEspecialEstadual"
                             for="protecaoSocialEspecialEstadual"
                             outlined
@@ -133,22 +133,91 @@
                         <q-select
                             v-model="form.vigilanciaCapacitacao"
                             :options="vigilanciaCapacitacaoList"
-                            label="Diretorias"
+                            label="Diretorias*"
                             name="vigilanciaCapacitacao"
                             for="vigilanciaCapacitacao"
                             outlined
                             :rules="[isRequired]"
                         />
                     </div>
-
-
                     <div class="col-12" v-if="form.regional.value === 1">
+                        <div v-if="form.lotacao.label === 'Ceas'">
+                            <q-select
+                                v-model="form.funcao"
+                                :options="funcaoDesempenhadaCeasList"
+                                label="Função desempenhada*"
+                                name="funcao"
+                                for="funcao"
+                                outlined
+                                :rules="[isRequired]"
+                            />
+                        </div>
+                        <div v-else>
+                            <q-select
+                                v-model="form.funcao"
+                                :options="funcaoDesempenhadaList"
+                                label="Função desempenhada*"
+                                name="funcao"
+                                for="funcao"
+                                outlined
+                                :rules="[isRequired]"
+                            />
+                        </div>
+                    </div>
+                    <div class="col-12" v-if="form.funcao === 'Conselheiro'">
                         <q-select
-                            v-model="form.funcao"
-                            :options="funcaoDesempenhadaList"
-                            label="Função desempenhada"
-                            name="funcao"
-                            for="funcao"
+                            v-model="form.ceas_titularidade"
+                            :options="funcaoDesempenhadaConselheiroList"
+                            label="Titularidade*"
+                            name="titularidade"
+                            for="titularidade"
+                            outlined
+                            :rules="[isRequired]"
+                        />
+                    </div>
+                    <div class="col-12" v-if="form.funcao === 'Secretaria Executiva'">
+                        <q-select
+                            v-model="form.ceas_representacao"
+                            :options="funcaoDesempenhadaSecratariaList"
+                            label="Representação*"
+                            name="representação"    
+                            for="representação"
+                            outlined
+                            :rules="[isRequired]"
+                        />
+                    </div>
+                    <div class="col-12" v-if="form.ceas_representacao === 'Governo'">
+                        <q-select 
+                            v-model="form.seguimento_governo"
+                            :options="seguimentoGovernoList"
+                            label="Segmento*"
+                            name="segmento"
+                            for="segmento"
+                            outlined
+                            :rules="[isRequired]"
+                        />
+                    </div>
+                    <div class="col-12" v-if="form.seguimento_governo === 'Outro'">
+                        <q-input
+                            v-model="form.ceas_segmento"
+                            label="Segmento*"
+                            name="Segmento"
+                            for="Segmento"
+                            outlined
+                            counter
+                            maxlength="30"
+                            clear-icon="close"
+                            clearable
+                            :rules="[isRequired]"
+                        />
+                    </div>
+                    <div class="col-12" v-if="form.ceas_representacao === 'Sociedade Civil'">
+                        <q-select
+                            v-model="form.ceas_segmento"
+                            :options="sociedadeCivilList"
+                            label="Segmento*"
+                            name="segmento"
+                            for="segmento"
                             outlined
                             :rules="[isRequired]"
                         />
@@ -156,7 +225,7 @@
                     <div class="col-12" v-if="form.funcao === 'Outro'">
                         <q-input
                             v-model="form.funcaoOutro"
-                            label="Função Outro"
+                            label="Função Outro*"
                             name="funcaoOutro"
                             for="funcaoOutro"
                             outlined
@@ -176,7 +245,7 @@
                         <q-select
                             v-model="form.orgao"
                             :options="orgaoList"
-                            label="Orgão"
+                            label="Orgão*"
                             name="orgao"
                             for="orgao"
                             outlined
@@ -188,7 +257,7 @@
                         <q-select
                             v-model="form.municipio"
                             :options="filterMunicipios"
-                            label="Município onde atua"
+                            label="Município onde atua*"
                             name="municipio"
                             for="municipio"
                             outlined
@@ -202,7 +271,7 @@
                         <q-select
                             v-model="form.areadeAtuacao"
                             :options="areadeAtuacaoList1"
-                            label="Área de atuação"
+                            label="Área de atuação*"
                             name="areadeAtuacao"
                             for="areadeAtuacao"
                             outlined
@@ -215,7 +284,7 @@
                         <q-select
                             v-model="form.servicosPrograma"
                             :options="protecaoSocialList"
-                            label="Serviço/Programa"
+                            label="Serviço/Programa*"
                             name="servicosPrograma"
                             for="servicosPrograma"
                             outlined
@@ -229,7 +298,7 @@
                             <q-select
                                 v-model="form.beneficiosMunicipal"
                                 :options="beneficioslList"
-                                label="Benefício"
+                                label="Benefício*"
                                 name="beneficiosMunicipal"
                                 for="beneficiosMunicipal"
                                 outlined
@@ -239,7 +308,7 @@
                         <div class="col-12" v-if="form.beneficiosMunicipal === 'Outro'">
                             <q-input
                                 v-model="form.beneficiosMunicipalOutro"
-                                label="Outro - Benefícios"
+                                label="Outro - Benefícios*"
                                 name="beneficiosMunicipalOutro"
                                 for="beneficiosMunicipalOutro"
                                 outlined
@@ -253,7 +322,7 @@
                         <q-select
                             v-model="form.representante"
                             :options="representanteList"
-                            label="Representante"
+                            label="Representante*"
                             name="representante"
                             for="representante"
                             outlined
@@ -266,7 +335,7 @@
                         <q-select
                             v-model="form.areaRepresentada"
                             :options="areaRepresentadaGovernamentalList"
-                            label="Área representada"
+                            label="Área representada*"
                             name="areaRepresentada"
                             for="areaRepresentada"
                             outlined
@@ -277,7 +346,7 @@
                     <div class="col-12" v-if="form.representante.value === 1 && form.areaRepresentada === 'Outro'">
                         <q-input
                             v-model="form.areaRepresentadaOutro"
-                            label="Outro - Área representada"
+                            label="Outro - Área representada*"
                             name="areaRepresentadaOutro"
                             for="areaRepresentadaOutro"
                             outlined
@@ -289,7 +358,7 @@
                         <q-select
                             v-model="form.areaRepresentada"
                             :options="areaRepresentadaCivilList"
-                            label="Área representada"
+                            label="Área representada*"
                             name="areaRepresentada"
                             for="areaRepresentada"
                             outlined
@@ -301,7 +370,7 @@
                         <q-select
                             v-model="form.areadeAtuacao"
                             :options="areadeAtuacaoList2"
-                            label="Área de Atuação"
+                            label="Área de Atuação*"
                             name="areadeAtuacao"
                             for="areadeAtuacao"
                             outlined
@@ -314,7 +383,7 @@
                         <q-select
                             v-model="form.areadeAtuacao"
                             :options="areadeAtuacaoList2"
-                            label="Área de Atuação"
+                            label="Área de Atuação*"
                             name="areadeAtuacao"
                             for="areadeAtuacao"
                             outlined
@@ -326,7 +395,7 @@
                         <q-select
                             v-model="form.protecaoSocialEspecialMunicipal"
                             :options="protecaoSocialEspecialMunicipalList"
-                            label="Nível de Complexidade"
+                            label="Nível de Complexidade*"
                             name="protecaoSocialEspecialMunicipal"
                             for="protecaoSocialEspecialMunicipal"
                             outlined
@@ -339,7 +408,7 @@
                         <q-select
                             v-model="form.servicosPrograma"
                             :options="socialEspecialMediaComplexidadeList"
-                            label="Serviço/Programa"
+                            label="Serviço/Programa*"
                             name="servicosPrograma"
                             for="servicosPrograma"
                             outlined
@@ -351,7 +420,7 @@
                         <q-select
                             v-model="form.servicosPrograma"
                             :options="socialEspecialAltaComplexidadeList"
-                            label="Serviço/Programa"
+                            label="Serviço/Programa*"
                             name="servicosPrograma"
                             for="servicosPrograma"
                             outlined
@@ -364,7 +433,7 @@
                         <q-select
                             v-model="form.servicosPrograma"
                             :options="gestaoDoSuasList"
-                            label="Serviço/Programa"
+                            label="Serviço/Programa*"
                             name="servicosPrograma"
                             for="servicosPrograma"
                             outlined
@@ -375,7 +444,7 @@
                     <div class="col-12" v-if="form.areadeAtuacao.value === 3 && form.servicosPrograma === 'Outro'">
                         <q-input
                             v-model="form.servicosProgramaOutro"
-                            label="Outro - Serviço/Programa"
+                            label="Outro - Serviço/Programa*"
                             name="servicosProgramaOutro"
                             for="servicosProgramaOutro"
                             outlined
@@ -388,7 +457,7 @@
                         <div class="col-12" v-if="form.areadeAtuacao.value === 4 && form.servicosPrograma === 'Outro'">
                             <q-input
                                 v-model="form.servicosProgramaOutro"
-                                label="Outro - Serviço/Programa"
+                                label="Outro - Serviço/Programa*"
                                 name="servicosProgramaOutro"
                                 for="servicosProgramaOutro"
                                 outlined
@@ -398,7 +467,7 @@
                         <q-select
                             v-model="form.servicosPrograma"
                             :options="gestaoFinanceiraOrcamentariaSuasList"
-                            label="Serviço/Programa"
+                            label="Serviço/Programa*"
                             name="servicosPrograma"
                             for="servicosPrograma"
                             outlined
@@ -410,7 +479,7 @@
                             <q-select
                                 v-model="form.areaRepresentada"
                                 :options="areaRepresentadaList"
-                                label="Área Representada"
+                                label="Área Representada*"
                                 name="areaRepresentada"
                                 for="areaRepresentada"
                                 outlined
@@ -420,7 +489,7 @@
                         <div class="col-12" v-if="areaRepresentadaOutro">
                             <q-input
                                 v-model="areaRepresentadaOutro"
-                                label="Outro - Área Representada"
+                                label="Outro - Área Representada*"
                                 name="areaRepresentadaOutro"
                                 for="areaRepresentadaOutro"
                                 outlined
@@ -433,7 +502,7 @@
                         <q-select
                             v-model="form.cargo"
                             :options="cargoList"
-                            label="Cargo"
+                            label="Cargo*"
                             name="cargo"
                             for="cargo"
                             outlined
@@ -444,7 +513,7 @@
                         <q-select
                             v-model="form.funcao"
                             :options="funcaoDesempenhadaList"
-                            label="Função desempenhada"
+                            label="Função desempenhada*"
                             name="funcao"
                             for="funcao"
                             outlined
@@ -453,11 +522,11 @@
                     </div>
                 </div>
 
-                <div class="col-12" v-if="form.orgao.value !== 2 && form.orgao.value !== 5">
+                <div class="col-12" v-if="form.orgao.value !== 2 && form.orgao.value !== 5 && form.lotacao.label !== 'Ceas'">
                     <q-select
                         v-model="form.vinculoEmpregaticio"
                         :options="vinculoEmpregaticioList"
-                        label="Vínculo empregaticio"
+                        label="Vínculo empregaticio*"
                         name="vinculoEmpregaticio"
                         for="vinculoEmpregaticio"
                         outlined
@@ -468,7 +537,7 @@
                 <div class="col-12" v-if="form.vinculoEmpregaticio === 'Outro'">
                     <q-input
                         v-model="form.vinculoEmpregaticioOutro"
-                        label="Informe qual é o seu vínculo empregatício"
+                        label="Informe qual é o seu vínculo empregatício*"
                         name="vinculoEmpregaticioOutro"
                         for="vinculoEmpregaticioOutro"
                         outlined
@@ -487,7 +556,7 @@
                     <q-select
                         v-model="form.representacaoConselho"
                         :options="representacaoConselhoList"
-                        label="Conselho"
+                        label="Conselho*"
                         name="representacaoConselho"
                         for="representacaoConselho"
                         outlined
@@ -499,7 +568,7 @@
                     <q-select
                         v-model="form.representacaoTitularidade"
                         :options="representacaoTitularidadeList"
-                        label="Titularidade"
+                        label="Titularidade*"
                         name="representacaoTitularidade"
                         for="representacaoTitularidade"
                         outlined
@@ -511,7 +580,7 @@
                     <q-select
                         v-model="form.representacaoRepresentacao"
                         :options="representacaoRepresentacaoList"
-                        label="Representação"
+                        label="Representação*"
                         name="representacaoRepresentacao"
                         for="representacaoRepresentacao"
                         outlined
@@ -523,7 +592,7 @@
                     <q-select
                         v-model="form.representacaoSegmento"
                         :options="representacaoSegmentoList"
-                        label="Seguimento"
+                        label="Seguimento*"
                         name="representacaoSegmento"
                         for="representacaoSegmento"
                         outlined
@@ -535,7 +604,7 @@
                     <q-select
                         v-model="form.representacaoAreaRepresentada"
                         :options="representacaoAreaRepresentadaList"
-                        label="Área Representada"
+                        label="Área Representada*"
                         name="representacaoAreaRepresentada"
                         for="representacaoAreaRepresentada"
                         outlined
@@ -546,7 +615,7 @@
                 <div class="col-12" v-if="form.representacaoAreaRepresentada === 'Outros'">
                     <q-input
                         v-model="form.outrosRepresentacaoAreaRepresentada"
-                        label="Informe qual é o sua área representada"
+                        label="Informe qual é o sua área representada*"
                         name="outrosRepresentacaoAreaRepresentada"
                         for="outrosRepresentacaoAreaRepresentada"
                         outlined
@@ -680,6 +749,10 @@ export default {
                 "Secretaria Executiva",
                 "Assessor(a)",
             ],
+            funcaoDesempenhadaCeasList: [
+                "Conselheiro",
+                "Secretaria Executiva",
+            ],
             diretoriaRegionalDesSocialList: [
                 "Almenara",
                 "Araçuaí",
@@ -703,6 +776,32 @@ export default {
                 "Uberaba",
                 "Uberlândia",
                 "Varginha",
+            ],
+            funcaoDesempenhadaConselheiroList: [
+                'Titular',
+                'Suplente',
+                'Vice Presidente',
+                'Presidente',
+            ],
+            funcaoDesempenhadaSecratariaList: [
+                'Governo',
+                'Sociedade Civil',
+            ],
+            seguimentoGovernoList: [
+                'Assistência Social',
+                'Saúde',
+                'Educação',
+                'Trabalho e Emprego',
+                'Fazenda',
+                'Habitação',
+                'Planejamento',
+                'Assessoria/Gabinete da Prefeitura',
+                'Outro',
+            ],
+            sociedadeCivilList: [
+                'Usuário',
+                'Trabalhador',
+                'Entidade',
             ],
             /* MUNICIPAL */
             orgaoList: [
@@ -803,7 +902,6 @@ export default {
                 "Suplente",
                 "Presidente",
                 "Vice-Presidente",
-                "Apenas Membro",
             ],
             representacaoRepresentacaoList: ["Governamental", "Não governamental"],
             representacaoSegmentoList: [

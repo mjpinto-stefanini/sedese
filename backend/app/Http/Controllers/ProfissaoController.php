@@ -9,9 +9,10 @@ use Illuminate\Http\Response;
 
 class ProfissaoController extends Controller
 {
-
-//    // TODO: Ativar o middleware de autenticação quando for implementar o PROD
-
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
 
     public function index(): JsonResponse
     {

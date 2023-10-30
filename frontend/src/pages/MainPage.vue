@@ -146,13 +146,13 @@ export default {
 					`users/${user_id}/secondstage`,
 					values
 				);
-				console.warn('status', status);
 				if (status === 201 || status === 200) {
 					this.$q.notify({
 						message: "Dados salvos com sucesso!",
 						color: "positive",
 						position: "top",
 					});
+					this.$router.push({ name: "SignIn" });
 				}
 			} catch (error) {
 				this.$q.notify({

@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable, Uuids;
+    use HasFactory, Notifiable, Uuids, HasApiTokens;
 
     const SECRETARIA_ESTADO = 1;
     const SECRETARIA_MUNICIPAL = 2;

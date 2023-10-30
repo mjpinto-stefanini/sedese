@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use \Illuminate\Http\JsonResponse;
 use App\Models\User;
+use App\Models\TipoPerfil;
+use App\Models\UserPerfilStatus;
 use App\Mail\Confirmation;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -16,7 +18,6 @@ use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login', 'register', 'reset', 'forgot']]);
@@ -29,6 +30,41 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
         $credentials = $request->only('email', 'password');
+        $user = User::where('email', $credentials['email'])->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'type' => 'negative',
+                'message' => 'Usuário não encontrado. Por favor, verifique o e-email se está correto.'
+            ], self::HTTP_METHOD_NOT_ALLOWED);
+        }
+        if ($user->is_active === 0) {
+            return response()->json([
+                'status' => 'error',
+                'type' => 'negative',
+                'message' => 'Seu e-mail não foi confirmado. Verifique a caixa de entrada ou spam, do e-mail cadastrado. Caso não tenha recebido, entre em contato conosco, através do e-mail “dgtep@social.mg.gov.br“.'
+            ], self::HTTP_METHOD_NOT_ALLOWED);
+        }
+
+        $userPerfilStatus = UserPerfilStatus::where('user_id', $user->id)->first();
+        if (!$userPerfilStatus) {
+            if ($user->is_active === 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'type' => 'negative',
+                    'message' => 'Falha ao verificar seu Perfil. Entre em contato conosco, através do e-mail “dgtep@social.mg.gov.br“.'
+                ], self::HTTP_METHOD_NOT_ALLOWED);
+            }
+        }
+        if ($user->second_stage === false) {
+            if ($userPerfilStatus->status === UserPerfilStatus::STATUS_PENDENTE || $userPerfilStatus->status === UserPerfilStatus::STATUS_INATIVO) {
+                return response()->json([
+                    'status' => 'error',
+                    'type' => 'negative',
+                    'message' => 'Seu cadastro está pendente de confirmação. Quando for aprovado, você receberá um e-mail, caso tenha dúvidas, entre em contato, através do e-mail “dgtep@social.mg.gov.br“'
+                ], self::HTTP_METHOD_NOT_ALLOWED);
+            }
+        }
 
         $token = Auth::attempt($credentials);
         if (!$token) {
@@ -37,15 +73,6 @@ class AuthController extends Controller
                 'type' => 'negative',
                 'message' => 'O Usuário não foi encontrado. Verifique seu email e senha.',
             ], self::HTTP_UNAUTHORIZED);
-        }
-
-        $isActivated = User::where('email', $request->email)->first()->is_active;
-        if ($isActivated == 0) {
-            return response()->json([
-                'status' => 'error',
-                'type' => 'negative',
-                'message' => 'Sua conta ainda não foi ativada, verifique seu e-mail.'
-            ], self::HTTP_METHOD_NOT_ALLOWED);
         }
 
         $user = Auth::user();
@@ -91,32 +118,6 @@ class AuthController extends Controller
         return true;
     }
 
-    /*
-    {
-        "secretary":{
-            "id":"f56fac17-ee1e-4adf-aa03-1c030073687e",
-            "nome":"CREAS Regional",
-            "regiao_administrativa":"1",
-            "ativo":1,
-            "outro":0,
-            "outro_nome":null,
-            "created_at":"2023-02-02T00:06:23.000000Z",
-            "updated_at":"2023-02-02T00:06:23.000000Z",
-            "label":"CREAS Regional",
-            "value":"f56fac17-ee1e-4adf-aa03-1c030073687e"
-        },
-        "service":{
-            "label":"Estado",
-            "value":1
-        },
-        "name":"Andre Abreu Quarenta e Nove",
-        "email":"andre.abreu+49@gmail.com",
-        "email_confirmation":"andre.abreu+49@gmail.com",
-        "password":"1q2w3e4r",
-        "cpf":"123.456.789-49"
-    }
-     */
-
     /**
      * @param Request $request
      * @return JsonResponse
@@ -127,79 +128,74 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'cpf' => 'required|string|max:255|unique:users',
+            'cpf' => 'required|string|max:20|unique:users',
         ]);
 
-        $service = null;
-        $isActive = 1;
-        $secretary = null;
-        if (isset($request->service['value'])) {
-            $service = $request->service['value'];
-        }
-        if (isset($request->secretary['value'])) {
-            $secretary = $request->secretary['value'];
+        if (User::where('email', $request->email)->exists()) {
+            return $this->errorResponse('O e-mail informado já está cadastrado.');
         }
 
-        if (!$this->checkEmail($request->email, $request->email_confirmation)) {
-            return response()->json([
-                'status' => 'error',
-                'type' => 'negative',
-                'message' => 'O e-mail informado já está cadastrado.',
-            ], self::HTTP_NOT_ACCEPTABLE);
+        if (User::where('cpf', $request->cpf)->exists()) {
+            return $this->errorResponse('O CPF informado já está cadastrado.');
         }
 
-        if (!$this->checkCPF($request->cpf)) {
-            return response()->json([
-                'status' => 'error',
-                'type' => 'negative',
-                'message' => 'O CPF informado já está cadastrado.',
-            ], self::HTTP_NOT_ACCEPTABLE);
-        }
-
-        $rememberToken = Str::uuid();
         $userData = [
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => bcrypt($request->password),
             'cpf' => $request->cpf,
-            'service' => $service,
-            'secretary' => $secretary,
+            'service' => $request->input('service.value'),
+            'secretary' => $request->input('secretary.value'),
             'type_admin' => User::USER_USUARIO,
-            'is_active' => $isActive,
-            'remember_token' => $rememberToken
+            'is_active' => 1,
+            'remember_token' => Str::uuid(),
+            'second_stage' => false,
         ];
 
-        $user = User::query()->create($userData);
+        // Obtenha os dados necessários para aplicar as regras
+        $ambitoAtuacao = strtolower($request->input('service.label'));
+        $lotacaoTipo = strtolower($request->input('secretary.nome'));
+
+        // Defina os perfis com base nas regras
+        $perfil = null;
+        $participanteList = ['ceas', 'creas regional', 'outros públicos'];
+        $respTecnico = ['subsecretaria de assistência social', 'diretoria regional de desenvolvimento social'];
+
+        $perfil = ($ambitoAtuacao === 'estado' && in_array($lotacaoTipo, $respTecnico)) ? TipoPerfil::RESPONSAVEL_TECNICO : (in_array($lotacaoTipo, $participanteList) ? TipoPerfil::PARTICIPANTE : TipoPerfil::PARTICIPANTE);
+        $statusPerfil = ($perfil === TipoPerfil::PARTICIPANTE) ? UserPerfilStatus::STATUS_ATIVO : UserPerfilStatus::STATUS_PENDENTE;
+        $user = User::create($userData);
+        
+
+        // criando o tipo de usuário por perfil deixando ele ativo
+        UserPerfilStatus::create([
+            'user_id' => $user->id,
+            'tipo_perfil_id' => $perfil,
+            'status'  => $statusPerfil,
+        ]);
 
         $token = Auth::login($user);
 
-        try {
-
-            $mailData = [
-                'name' => $user['name'],
-                'email' => $user['email'],
-                'token' => $rememberToken,
-            ];
-
-            Mail::to($user['email'])->send(new Confirmation($mailData));
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'type' => 'negative',
-                'message' => 'Erro ao enviar e-mail de confirmação. ' . $e->getMessage(),
-            ], self::HTTP_REQUEST_TIMEOUT);
-        }
-
         return response()->json([
             'status' => 'success',
-            'message' => 'User created successfully',
+            'message' => 'Usuário cadastrado com sucesso',
             'user' => $user,
             'authorization' => [
                 'token' => $token,
                 'type' => 'bearer',
             ]
         ]);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    private function errorResponse($message): JsonResponse
+    {
+        return response()->json([
+            'status' => 'error',
+            'type' => 'negative',
+            'message' => $message,
+        ], self::HTTP_NOT_ACCEPTABLE);
     }
 
     /**
@@ -335,7 +331,7 @@ class AuthController extends Controller
             ], self::HTTP_NOT_FOUND);
         }
 
-        $user->password = Hash::make($request['password']);
+        $user->password = bcrypt($request['password']);
         $user->remember_token = null;
         $user->save();
 
