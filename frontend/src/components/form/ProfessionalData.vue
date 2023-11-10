@@ -6,7 +6,7 @@
                     <q-select
                         v-model="form.regional"
                         :options="regionalList"
-                        label="Região Administrativa*"
+                        label="Âmbito de atuação*"
                         name="regional"
                         for="regional"
                         outlined
@@ -813,7 +813,7 @@ export default {
             ],
             areadeAtuacaoList1: [
                 {value: 1, label: "Proteção Social Básica"},
-                {value: 2, label: "Proteção Social Especial"},
+                {value: 2, label: "Diretoria"},
                 {value: 3, label: "Gestão do SUAS"},
                 {value: 4, label: "Gestão Financeira e Orçamentária do SUAS"},
             ],
