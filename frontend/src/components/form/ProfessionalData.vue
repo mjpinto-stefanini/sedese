@@ -244,13 +244,14 @@
                     <div class="col-12">
                         <q-select
                             v-model="form.orgao"
-                            :options="orgaoList"
                             label="Orgão*"
                             name="orgao"
                             for="orgao"
                             outlined
+                            :options="orgaoList"
                             :rules="[isRequired]"
                         />
+                        {{ form.orgao.label }} - {{ form.orgao.value }}
                     </div>
 
                     <div class="col-12">
@@ -277,23 +278,23 @@
                             outlined
                             :rules="[isRequired]"
                         />
-                    </div>
-
-                    <!-- Opções de input dependendo do valor do campo Área de atuação -->
-                    <div class="col-12" v-if="form.orgao.value === 1 && form.areadeAtuacao.value === 1">
-                        <q-select
-                            v-model="form.servicosPrograma"
-                            :options="protecaoSocialList"
-                            label="Serviço/Programa*"
-                            name="servicosPrograma"
-                            for="servicosPrograma"
-                            outlined
-                            :rules="[isRequired]"
-                        />
+                        
+                        <!-- Opções de input dependendo do valor do campo Área de atuação -->
+                        <div v-if="form.areadeAtuacao.value === 1">
+                            <q-select
+                                v-model="form.servicosPrograma"
+                                :options="protecaoSocialList"
+                                label="Serviço/Programa*"
+                                name="servicosPrograma"
+                                for="servicosPrograma"
+                                outlined
+                                :rules="[isRequired]"
+                            />
+                        </div>
                     </div>
 
                     <!-- Opções de input dependendo do valor do campo Serviço/Programa -->
-                    <template v-if="form.servicosPrograma.value === 4">
+                    <div v-if="form.servicosPrograma.value === 4">
                         <div class="col-12">
                             <q-select
                                 v-model="form.beneficiosMunicipal"
@@ -315,7 +316,7 @@
                                 :rules="[isRequired]"
                             />
                         </div>
-                    </template>
+                    </div>
 
                     <!-- Opções de input dependendo do valor do campo Orgão -->
                     <div class="col-12" v-if="form.orgao.value === 2">
@@ -331,27 +332,29 @@
                     </div>
 
                     <!-- Opções de input dependendo do valor do campo Representante -->
-                    <div class="col-12" v-if="form.representante.value === 1">
-                        <q-select
-                            v-model="form.areaRepresentada"
-                            :options="areaRepresentadaGovernamentalList"
-                            label="Área representada*"
-                            name="areaRepresentada"
-                            for="areaRepresentada"
-                            outlined
-                            :rules="[isRequired]"
-                        />
-                    </div>
+                    <div v-if="form.representante.value === 1">
+                        <div class="col-12">
+                            <q-select
+                                v-model="form.areaRepresentada"
+                                :options="areaRepresentadaGovernamentalList"
+                                label="Área representada*"
+                                name="areaRepresentada"
+                                for="areaRepresentada"
+                                outlined
+                                :rules="[isRequired]"
+                            />
+                        </div>
 
-                    <div class="col-12" v-if="form.representante.value === 1 && form.areaRepresentada === 'Outro'">
-                        <q-input
-                            v-model="form.areaRepresentadaOutro"
-                            label="Outro - Área representada*"
-                            name="areaRepresentadaOutro"
-                            for="areaRepresentadaOutro"
-                            outlined
-                            :rules="[isRequired]"
-                        />
+                        <div class="col-12" v-if="form.areaRepresentada === 'Outro'">
+                            <q-input
+                                v-model="form.areaRepresentadaOutro"
+                                label="Outro - Área representada*"
+                                name="areaRepresentadaOutro"
+                                for="areaRepresentadaOutro"
+                                outlined
+                                :rules="[isRequired]"
+                            />
+                        </div>
                     </div>
 
                     <div class="col-12" v-if="form.representante.value === 2">
@@ -404,57 +407,62 @@
                     </div>
 
                     <!-- Opções de input dependendo do valor do campo Proteção Social Especial -->
-                    <div class="col-12" v-if="form.protecaoSocialEspecialMunicipal.value === 1">
-                        <q-select
-                            v-model="form.servicosPrograma"
-                            :options="socialEspecialMediaComplexidadeList"
-                            label="Serviço/Programa*"
-                            name="servicosPrograma"
-                            for="servicosPrograma"
-                            outlined
-                            :rules="[isRequired]"
-                        />
+                    <div v-if="form.protecaoSocialEspecialMunicipal.value === 1">
+                        <div class="col-12">
+                            <q-select
+                                v-model="form.servicosPrograma"
+                                :options="socialEspecialMediaComplexidadeList"
+                                label="Serviço/Programa*"
+                                name="servicosPrograma"
+                                for="servicosPrograma"
+                                outlined
+                                :rules="[isRequired]"
+                            />
+                        </div>
                     </div>
-
-                    <div class="col-12" v-if="form.areadeAtuacao.value === 2 && form.protecaoSocialEspecialMunicipal.value === 2">
-                        <q-select
-                            v-model="form.servicosPrograma"
-                            :options="socialEspecialAltaComplexidadeList"
-                            label="Serviço/Programa*"
-                            name="servicosPrograma"
-                            for="servicosPrograma"
-                            outlined
-                            :rules="[isRequired]"
-                        />
+                    <div v-else>
+                        <div class="col-12" v-if="form.areadeAtuacao.value === 2">
+                            <q-select
+                                v-model="form.servicosPrograma"
+                                :options="socialEspecialAltaComplexidadeList"
+                                label="Serviço/Programa*"
+                                name="servicosPrograma"
+                                for="servicosPrograma"
+                                outlined
+                                :rules="[isRequired]"
+                            />
+                        </div>
                     </div>
 
                     <!-- Opções de input dependendo do valor do campo Área de atuação -->
-                    <div class="col-12" v-if="form.areadeAtuacao.value === 3">
-                        <q-select
-                            v-model="form.servicosPrograma"
-                            :options="gestaoDoSuasList"
-                            label="Serviço/Programa*"
-                            name="servicosPrograma"
-                            for="servicosPrograma"
-                            outlined
-                            :rules="[isRequired]"
-                        />
-                    </div>
+                    <div  v-if="form.areadeAtuacao.value === 3">
+                        <div class="col-12">
+                            <q-select
+                                v-model="form.servicosPrograma"
+                                :options="gestaoDoSuasList"
+                                label="Serviço/Programa*"
+                                name="servicosPrograma"
+                                for="servicosPrograma"
+                                outlined
+                                :rules="[isRequired]"
+                            />
+                        </div>
 
-                    <div class="col-12" v-if="form.areadeAtuacao.value === 3 && form.servicosPrograma === 'Outro'">
-                        <q-input
-                            v-model="form.servicosProgramaOutro"
-                            label="Outro - Serviço/Programa*"
-                            name="servicosProgramaOutro"
-                            for="servicosProgramaOutro"
-                            outlined
-                            :rules="[isRequired]"
-                        />
+                        <div class="col-12" v-if="form.servicosPrograma === 'Outro'">
+                            <q-input
+                                v-model="form.servicosProgramaOutro"
+                                label="Outro - Serviço/Programa*"
+                                name="servicosProgramaOutro"
+                                for="servicosProgramaOutro"
+                                outlined
+                                :rules="[isRequired]"
+                            />
+                        </div>
                     </div>
 
                     <!-- Opções de input dependendo do valor do campo Área de atuação -->
                     <div class="col-12" v-if="form.areadeAtuacao.value === 4">
-                        <div class="col-12" v-if="form.areadeAtuacao.value === 4 && form.servicosPrograma === 'Outro'">
+                        <div class="col-12" v-if="form.servicosPrograma === 'Outro'">
                             <q-input
                                 v-model="form.servicosProgramaOutro"
                                 label="Outro - Serviço/Programa*"
@@ -474,7 +482,7 @@
                             :rules="[isRequired]"
                         />
                     </div>
-                    <template v-if="false">
+                    <div v-if="false">
                         <div class="col-12">
                             <q-select
                                 v-model="form.areaRepresentada"
@@ -496,7 +504,7 @@
                                 :rules="[isRequired]"
                             />
                         </div>
-                    </template>
+                    </div>
 
                     <div class="col-12" v-if="form.areaRepresentada !== ''">
                         <q-select
@@ -522,7 +530,7 @@
                     </div>
                 </div>
 
-                <div class="col-12" v-if="form.orgao.value !== 2 && form.orgao.value !== 5 && form.lotacao.label !== 'Ceas'">
+                <div class="col-12">
                     <q-select
                         v-model="form.vinculoEmpregaticio"
                         :options="vinculoEmpregaticioList"
