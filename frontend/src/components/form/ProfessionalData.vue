@@ -251,7 +251,6 @@
                             :options="orgaoList"
                             :rules="[isRequired]"
                         />
-                        {{ form.orgao.label }} - {{ form.orgao.value }}
                     </div>
 
                     <div class="col-12">
