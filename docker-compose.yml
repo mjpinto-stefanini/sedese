@@ -13,7 +13,7 @@ services:
     ports:
       - '8082:8080'
     networks:
-      - default
+      - dev-network
   backend:
     image: ghcr.io/mjpinto-stefanini/php82-sedese:latest
     labels:
@@ -23,7 +23,7 @@ services:
     environment:
       - PROJECT_WEBROOT=/src/public
     networks:
-      - default
+      - dev-network
 
   database:
     image: mariadb:latest
@@ -38,8 +38,9 @@ services:
       - ./mysql/data:/var/lib/mysql
       - ./mysql/dumps:/var/dumps
     networks:
-      - default
+      - dev-network
 
 networks:
-  default:
+  dev-network:
     name: dev-network
+    driver: bridge
