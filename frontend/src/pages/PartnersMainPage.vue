@@ -83,7 +83,7 @@
 
         <q-card-section class="bg-white">
           <q-form class="row">
-            <q-card style="padding: 5px 15px; margin-bottom: 10px;" class="row">
+            <q-card style="padding: 5px 15px; margin-bottom: 10px; width: 100%;" class="row">
               <div class="col-12">
                 <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.nomeInstituicao" label="Nome da Instituição"/>
               </div>
@@ -111,7 +111,7 @@
             <div class="row">
               <div class="col-12">
                 <q-btn flat label="Cancelar" class="bg-red text-white" style="margin: 5px;" v-close-popup />
-                <q-btn flat label="Salvar" class="bg-green text-white" style="margin: 5px;" v-close-popup />
+                <q-btn flat label="Salvar" class="bg-green text-white" style="margin: 5px;" @click="salvarParceiros"  v-close-popup />
               </div>
             </div>
           </q-form>
@@ -199,6 +199,24 @@ export default {
       modalNovoParceiro: ref(false),
     }
   },
-	methods: {},
+	methods: {
+    async salvarParceiros() {
+      try {
+        this.$q.loading.show();
+        const { data, status } = await this.$http.post("parceiros/store", this.novoParceiro);
+        if (status === 200 || status === 201) {
+          console.log(data);
+        }
+      } catch (error) {
+        this.$q.notify({
+					message: error.response.data.message,
+					color: "negative",
+					position: "top",
+				});
+      } finally {
+				this.$q.loading.hide();
+			}
+    }
+  },
 };
 </script>

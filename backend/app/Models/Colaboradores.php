@@ -9,5 +9,9 @@ class Colaboradores extends Model
 {
     use HasFactory;
     protected $table = "colaboradres";
-    protected $fillable = [];
+    protected $fillable = [
+        'id',
+        'parceiros_id',
+        'user_id',
+    ];
 }

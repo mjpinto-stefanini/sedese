@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('colaboradores', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('parceiros_id');
-            $table->uuid('user_id');
+            $table->uuid('user_id')->unique();
             $table->string('cpf');
             $table->timestamps();
         });

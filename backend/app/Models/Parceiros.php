@@ -9,5 +9,14 @@ class Parceiros extends Model
 {
     use HasFactory;
     protected $table = "parceiros";
-    protected $fillable = [];
+    protected $fillable = [
+        'id',
+        'nomeInstituicao',
+        'CNPJ',
+        'responsavelLegal',
+        'CPF',
+        'telefone',
+        'email',
+        'observacao',
+    ];
 }
