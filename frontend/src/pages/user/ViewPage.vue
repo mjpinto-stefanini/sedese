@@ -273,7 +273,7 @@ export default {
 	mixins: [accountMixin],
     data() {
         return {
-            baseURL: 'http://localhost:9001/api/v1/',
+            baseURL: process.env.VUE_APP_API_URL,
             UserId: this.$route.params.id,
             user: [],
             contact: [],

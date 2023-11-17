@@ -57,6 +57,32 @@
                         </q-card-section>
                     </q-card>
                 </q-expansion-item>
+                <q-expansion-item
+                expand-separator
+                  icon="event_note"
+                  label="Gerencias Parceiros">
+                  <q-card>
+                    <q-card-section>
+                      <!-- <q-item clickable to="/users">
+                        <q-item-section avatar>
+                          <q-icon name="code" />
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label>Gerenciar Usuários</q-item-label>
+                        </q-item-section>
+                      </q-item> -->
+                      <q-separator/>
+                      <q-item clickable to="/listaparceiros">
+                        <q-item-section avatar>
+                          <q-icon name="code" />
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label>Gerenciar Parceiros</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-card-section>
+                  </q-card>
+                </q-expansion-item>
                 <!--
                 <q-expansion-item
                   expand-separator
