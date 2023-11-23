@@ -22,7 +22,6 @@
 						name="dataNascimento"
 						for="dataNascimento"
 						type="date"
-						filled
 						outlined
 						clear-icon="close"
 						clearable

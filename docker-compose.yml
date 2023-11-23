@@ -46,3 +46,4 @@ networks:
   default:
     name: dev-network
     external: true
+
