@@ -22,6 +22,8 @@ services:
       - ./backend:/src
     environment:
       - PROJECT_WEBROOT=/src/public
+    ports:
+      - '80:80'
     networks:
       - default
 
@@ -44,3 +46,4 @@ networks:
   default:
     name: dev-network
     external: true
+
