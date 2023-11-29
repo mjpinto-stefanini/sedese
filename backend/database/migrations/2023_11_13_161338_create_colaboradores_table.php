@@ -14,10 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('colaboradores', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id('id');
+            $table->uuid('uuid')->index();
             $table->uuid('parceiros_id');
             $table->uuid('user_id')->unique();
-            $table->string('cpf');
             $table->timestamps();
         });
     }

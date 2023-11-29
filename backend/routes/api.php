@@ -230,6 +230,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/', [ParceirosController::class, 'index']);
         Route::post('/store', [ParceirosController::class, 'store']);
         Route::get('/show/{id}', [ParceirosController::class, 'show']);
+        Route::get('consultar', [ParceirosController::class, 'consultar']);
         Route::put('/update/{id}', [ParceirosController::class, 'update']);
         Route::delete('/destroy/{id}', [ParceirosController::class, 'destroy']);
     });

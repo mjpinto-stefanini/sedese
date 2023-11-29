@@ -18,13 +18,13 @@
               <q-input v-model="consulta.nomeEmpresa" label="Nome da Empresa" outlined clear-icon="close" clearable />
             </div>
             <div class="col-12" style="margin: 5px 0;">
-              <q-input v-model="consulta.cpf_cnpj" label="CPF / CNPJ" outlined clear-icon="close" clearable />
+              <q-input v-model="consulta.cpf_cnpj" label="CPF / CNPJ" outlined clear-icon="close" clearable v-mask="['###.###.###-##', '##.###.###/####-##']"  maxlength="20" />
             </div>
             <div class="col-12" style="margin: 5px 0;">
-              <q-input v-model="consulta.email" label="E-mail" outlined clear-icon="close" clearable />
+              <q-input v-model="consulta.email" label="E-mail" outlined clear-icon="close" clearable :rules="[isEmail]" />
             </div>
             <div class="col-4">
-              <q-btn outline>Pesquisar</q-btn>
+              <q-btn outline @click="consultaPorCampo">Pesquisar</q-btn>
             </div>
             <div class="col-4 offset-4">
               <q-btn outline style="float: right;" @click="modalNovoParceiro = true">Novo Parceiro</q-btn>
@@ -37,18 +37,18 @@
       <div class="col-8 offset-2">
         <q-table 
           flat bordered
-          :rows="rows"
+          :rows="parceirosRow"
           :columns="columns"
           virtual-scroll
           v-model:pagination="pagination"
           :rows-per-page-options="[0]" >
           <template v-slot:body-cell-status="props">
             <q-td :props="props">
-              <div v-if="props.row.status === 'Ativo'">
-                <q-badge color="green" :label="props.value" />
+              <div v-if="props.row.status === '1'">
+                <q-badge color="green" label="Ativo" />
               </div>
-              <div v-if="props.row.status === 'Inativo'">
-                <q-badge color="red" :label="props.value" />
+              <div v-if="props.row.status === '2'">
+                <q-badge color="red" label="Inativo" />
               </div>
             </q-td>
           </template>
@@ -60,7 +60,7 @@
 								no-caps
 								unelevated
 								padding="sm"
-								@click="$router.replace('/parceiro/' + props.row.id )"
+								@click="$router.replace('/parceiro/' + props.row.uuid )"
 								icon="visibility"
 							/>
 							<q-tooltip
@@ -85,24 +85,24 @@
           <q-form class="row">
             <q-card style="padding: 5px 15px; margin-bottom: 10px; width: 100%;" class="row">
               <div class="col-12">
-                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.nomeInstituicao" label="Nome da Instituição"/>
+                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.nomeInstituicao" label="Nome da Instituição" :rules="[isRequired]"/>
               </div>
               <div class="col-12">
-                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.cnpj" label="CNPJ"/>
+                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.cnpj" label="CNPJ" mask="##.###.###/####-##" :rules="[isRequired]"/>
               </div>
             </q-card>
             <q-card style="padding: 5px 15px; margin-bottom: 10px;" class="row">
               <div class="col-12">
-                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.nomeResponsavel" label="Responsavel Legal"/>
+                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.nomeResponsavel" label="Responsavel Legal" :rules="[isRequired]"/>
               </div>
               <div class="col-12">
-                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.cpf" label="CPF"/>
+                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.cpf" label="CPF" mask="###.###.###-##" :rules="[isRequired]" />
               </div>
               <div class="col-12">
-                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.telefone" label="Telefone"/>
+                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.telefone" label="Telefone" v-mask="['(##) ####-####', '(##) #####-####']" />
               </div>
               <div class="col-12">
-                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.email" label="E-mail"/>
+                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.email" label="E-mail" :rules="[isRequired, isEmail]"/>
               </div>
               <div class="col-12">
                 <q-input outlined v-model="novoParceiro.observacao" label="Observações" type="textarea" maxlength="250" />
@@ -124,12 +124,14 @@
 <style></style>
 <script>
 import { ref } from 'vue';
+import {TheMask} from 'vue-the-mask';
 
 const columns = [
   {
     name: 'status',
     label: 'Status',
-    field: 'status'
+    field: 'status',
+    sortable: true
   },
   {
     name: 'name',
@@ -142,39 +144,39 @@ const columns = [
   },
   { name: 'email', align: 'center', label: 'email', field: 'email', sortable: true },
   { name: 'telefone', label: 'telefone', field: 'telefone', sortable: true },
-  { name: 'id', label: 'ações', field: 'id', sortable: true },
+  { name: 'id', label: 'ações', field: 'id' },
 ];
 
-const rows = [
-  {
-    status: 'Ativo',
-    name: 'Rede DEV de Desenvolvimento',
-    email: 'email@teste.com',
-    telefone: '(11) 97585-3333',
-    id: 'teste'
-  },
-  {
-    status: 'Inativo',
-    name: 'Rede DEV de Desenvolvimento',
-    email: 'email@teste.com',
-    telefone: '(11) 97585-3333',
-    id: 'teste'
-  },
-];
+let parceirosRow = [];
+let rows = [];
+for (let i = 0; i < parceirosRow.length; i++) {
+  rows = rows.concat(parceirosRow.slice(0).map(r => ({ ...r })))
+}
+rows.forEach((row, index) => {
+  row.index = index
+})
+
 
 const options = [
-  'Ativo',
-  'Inativo'
+  {
+    value:1,
+    label: 'Ativo'
+  },
+  {
+    value:2,
+    label: 'Inativo'
+  }
 ];
 
 const modalNovoParceiro = '';
 
 export default {
 	name: "PartnersMainPage",
+  components: {TheMask},
 	data() {
 		return {
       columns,
-      rows,
+      parceirosRow: [],
       options,
       consulta: {
         status: null,
@@ -197,6 +199,9 @@ export default {
   setup() {
     return {
       modalNovoParceiro: ref(false),
+      pagination: ref({
+        rowsPerPage: 10
+      })
     }
   },
 	methods: {
@@ -205,7 +210,13 @@ export default {
         this.$q.loading.show();
         const { data, status } = await this.$http.post("parceiros/store", this.novoParceiro);
         if (status === 200 || status === 201) {
-          console.log(data);
+          this.$q.notify({
+            message: 'Novo parceiro criado com sucesso!',
+            color: "positive",
+            position: "top",
+				  });
+
+          await this.getParceiros();
         }
       } catch (error) {
         this.$q.notify({
@@ -216,7 +227,79 @@ export default {
       } finally {
 				this.$q.loading.hide();
 			}
+    },
+    async getParceiros() {
+      try {
+        if (this.dadosConsulta) {
+          this.parceirosRow = []; // Limpar os dados anteriores, se necessário
+          this.dadosConsulta.forEach((partner) => {
+            this.parceirosRow.push({
+              status: partner.status,
+              name: partner.nome_instituicao,
+              email: partner.email,
+              telefone: partner.telefone,
+              id: partner.id
+            });
+          });
+        } else {
+          const { data, status } = await this.$http.get("parceiros/");
+          if (status === 200) {
+            data.forEach((partner) => {
+              this.parceirosRow.push({
+                status: partner.status,
+                name: partner.nome_instituicao,
+                email: partner.email,
+                telefone: partner.telefone,
+                id: partner.id,
+                uuid: partner.uuid
+              });
+            });
+          }
+        }
+      } catch (error) {
+        this.$q.notify({
+          message: error.response.data.message,
+          color: "negative",
+          position: "top",
+        });
+      }
+    },
+    async consultaPorCampo() {
+      try {
+        this.$q.loading.show();
+        const { data, status } = await this.$http.get("/parceiros/consultar", this.consulta);
+        this.dadosConsulta = data; // Armazenar os dados obtidos para utilização posterior
+        console.log(data);
+        this.getParceiros(); // Chamar a função getParceiros para carregar os dados
+      } catch (error) {
+        this.$q.notify({
+          message: error.response.data.message,
+          color: 'negative',
+          position: 'top',
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
+    },
+    isRequired(value) {
+			return !!value || "Campo obrigatório";
+		},
+    isEmail(value) {
+      return (
+        (value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido"
+      );
+    },
+  },
+  mounted() {
+    if (this.$route.query.message && this.$route.query.type) {
+      this.$q.notify({
+        type: this.$route.query.type,
+        message: this.$route.query.message,
+      })
     }
   },
+  created() {
+		this.getParceiros();
+	},
 };
 </script>

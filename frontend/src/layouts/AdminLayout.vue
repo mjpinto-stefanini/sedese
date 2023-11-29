@@ -7,7 +7,7 @@
                 <q-btn icon="person" flat round>
                 <q-menu>
                     <q-list style="min-width: 100px">
-                        <q-item clickable v-close-popup to="signin">
+                        <q-item clickable v-close-popup to="/signin">
                             <q-item-section side>
                                 <q-icon name="mdi-exit-to-app" color="negative"/>
                             </q-item-section>
