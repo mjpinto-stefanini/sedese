@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Contact;
 use App\Models\Parceiros;
 use App\Models\Colaboradores;
 use App\Models\UserPerfilStatus;
@@ -73,17 +74,18 @@ class ColaboradoresController extends Controller
             'name' => $request->colaborador['nome'],
             'email' => $request->colaborador['email'],
             'cpf' => $request->colaborador['cpf'],
-            'password' => bcrypt(Str::random()),
+            'password' => bcrypt('qwe123'),
             'service' => null,
             'secretary' => null,
-            'type_admin' => 3,
+            'type_admin' => USER::USER_USUARIO,
             'is_active' => 1,
             'remember_token' => Str::uuid(),
             'second_stage' => false,
         ];
 
-        $existingUser = User::firstWhere('email', $userData['email']);
-        if (!$existingUser) {
+        $user = User::firstWhere('email', $userData['email']);
+        if (!$user) {
+            // cria novo usuário
             $user = User::create($userData);
             // criando o status do usuário
             UserPerfilStatus::create([
@@ -91,14 +93,15 @@ class ColaboradoresController extends Controller
                 'tipo_perfil_id' => TipoPerfil::COLABORADOR,
                 'status' => 1
             ]);
-            $dadosColaborador = [
-                'uuid' => Str::uuid(),
-                'parceiros_id' => $request->parceiro['uuid'],
-                'user_id' => $user->id,
-            ];
-            Colaboradores::create($dadosColaborador);
-            return response()->json('Salvo com sucesso', 200);
         }
+        // cadastra um novo colaborador
+        $dadosColaborador = [
+            'uuid' => Str::uuid(),
+            'parceiros_id' => $request->parceiro['uuid'],
+            'user_id' => $user->id,
+        ];
+        Colaboradores::create($dadosColaborador);
+        return response()->json('Salvo com sucesso', 200);
     }
 
     public function show(string $id)
@@ -146,5 +149,10 @@ class ColaboradoresController extends Controller
         } catch (\Exception $exception) {
             return response()->json(['message' => 'Erro ao excluir colaborador'], 500);
         }
+    }
+
+    private function verificaInstituicoesColaborador($user_id)
+    {
+        return Colaboradores::where('user_id', $user_id)->get()->toArray();
     }
 }

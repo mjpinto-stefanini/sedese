@@ -230,8 +230,8 @@ export default {
     },
     async getParceiros() {
       try {
+        this.parceirosRow = []; // Limpar os dados anteriores, se necessário
         if (this.dadosConsulta) {
-          this.parceirosRow = []; // Limpar os dados anteriores, se necessário
           this.dadosConsulta.forEach((partner) => {
             this.parceirosRow.push({
               status: partner.status,
@@ -267,10 +267,11 @@ export default {
     async consultaPorCampo() {
       try {
         this.$q.loading.show();
-        const { data, status } = await this.$http.get("/parceiros/consultar", this.consulta);
-        this.dadosConsulta = data; // Armazenar os dados obtidos para utilização posterior
-        console.log(data);
-        this.getParceiros(); // Chamar a função getParceiros para carregar os dados
+        const queryParams = new URLSearchParams(this.consulta).toString();
+        const url = `/parceiros/consultar?${queryParams}`;
+        const { data, status } = await this.$http.get(url);
+        this.dadosConsulta = data; 
+        this.getParceiros();
       } catch (error) {
         this.$q.notify({
           message: error.response.data.message,

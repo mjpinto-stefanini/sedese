@@ -232,6 +232,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/show/{id}', [ParceirosController::class, 'show']);
         Route::get('consultar', [ParceirosController::class, 'consultar']);
         Route::put('/update/{id}', [ParceirosController::class, 'update']);
+        Route::post('/updateStatus', [ParceirosController::class, 'updateStatus']);
         Route::delete('/destroy/{id}', [ParceirosController::class, 'destroy']);
     });
 

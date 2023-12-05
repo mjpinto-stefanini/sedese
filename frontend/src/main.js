@@ -8,6 +8,7 @@ import { Quasar } from "quasar";
 import quasarUserOptions from "./quasar-user-options";
 import VueTheMask from 'vue-the-mask';
 import axios from "@/plugins/axios";
+
 // principal do fontawesome
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'

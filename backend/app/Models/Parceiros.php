@@ -12,13 +12,16 @@ class Parceiros extends Model
     protected $fillable = [
         'id',
         'uuid',
+        'user_id',
         'nome_instituicao',
         'CNPJ',
         'status',
-        'responsavel_legal',
-        'CPF',
-        'telefone',
-        'email',
+        'phone',
         'observacao',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

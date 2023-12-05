@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Contact;
 use App\Models\Parceiros;
+use App\Models\Colaboradores;
+use App\Models\UserPerfilStatus;
+use App\Models\TipoPerfil;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 class ParceirosController extends Controller
 {
@@ -13,70 +19,186 @@ class ParceirosController extends Controller
     const STATUS_INATIVO = 0;
     public function __construct()
     {
-        $this->middleware('auth:api');
+        // $this->middleware('auth:api');
     }
 
     public function index()
     {
-        $parceiros = Parceiros::where('status', 1)->orderBy('status', 'asc')->get();
-        return response()->json($parceiros, 200);
+        $data = [];
+        $parceiros = Parceiros::where('status', self::STATUS_ATIVO)->orderBy('status', 'asc')->get();
+        foreach($parceiros as $key => $parceiro):
+            $user = User::findOrFail($parceiro->user_id);
+            $data[$key] = [
+                'status' => $parceiro->status,
+                'nome_instituicao' => $parceiro->nome_instituicao,
+                'email' => $user->email,
+                'telefone' => $parceiro->phone,
+                'id' => $parceiro->id,
+                'uuid' => $parceiro->uuid
+            ];
+        endforeach;
+        return response()->json($data, 200);
     }
 
     public function consultar(Request $request)
-    {
-        $dados = [
-            'status' => $request->input('status'),
-            'nomeResponsavel' => $request->input('nomeParceiro'),
-            'nomeInstituicao' => $request->input('nomeEmpresa'),
-            'cpf_cnpj' => $request->input('cpf_cnpj'),
-            'email' => $request->input('email'),
-        ];
-        $parceiro = Parceiros::where(function ($query) use ($dados) {
-            if ($dados['status']) {
-                $query->where('status', $dados['status']);
+        {
+            try {
+                $dados = [
+                    'status' => $request->input('status'),
+                    'nomeResponsavel' => $request->input('nomeParceiro'),
+                    'nomeInstituicao' => $request->input('nomeEmpresa'),
+                    'cpf_cnpj' => $request->input('cpf_cnpj'),
+                    'email' => $request->input('email'),
+                ];
+
+                $userQuery = User::query();
+
+                if ($dados['nomeResponsavel']) {
+                    $userQuery->where('name', $dados['nomeResponsavel']);
+                }
+
+                if ($dados['email']) {
+                    $userQuery->where('email', $dados['email']);
+                }
+
+                $users = $userQuery->get();
+
+                $parceiroQuery = Parceiros::query()->with('user');
+
+                if ($dados['status']) {
+                    $parceiroQuery->where('status', $dados['status']);
+                }
+
+                if ($dados['nomeInstituicao']) {
+                    $parceiroQuery->where('nome_instituicao', $dados['nomeInstituicao']);
+                }
+
+                if ($dados['cpf_cnpj']) {
+                    $cpf_cnpj = $dados['cpf_cnpj'];
+                    $parceiroQuery->where('cnpj', $cpf_cnpj)->orWhereHas('user', function ($query) use ($cpf_cnpj) {
+                        $query->where('cpf', $cpf_cnpj);
+                    });
+                }
+
+                $parceiros = $parceiroQuery->get();
+
+                $data = [];
+
+                foreach ($parceiros as $parceiro) {
+                    $parceiroData = [
+                        'status' => $parceiro->status,
+                        'nome_instituicao' => $parceiro->nome_instituicao,
+                        'telefones' => $parceiro->phone,
+                        'id' => $parceiro->id,
+                        'uuid' => $parceiro->uuid,
+                        'email' => $parceiro->user ? $parceiro->user->email : null, // Acessando o email do usuário associado ao parceiro
+                    ];
+                    $data[] = $parceiroData;
+                }
+
+                return response()->json($data, 200);
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Ocorreu um erro durante a consulta'], 500);
             }
-        
-            if ($dados['nomeResponsavel']) {
-                $query->orWhere('nomeResponsavel', 'LIKE', '%' . $dados['nomeResponsavel'] . '%');
-            }
-        
-            if ($dados['nomeInstituicao']) {
-                $query->orWhere('nomeInstituicao', 'LIKE', '%' . $dados['nomeInstituicao'] . '%');
-            }
-        
-            if ($dados['cpf_cnpj']) {
-                $query->orWhere('cpf_cnpj', $dados['cpf_cnpj']);
-            }
-        
-            if ($dados['email']) {
-                $query->orWhere('email', $dados['email']);
-            }
-        })->get();
-        return response()->json($parceiro, 200);
-    }
+        }
+
 
     public function store(Request $request)
     {
-        $dados = [
-            'uuid' => str::uuid(),
-            'nome_instituicao'=> $request->input('nomeInstituicao'),
-            'CNPJ'=> $request->input('cnpj'),
-            'status'=> self::STATUS_ATIVO,
-            'responsavel_legal'=> $request->input('nomeResponsavel'),
-            'CPF'=> $request->input('cpf'),
-            'telefone'=> $request->input('telefone'),
-            'email'=> $request->input('email'),
-            'observacao'=> $request->input('observacoes'),
-        ];
-        $parceiros = Parceiros::create($dados);
-        return response()->json($parceiros, 200);
+        $validator = Validator::make($request->all(), [
+            'nomeResponsavel' => 'required|string',
+            'cpf' => 'required|string',
+            'email' => 'required|email',
+            'nomeInstituicao' => 'required|string',
+            'cnpj' => 'required|string|', // Verifica se o CNPJ é único na tabela de parceiros
+            'telefone' => 'required|string',
+            'observacoes' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        try {
+            // verifica existencia do usuário
+            $user = $this->verificaUsuario($request->input('cpf'), $request->input('email'));
+            if (!$user) {
+                $dadosResponsavel = [
+                    'name'=> $request->input('nomeResponsavel'),
+                    'cpf'=> $request->input('cpf'),
+                    'email'=> $request->input('email'),
+                    'password' => bcrypt('qwe123'),
+                    'service' => null,
+                    'secretary' => null,
+                    'type_admin' => 3,
+                    'is_active' => 1,
+                    'remember_token' => Str::uuid(),
+                    'second_stage' => false,
+                ];
+                $user = User::create($dadosResponsavel);
+
+                UserPerfilStatus::create([
+                    'user_id' => $user->id,
+                    'tipo_perfil_id' => TipoPerfil::COLABORADOR,
+                    'status' => 1
+                ]);
+            }
+            // caso não haja usuário existente, ele irá cadastrar um novo usuário
+            $existingContact = Contact::where('user_id', $user['id'])->first();
+            if (!$existingContact) {
+                $contactData = [
+                    'user_id' => $user['id'],
+                    'phone' => $request->input('telefone'),
+                    'cell_phone' => $request->input('telefone'),
+                    'cell_phone_whatsapp' => $request->input('telefone'),
+                    'institutional_phone' => $request->input('telefone'),
+                    'institutional_email' => $request->input('email'),
+                    'isWhatsapp' => false,
+                ];
+                Contact::create($contactData);
+            }
+            // cadastrando os dados do parceiro
+            $dadosParceiro = [
+                'uuid' => str::uuid(),
+                'nome_instituicao'=> $request->input('nomeInstituicao'),
+                'CNPJ'=> $request->input('cnpj'),
+                'status'=> self::STATUS_ATIVO,
+                'observacao' => $request->input('observacao'),
+                'phone' => $request->input('telefone'),
+                'user_id' => $user['id']
+            ];
+            $parceiros = Parceiros::create($dadosParceiro);
+            // Salvando responsavel legal na lista de colaborador
+            Colaboradores::create([
+                'uuid' => Str::uuid(),
+                'parceiros_id' => $parceiros->uuid,
+                'user_id' => $user->id
+            ]);
+            
+            return response()->json($parceiros, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocorreu um erro durante a criação'], 500);
+        }
     }
 
     public function show(string $uuid)
     {
         try {
             $parceiro = Parceiros::where('uuid', $uuid)->firstOrFail();
-            return response()->json($parceiro, 200);
+            $responsavel = User::firstWhere('id', $parceiro->responsavel_legal);
+            $contato = Contact::firstWhere('user_id', $parceiro->responsavel_legal);
+            $dados = [
+                'uuid' => $parceiro->uuid,
+                'nome_instituicao' => $parceiro->nome_instituicao,
+                'cnpj' => $parceiro->cnpj,
+                'status' => $parceiro->status,
+                'responsavel_legal' => $responsavel->name,
+                'cpf' => $responsavel->cpf,
+                'email' => $responsavel->email,
+                'telefone' => $contato->phone,
+                'observacao' => $parceiro->observacao
+            ];
+            return response()->json($dados, 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
             return response()->json(['message' => 'Parceiro não encontrado'], 404);
         } catch (\Exception $exception) {
@@ -84,25 +206,81 @@ class ParceirosController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $uuid)
     {
-        $parceiro = Parceiros::find($id);
-        $dados = [
-            'nome_instituicao'=> $request->input('nomeInstituicao'),
-            'CNPJ'=> $request->input('cnpj'),
-            'responsavel_legal'=> $request->input('nomeResponsavel'),
-            'CPF'=> $request->input('cpf'),
-            'telefone'=> $request->input('telefone'),
-            'email'=> $request->input('email'),
-            'observacao'=> $request->input('observacoes') ?? null,
-        ];
-        $parceiro->update($dados);
-        return response()->json($parceiro, 200);
+        $validator = Validator::make($request->all(), [
+            'nomeResponsavel' => 'required|string',
+            'cpf' => 'required|string',
+            'email' => 'required|email',
+            'nomeInstituicao' => 'required|string',
+            'cnpj' => 'required|string|',
+            'telefone' => 'required|string',
+            'observacao' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        try {
+            $partner = Parceiros::where('uuid', $uuid)->first();
+
+            if (!$partner) {
+                return response()->json(['error' => 'Parceiro não encontrado'], 404);
+            }
+
+            $user = User::find($partner->responsavel_legal);
+            if ($user) {
+                $user->update([
+                    'name' => $request->input('nomeResponsavel'),
+                    'cpf' => $request->input('cpf'),
+                    'email' => $request->input('email'),
+                ]);
+            }
+
+            $contact = Contact::where('user_id', $partner->responsavel_legal)->first();
+            if ($contact) {
+                $contact->update([
+                    'phone' => $request->input('telefone'),
+                ]);
+            }
+
+            $partner->update([
+                'nome_instituicao' => $request->input('nomeInstituicao'),
+                'CNPJ' => $request->input('cnpj'),
+                'observacao' => $request->input('observacao'),
+                'responsavel_legal' => $user->id
+            ]);
+
+            return response()->json($partner, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocorreu um erro durante a atualização'], 500);
+        }
     }
 
-    public function destroy(Parceiros $parceiros)
+    public function updateStatus(Request $request) 
     {
-        $parceiros->delete();
+        try {
+            $parceiro = Parceiros::where('uuid', $request->input('id'))->firstOrFail();
+            $parceiro->update([
+                'status' => $request->input('status')
+            ]);
+            return response()->json('Status alterado com sucesso.', 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocorreu um erro durante a atualização'], 500);
+        }
+    }
+
+    public function destroy($id)
+    {
+        $parceiro = Parceiros::find($id);
+        $parceiro->delete();
         return response()->json(null, 204);
     }
+
+    private function verificaUsuario($cpf, $email)
+    {
+        $user = User::where('cpf', $cpf)->orWhere('email', $email)->first();
+        return $user ?? [];
+    }    
 }

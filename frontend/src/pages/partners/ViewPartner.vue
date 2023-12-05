@@ -2,23 +2,56 @@
   <q-page style="padding: 5px 15px;">
     <div class="row" style="margin: 10px 0;">
       <div class="col-12">
-        <q-btn class="bg-purple text-white" to="/listaparceiros" style="float: right;">Voltar</q-btn>
+        <q-btn class="bg-primary text-white" @click="voltarPagina" style="float: right;">
+          Voltar
+        </q-btn>
       </div>
     </div>
     <div class="row">
       <div class="col-sm-12 col-md-6 col-lg-6">
         <q-card>
           <q-card-section class="text-black">
-            <div class="text-subtitle2">Dados da Instituição:</div>
-            <div class="text-h6">
-              <font-awesome-icon :icon="['far', 'user']" />
-              {{ this.parceiro.nome_instituicao }}
-            </div>
-            <div class="col-12" style="margin-left: 25px;">
-              CNPJ: {{ this.parceiro.cnpj }}
+            <div class="row">
+              <div class="col-md-11 col-lg-1">
+                <div class="text-subtitle2">Dados da Instituição:</div>
+                <div class="text-h6">
+                  <span v-if="editarDadosParceiro === false">
+                    <font-awesome-icon :icon="['far', 'user']" />
+                    {{ this.parceiro.nome_instituicao }}
+                  </span>
+                  <span v-else>
+                    <q-input outlined v-model="dadosParceiro.nomeInstituicao" label="Nome da Instituição" style="margin-left: 35px; margin-right: 25px;">
+                      <template v-slot:prepend>
+                        <font-awesome-icon :icon="['far', 'user']" />
+                      </template>
+                    </q-input>
+                    
+                  </span>
+                </div>
+                <div class="col-12" style="margin-left: 35px; margin-right: 25px;">
+                  <span v-if="editarDadosParceiro === false">
+                    CNPJ: {{ this.parceiro.cnpj }}
+                  </span>
+                  <span v-else>
+                    <q-input outlined v-model="dadosParceiro.cnpj" style="margin-top: 10px;" label="CNPJ" v-mask="['##.###.###/####-##']" />
+                  </span>
+                </div>
+              </div>
+              <div class="col-md-1 col-lg-1">
+                <q-btn class="bg-primary text-caption text-white" @click="updateColaboradorData">
+                  <font-awesome-icon :icon="['far', 'pen-to-square']" />
+                  <q-tooltip
+                      class="bg-primary text-caption outline"
+                      :offset="[10, 10]"
+                      style="max-width: 600px">
+                      Editar informações do Parceiro.
+                    </q-tooltip>
+                </q-btn>
+              </div>
             </div>
             <div class="row">
-              <div class="col-12">
+              <!-- sumindo com esse block para o form -->
+              <div class="col-12" v-if="editarDadosParceiro === false">
                 <div v-if="this.parceiro.status === '1'" style="float: left;">
                   <q-badge color="green" label="Ativo" style="margin: 0 5px;" />
                 </div>
@@ -27,11 +60,14 @@
                 </div>
                 <q-badge color="purple" label="Outros Parceiros Participantes" style="margin: 0 5px;" />
               </div>
+
               <div class="col-12" style="margin-top: 15px;">
-                <table class="table">
+                <table class="table" v-if="editarDadosParceiro === false">
                   <tr>
                     <td class="text-grey text-right">Responsável Legal:</td>
-                    <td>{{ this.parceiro.responsavel_legal }}</td>
+                    <td >
+                      {{ this.parceiro.responsavel_legal }}
+                    </td>
                   </tr>
                   <tr> <td colspan="2"></td> </tr>
                   <tr> <td colspan="2"></td> </tr>
@@ -39,15 +75,21 @@
                   <tr> <td colspan="2"></td> </tr>
                   <tr>
                     <td class="text-grey text-right">CPF:</td>
-                    <td> {{ this.parceiro.cpf }}</td>
+                    <td >
+                      {{ this.parceiro.cpf }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="text-grey text-right">E-mail:</td>
-                    {{ this.parceiro.email }}
+                    <td >
+                      {{ this.parceiro.email }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="text-grey text-right">Telefone:</td>
-                    {{ this.parceiro.telefone }}
+                    <td >
+                      {{ this.parceiro.telefone }}
+                    </td>
                   </tr>
                   <tr> <td colspan="2"></td> </tr>
                   <tr> <td colspan="2"></td> </tr>
@@ -55,9 +97,21 @@
                   <tr> <td colspan="2"></td> </tr>
                   <tr>
                     <td class="text-grey text-right">Observações:</td>
-                    {{ this.parceiro.observacao }}
+                    <td >
+                      {{ this.parceiro.observacao }}
+                    </td>
                   </tr>
                 </table>
+                <div v-else>
+                  <div class="text-subtitle2">Dados do Responsavel Legal:</div>
+                  <q-btn class="bg-red text-white btn-sm" @click="MudarResponsavel">Mudar Responsavel Legal</q-btn>
+                  
+                  <q-input outlined v-model="dadosParceiro.nomeResponsavel" label="Nome do Responsavel Legal" style="margin-top: 10px; margin-left: 35px; margin-right: 25px;"/>
+                  <q-input outlined v-model="dadosParceiro.cpf" label="CPF do Responsavel" style="margin-top: 10px; margin-left: 35px; margin-right: 25px;"/>
+                  <q-input outlined v-model="dadosParceiro.email" label="E-mail do responsavel" style="margin-top: 10px; margin-left: 35px; margin-right: 25px;" />
+                  <q-input outlined v-model="dadosParceiro.telefone" label="Telefone do responsavel" style="margin-top: 10px; margin-left: 35px; margin-right: 25px;"/>
+                  <q-input outlined v-model="dadosParceiro.observacao" label="Observações" type="textarea" maxlength="250" style="margin-top: 10px; margin-left: 35px; margin-right: 25px;" />
+                </div>
                 <hr class="border-grey" style="margin: 25px 0;"/>
                 <h6 style="margin: 15px;">Ações</h6>
                 <q-toggle 
@@ -65,7 +119,14 @@
                   v-model="parceiroStatus" 
                   :label="parceiroStatusLabel" 
                   @click="atualizarStatus" />
-                <q-btn outline style="margin-left: 75px;" @click="novoColaborador = true">Novo Colaborador</q-btn>
+                <div v-if="editarDadosParceiro === false">
+                  <q-btn outline style="margin-top:-55px; margin-left: 200px;" @click="novoColaborador = true">Novo Colaborador</q-btn>
+                </div>
+                <div v-else>
+                  <q-btn class="bg-green text-white" style="margin-top:-55px; margin-left: 200px;" @click="atualizarParceiroData">
+                    Salvar Dados
+                  </q-btn>
+                </div>
               </div>
             </div>
           </q-card-section>
@@ -134,7 +195,7 @@
         </div>
       </div>
     </div>
-
+    <!-- Salvar novo Colaborador -->
     <q-dialog v-model="novoColaborador">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
@@ -170,13 +231,14 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-
   </q-page>
 </template>
 <script>
 import { ref } from 'vue';
 import {TheMask} from 'vue-the-mask';
 import accountMixin from "../../mixins/accountMixin";
+import { useQuasar } from 'quasar';
+import Swal from 'sweetalert2'
 
 const columns = [
   { name: 'status', label: 'Status', field: 'status', sortable: true },
@@ -194,7 +256,7 @@ for (let i = 0; i < colabRows.length; i++) {
 }
 rows.forEach((row, index) => {
   row.index = index
-})
+});
 
 export default {
   name: "ViewPartner",
@@ -222,16 +284,29 @@ export default {
         repetirEmail: null
       },
       novoCadastro: [],
+      dadosParceiro: {
+        nomeInstituicao: null,
+        cnpj:null,
+        nomeResponsavel:null,
+        cpf:null,
+        email:null,
+        telefone:null,
+        observacao:null,
+        mudarResponsavelLegal: false,
+      },
+      editarDadosParceiro: false,
     }
   },
   setup() {
+    const $q = useQuasar();
     return {
       novoColaborador: ref(false),
-      parceiroStatus: ref(true)
+      parceiroStatus: ref(true),
     }
   },
   methods: {
     async getPartnerData() {
+      this.dadosParceiro = [];
       try {
         const { data, status } =  await this.$http.get("parceiros/show/" + this.PartnerId);
         this.parceiro = data;
@@ -240,6 +315,14 @@ export default {
           // verificando status do parceiro
           this.parceiroStatus = this.parceiro.status === '1' ? true : false;
           this.parceiroStatusLabel = this.parceiro.status === '1' ? 'Ativo' : 'Inativo';
+          // passando os dados do parceiro
+          this.dadosParceiro.nomeInstituicao = this.parceiro.nome_instituicao;
+          this.dadosParceiro.cnpj = this.parceiro.cnpj;
+          this.dadosParceiro.nomeResponsavel = this.parceiro.responsavel_legal;
+          this.dadosParceiro.cpf = this.parceiro.cpf;
+          this.dadosParceiro.email = this.parceiro.email;
+          this.dadosParceiro.telefone = this.parceiro.telefone;
+          this.dadosParceiro.observacao = this.parceiro.observacao;
         }
       } catch(error) {
         this.$q.notify({
@@ -250,6 +333,8 @@ export default {
       }
     },
     async getColaboradoresData() {
+      // setando as rows como nulas
+      this.colabRows = [];
       try {
         const { data, status } = await this.$http.get("colaboradores/?id=" + this.PartnerId);
         if (status === 200 && Array.isArray(data)) {
@@ -289,32 +374,87 @@ export default {
       });
     },
     async salvarColaborador() {
-      this.novoCadastro = {
-        'parceiro': this.parceiro,
-        'colaborador': this.dadoColaborador
-      };
-      const { data, status } = await this.$http.post("colaboradores/store", this.novoCadastro);
-      if (status === 200 || status === 201) {
-        // mensagem de sucesso
+      try {
+        this.novoCadastro = {
+          'parceiro': this.parceiro,
+          'colaborador': this.dadoColaborador
+        };
+        // fazer um get para saber se existe um usuário cadastrado antes de cadastrar o colaborador
+        const { data, status } = await this.$http.post("colaboradores/store", this.novoCadastro);
+        if (status === 200 || status === 201) {
+          // mensagem de sucesso
+          this.$q.notify({
+            message: 'Novo colaborador criado com sucesso!',
+            color: "positive",
+            position: "top",
+          });
+          // adicionando na tabela
+          this.colabRows = data.map((colab) => ({
+            status: colab.status,
+            name: colab.nome,
+            email: colab.email,
+            id: colab.user_id
+          }));
+        }
+      } catch (error) {
         this.$q.notify({
-          message: 'Novo colaborador criado com sucesso!',
+          message: error.message || 'Falha ao cadastrar novo colaborador',
+          color: "negative",
+          position: "top",
+        });
+      }
+    },
+    async atualizarParceiroData() {
+
+    },
+    async updateColaboradorData() {
+      if (this.editarDadosParceiro === true) {
+        this.editarDadosParceiro = false;
+      } else {
+        this.editarDadosParceiro = true;
+      }
+    },
+    MudarResponsavel() {
+      Swal.fire({
+        title: "Mudança de Responsável Legal!",
+        text: "Ao fazer isso, o responsavél legal, será direcionado a lista de colaboradores.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Limpar campos e trocar responsavél",
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // limpando campos e mudando o status para mudar o responsavel legal
+          this.dadosParceiro.nomeResponsavel = null;
+          this.dadosParceiro.cpf = null;
+          this.dadosParceiro.email = null;
+          this.dadosParceiro.telefone = null;
+          this.dadosParceiro.observacao = null;
+          this.dadosParceiro.mudarResponsavelLegal = true;
+        }
+      });
+    },
+    async atualizarStatus() {      
+      try {
+        let parceiroStatusParams = {
+          'status': this.parceiroStatus === true ? 1 : 0,
+          'id': this.PartnerId
+        };
+        const { data, status } = await this.$http.post("parceiros/updateStatus/", parceiroStatusParams);
+        this.$q.notify({
+          message: 'Status do Parceiro Atualiazado com sucesso.',
           color: "positive",
           position: "top",
         });
-        // adicionando na tabela
-        this.colabRows = data.map((colab) => ({
-          status: colab.status,
-          name: colab.nome,
-          email: colab.email,
-          id: colab.user_id
-        }));
+      } catch (error) {
+        this.$q.notify({
+          message: error.message || 'Falha ao atualizar os status',
+          color: "negative",
+          position: "top",
+        });
       }
-    },
-    async updateColaboradorData() {
-
-    },
-    async atualizarStatus() {
-      console.log('teste');
     },
     async atualizarStatusColaborador(id) {
       console.log(id)
@@ -333,6 +473,13 @@ export default {
       }
       return true;
     },
+    voltarPagina() {
+      // limpando os dados dos colaboradores 
+      // para garantir que não haja cache
+      this.colabRows = [];
+      // voltando a pagina de parceiros
+      this.$router.push({ name: "PartnersMainPage" });
+    }
   },
   mounted() {},
   created() {
