@@ -7,7 +7,7 @@
                 <q-btn icon="person" flat round>
                 <q-menu>
                     <q-list style="min-width: 100px">
-                        <q-item clickable v-close-popup to="signin">
+                        <q-item clickable v-close-popup to="/signin">
                             <q-item-section side>
                                 <q-icon name="mdi-exit-to-app" color="negative"/>
                             </q-item-section>
@@ -56,6 +56,32 @@
                             </q-item>
                         </q-card-section>
                     </q-card>
+                </q-expansion-item>
+                <q-expansion-item
+                expand-separator
+                  icon="event_note"
+                  label="Gerencias Parceiros">
+                  <q-card>
+                    <q-card-section>
+                      <!-- <q-item clickable to="/users">
+                        <q-item-section avatar>
+                          <q-icon name="code" />
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label>Gerenciar Usuários</q-item-label>
+                        </q-item-section>
+                      </q-item> -->
+                      <q-separator/>
+                      <q-item clickable to="/listaparceiros">
+                        <q-item-section avatar>
+                          <q-icon name="code" />
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label>Gerenciar Parceiros</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-card-section>
+                  </q-card>
                 </q-expansion-item>
                 <!--
                 <q-expansion-item

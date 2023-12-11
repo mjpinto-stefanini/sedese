@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Mail;
 
 class Controller extends BaseController
 {
@@ -24,5 +25,4 @@ class Controller extends BaseController
     const HTTP_CONFLICT = 409;
     const HTTP_UNPROCESSABLE_ENTITY = 422;
     const HTTP_INTERNAL_SERVER_ERROR = 500;
-
 }
