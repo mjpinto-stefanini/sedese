@@ -22,6 +22,8 @@ use App\Http\Controllers\TurmaController;
 use App\Http\Controllers\TurmaEnderecoController;
 use App\Http\Controllers\TurmaPolosController;
 use App\Http\Controllers\TurmaPolosMunicipiosController;
+use App\Http\Controllers\ParceirosController;
+use App\Http\Controllers\ColaboradoresController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -50,7 +52,6 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::prefix('users')->group(function () {
-
         Route::get('/', [Users::class, 'list']);
         Route::get('/{id}/user', [Users::class, 'get']);
         Route::get('/confirm-email/{token}', [Users::class, 'confirmEmail']);
@@ -60,7 +61,6 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::prefix('auth')->group(function () {
-
         Route::post('/login', [AuthController::class, 'login']);
         Route::post('/register', [AuthController::class, 'register']);
         Route::post('/logout', [AuthController::class, 'logout']);
@@ -225,4 +225,25 @@ Route::prefix('v1')->group(function () {
         Route::put('/update/{id}', [TurmaPolosMunicipiosController::class, 'update']);
         Route::delete('/destroy/{id}', [TurmaPolosMunicipiosController::class, 'destroy']);
     });
+
+    Route::prefix('parceiros')->group(function () {
+        Route::get('/', [ParceirosController::class, 'index']);
+        Route::post('/store', [ParceirosController::class, 'store']);
+        Route::get('/show/{id}', [ParceirosController::class, 'show']);
+        Route::get('consultar', [ParceirosController::class, 'consultar']);
+        Route::put('/update/{id}', [ParceirosController::class, 'update']);
+        Route::post('/updateStatus', [ParceirosController::class, 'updateStatus']);
+        Route::delete('/destroy/{id}', [ParceirosController::class, 'destroy']);
+    });
+
+    Route::prefix('colaboradores')->group(function () {
+        Route::get('/', [ColaboradoresController::class, 'index']);
+        Route::post('/store', [ColaboradoresController::class, 'store']);
+        Route::get('/show/{id}', [ColaboradoresController::class, 'show']);
+        Route::put('/update/{id}', [ColaboradoresController::class, 'update']);
+        Route::get('/checkar', [ColaboradoresController::class, 'checkar']);
+        Route::delete('/destroy/{id}', [ColaboradoresController::class, 'destroy']);
+        Route::get('/trocarStatus', [ColaboradoresController::class, 'trocarStatus']);
+    });
+
 });

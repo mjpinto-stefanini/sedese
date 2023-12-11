@@ -14,6 +14,7 @@ class TipoPerfil extends Model
 
     const RESPONSAVEL_TECNICO = 1;
     const PARTICIPANTE = 2;
+    const COLABORADOR = 3;
 
     protected $fillable = [
         'id',
