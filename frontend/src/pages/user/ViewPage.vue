@@ -157,9 +157,6 @@
                             </q-card-section>
                             <q-card-section>
                                 <div class="row" v-if="professional.id">
-                                    <div class="col-sm-6 q-pa-xs">
-                                        <span class="text-grey">Âmbito de atuação</span> {{ professional.regional }}
-                                    </div>
                                     <div class="col-sm-6 q-pa-xs" v-if="professional.lotacao">
                                         <span class="text-grey">Lotação</span> {{ professional.lotacao }}
                                     </div>
@@ -273,7 +270,8 @@ export default {
 	mixins: [accountMixin],
     data() {
         return {
-            baseURL: process.env.VUE_APP_API_URL,
+            //baseURL: 'http://api-sedese.stefanini.test/api/v1/',
+            baseURL: 'http://200.198.62.82/api/v1/',
             UserId: this.$route.params.id,
             user: [],
             contact: [],

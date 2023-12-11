@@ -225,7 +225,7 @@ export default {
 			columns: [
 				{
 					name: "is_active",
-					label: "Ativo",
+					label: "Status",
 					field: "is_active",
 					align: "center",
 					sortable: true,
@@ -246,14 +246,14 @@ export default {
 				},
 				{
 					name: "service",
-					label: "Ambito de atuação",
+					label: "Âmbito de atuação",
 					field: "service",
 					align: "left",
 					sortable: true,
 				},
 				{
 					name: "secretary",
-					label: "Secretaria",
+					label: "Lotação/Município",
 					field: "secretary",
 					align: "left",
 					sortable: true,
