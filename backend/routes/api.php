@@ -241,7 +241,9 @@ Route::prefix('v1')->group(function () {
         Route::post('/store', [ColaboradoresController::class, 'store']);
         Route::get('/show/{id}', [ColaboradoresController::class, 'show']);
         Route::put('/update/{id}', [ColaboradoresController::class, 'update']);
+        Route::get('/checkar', [ColaboradoresController::class, 'checkar']);
         Route::delete('/destroy/{id}', [ColaboradoresController::class, 'destroy']);
+        Route::get('/trocarStatus', [ColaboradoresController::class, 'trocarStatus']);
     });
 
 });

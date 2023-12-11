@@ -93,16 +93,16 @@
             </q-card>
             <q-card style="padding: 5px 15px; margin-bottom: 10px;" class="row">
               <div class="col-12">
-                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.nomeResponsavel" label="Responsavel Legal" :rules="[isRequired]"/>
+                <q-input outlined style="margin: 0px 0;" v-model="novoParceiro.nomeResponsavel" label="Responsavel Legal" :rules="[isRequired]"/>
               </div>
               <div class="col-12">
-                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.cpf" label="CPF" mask="###.###.###-##" :rules="[isRequired]" />
+                <q-input outlined style="margin: 0px 0;" v-model="novoParceiro.cpf" label="CPF" mask="###.###.###-##" :rules="[isRequired]" />
               </div>
               <div class="col-12">
-                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.telefone" label="Telefone" v-mask="['(##) ####-####', '(##) #####-####']" />
+                <q-input outlined style="margin: 0px 0;" v-model="novoParceiro.telefone" label="Telefone" v-mask="['(##) ####-####', '(##) #####-####']" />
               </div>
               <div class="col-12">
-                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.email" label="E-mail" :rules="[isRequired, isEmail]"/>
+                <q-input outlined style="margin: 25px 0px 5px 0px;" v-model="novoParceiro.email" label="E-mail" :rules="[isRequired, isEmail]"/>
               </div>
               <div class="col-12">
                 <q-input outlined v-model="novoParceiro.observacao" label="Observações" type="textarea" maxlength="250" />
@@ -215,8 +215,10 @@ export default {
             color: "positive",
             position: "top",
 				  });
-
-          await this.getParceiros();
+          // carregando função
+          this.getParceiros();
+          // limpando os campos
+          this.limparCampos();
         }
       } catch (error) {
         this.$q.notify({
@@ -289,6 +291,15 @@ export default {
       return (
         (value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido"
       );
+    },
+    limparCampos() {
+      this.novoParceiro.nomeInstituicao = null;
+      this.novoParceiro.cnpj = null;
+      this.novoParceiro.nomeResponsavel = null;
+      this.novoParceiro.cpf = null;
+      this.novoParceiro.email = null;
+      this.novoParceiro.telefone = null;
+      this.novoParceiro.observacao = null;
     },
   },
   mounted() {

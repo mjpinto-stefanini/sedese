@@ -157,12 +157,16 @@
               :rows-per-page-options="[0]"
             >
               <template v-slot:body-cell-status="props">
-                <q-td :props="props">
-                  <div v-if="this.parceiro.status === '1'" style="float: left;">
-                    <q-badge color="green" label="Ativo" style="margin: 0 5px;" />
+                <q-td :props="props">                                    
+                  <div v-if="props.row.status === '1'" style="float: left;">
+                    <a href="#" @click="mudarStatusColaborador(props.row.uuid)">
+                      <q-badge color="green" label="Ativo" style="margin: 0 5px;" />
+                    </a>
                   </div>
                   <div v-else style="float: left;">
-                    <q-badge color="red" label="Inativo" style="margin: 0 5px;" />
+                    <a href="#" @click="mudarStatusColaborador(props.row.uuid)">
+                      <q-badge color="red" label="Inativo" style="margin: 0 5px;" />
+                    </a>
                   </div>
                 </q-td>
               </template>
@@ -215,7 +219,7 @@
           </div>
           <div class="row" style="margin: 5px 0;">
             <div class="col-md-12">
-              <q-input outlined v-model="dadoColaborador.email" label="Email" :rules="[isRequired, isEmail, emailMatch]"/>
+              <q-input outlined v-model="dadoColaborador.email" label="Email" :rules="[isRequired, isEmail]"/>
             </div>
           </div>
           <div class="row" style="margin: 5px 0;">
@@ -239,6 +243,7 @@ import {TheMask} from 'vue-the-mask';
 import accountMixin from "../../mixins/accountMixin";
 import { useQuasar } from 'quasar';
 import Swal from 'sweetalert2'
+import router from '@/router';
 
 const columns = [
   { name: 'status', label: 'Status', field: 'status', sortable: true },
@@ -343,7 +348,8 @@ export default {
               status: colab.status,
               name: colab.nome,
               email: colab.email,
-              id: colab.user_id
+              id: colab.user_id,
+              uuid: colab.uuid
             });
           });
         } else {
@@ -369,7 +375,8 @@ export default {
           status: colab.status,
           name: colab.nome,
           email: colab.email,
-          id: colab.user_id
+          id: colab.user_id,
+          uuid: colab.uuid
         });
       });
     },
@@ -379,22 +386,34 @@ export default {
           'parceiro': this.parceiro,
           'colaborador': this.dadoColaborador
         };
-        // fazer um get para saber se existe um usuário cadastrado antes de cadastrar o colaborador
-        const { data, status } = await this.$http.post("colaboradores/store", this.novoCadastro);
-        if (status === 200 || status === 201) {
-          // mensagem de sucesso
-          this.$q.notify({
-            message: 'Novo colaborador criado com sucesso!',
-            color: "positive",
-            position: "top",
+
+        const cadastroExistente = await this.verificaCadastroColaborador();
+        console.log(cadastroExistente);
+        const instituicoes = cadastroExistente.map(cadastro => cadastro.instituicao).join(', ');
+        console.log(instituicoes);
+
+        if (cadastroExistente.length > 0) {
+          // const instituicoes = cadastroExistente.map(cadastro => cadastro.instituicao).join(', ');
+
+          const swalResult = await Swal.fire({
+            title: "Aviso",
+            html: `Este colaborador está cadastrado em <b>${instituicoes}</b>. Deseja confirmar o cadastro?`,
+            // text: `Este colaborador está cadastrado em <b>${instituicoes}</b>. Deseja confirmar o cadastro?`,
+            icon: "warning",
+            showDenyButton: true,
+            confirmButtonColor: "#5cb768",
+            denyButtonColor: "#f34d45",
+            confirmButtonText: "Confirmar",
+            denyButtonText: 'Cancelar'
           });
-          // adicionando na tabela
-          this.colabRows = data.map((colab) => ({
-            status: colab.status,
-            name: colab.nome,
-            email: colab.email,
-            id: colab.user_id
-          }));
+
+          if (swalResult.isConfirmed) {
+            await this.enviarDadosColaborador();
+          } else if (swalResult.isDenied) {
+            this.$router.go();
+          }
+        } else {
+          await this.enviarDadosColaborador();
         }
       } catch (error) {
         this.$q.notify({
@@ -404,8 +423,63 @@ export default {
         });
       }
     },
+    async enviarDadosColaborador() {
+      const { data, status } = await this.$http.post("colaboradores/store", this.novoCadastro);
+      if (status === 200 || status === 201) {
+        // mensagem de sucesso
+        this.$q.notify({
+          message: 'Novo colaborador criado com sucesso!',
+          color: "positive",
+          position: "top",
+        });
+        // adicionando na tabela
+        this.colabRows = data.map((colab) => ({
+          status: colab.status,
+          name: colab.nome,
+          email: colab.email,
+          id: colab.user_id,
+          uuid: colab.uuid
+        }));
+      }
+      this.$router.go();
+    },
+    async verificaCadastroColaborador() {
+      const result = await this.$http.get("/colaboradores/checkar?name=" + this.dadoColaborador.nome + "&cpf=" + this.dadoColaborador.cpf + "&email=" + this.dadoColaborador.email);
+      return result.data ?? [];
+    },
     async atualizarParceiroData() {
+      try {
+        console.log(this.colabRows);
+        const { data, status } = await this.$http.post('parceiros/update/' + this.PartnerId, this.dadosParceiro);
 
+        if (this.dadosParceiro.mudarResponsavelLegal === true) {
+          const userIds = this.colabRows.map((colab) => colab.user_id);
+          data.forEach((colab) => {
+            console.log(id);
+            if (!userIds.includes(colab.user_id)) {
+              this.colabRows.push({
+                status: colab.status,
+                name: colab.nome,
+                email: colab.email,
+                id: colab.user_id,
+                uuid: colab.uuid
+              });
+            }
+          });
+        }
+
+        this.$q.notify({
+          message: 'Dados do Parceiro alterados com sucesso!',
+          color: "positive",
+          position: "top",
+        });
+      } catch (error) {
+        this.$q.notify({
+          message: error.message || 'Falha ao cadastrar novo colaborador',
+          color: "negative",
+          position: "top",
+        });
+      }
     },
     async updateColaboradorData() {
       if (this.editarDadosParceiro === true) {
@@ -420,8 +494,8 @@ export default {
         text: "Ao fazer isso, o responsavél legal, será direcionado a lista de colaboradores.",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
+        confirmButtonColor: "#5cb768",
+        cancelButtonColor: "#f34d45",
         confirmButtonText: "Limpar campos e trocar responsavél",
         cancelButtonText: 'Cancelar'
       }).then((result) => {
@@ -436,18 +510,72 @@ export default {
         }
       });
     },
-    async atualizarStatus() {      
+    async atualizarStatus() {
+      Swal.fire({
+        title: "Atualizar Status do Parceiro!",
+        text: "Ao desativar está instituição, todos os colaboradores dela, também terão seus status desativados. Porem, caso reative o status dela, será necessário reativar os status dos colaboradores manuamente.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#5cb768",
+        cancelButtonColor: "#f34d45",
+        confirmButtonText: "Confirmar",
+        cancelButtonText: 'Cancelar'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            let parceiroStatusParams = {
+              'status': this.parceiroStatus === true ? 1 : 0,
+              'id': this.PartnerId
+            };
+            const { data, status } = await this.$http.post("parceiros/updateStatus/", parceiroStatusParams);
+            if (status === 200) {
+              this.$q.notify({
+                message: 'Status do Parceiro Atualiazado com sucesso.',
+                color: "positive",
+                position: "top",
+              });
+              // atualizando os dados
+              this.getPartnerData()
+            }
+          } catch (error) {
+            this.$q.notify({
+              message: error.message || 'Falha ao atualizar os status',
+              color: "negative",
+              position: "top",
+            });
+          }
+        } else {
+          // atualizando os dados
+          this.getPartnerData();
+        }
+      });
+    },
+    async mudarStatusColaborador(id) {      
       try {
-        let parceiroStatusParams = {
-          'status': this.parceiroStatus === true ? 1 : 0,
-          'id': this.PartnerId
-        };
-        const { data, status } = await this.$http.post("parceiros/updateStatus/", parceiroStatusParams);
-        this.$q.notify({
-          message: 'Status do Parceiro Atualiazado com sucesso.',
-          color: "positive",
-          position: "top",
-        });
+        Swal.fire({
+          title: "Mudar Status do Colaborador!",
+          text: "Deseja alterar o status do colaborador?.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#5cb768",
+          cancelButtonColor: "#f34d45",
+          confirmButtonText: "Confirmar",
+          cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            const { data, status } = await this.$http.get('/colaboradores/trocarStatus?uuid=' + id);
+            if (status === 200) {
+              this.$q.notify({
+                message: 'Status do Colaborador Atualiazado com sucesso.',
+                color: "positive",
+                position: "top",
+              });
+              // atualizando os dados
+              this.getPartnerData();
+              // this.$router.go();
+            }
+          }
+        })
       } catch (error) {
         this.$q.notify({
           message: error.message || 'Falha ao atualizar os status',
@@ -455,9 +583,6 @@ export default {
           position: "top",
         });
       }
-    },
-    async atualizarStatusColaborador(id) {
-      console.log(id)
     },
     isRequired(value) {
 			return !!value || "Campo obrigatório";
@@ -468,7 +593,7 @@ export default {
       );
     },
     emailMatch(value) {
-      if (value !== this.form.email) {
+      if (value !== this.dadoColaborador.email) {
         return "Os emails informados não conferem, favor, preencher o campo novamente.";
       }
       return true;

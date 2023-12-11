@@ -16,8 +16,10 @@ return new class extends Migration
         Schema::create('colaboradores', function (Blueprint $table) {
             $table->id('id');
             $table->uuid('uuid')->index();
-            $table->uuid('parceiros_id');
-            $table->uuid('user_id')->unique();
+            $table->uuid('parceiros_id')->index();
+            $table->uuid('user_id')->index();
+            $table->string('email')->index()->comment('email do colaborador');
+            $table->string('status')->comment('Verifica o status do usuário dentro da instituição');
             $table->timestamps();
         });
     }

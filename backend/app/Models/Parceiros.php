@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Parceiros extends Model
 {
+    
     use HasFactory;
     protected $table = "parceiros";
     protected $fillable = [

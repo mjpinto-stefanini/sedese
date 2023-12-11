@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\App;
 use App\Mail\Bemvindo;
 use App\Models\Address;
 use App\Models\Contact;
@@ -19,6 +20,7 @@ use App\Mail\Confirmation;
 
 class Users extends Controller
 {
+    const MAX_LENGHT_PASSWORD = 6;
 
     public function __construct()
     {
@@ -310,4 +312,33 @@ class Users extends Controller
             'message' => 'Token inválido.',
         ], self::HTTP_UNAUTHORIZED);
     }
+
+    public function generateRandomPassword() {
+        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $password = '';
+    
+        for ($i = 0; $i < self::MAX_LENGHT_PASSWORD; $i++) {
+            $password .= $characters[rand(0, strlen($characters) - 1)];
+        }
+    
+        return $password;
+    }
+
+    public function sendPasswordByEmail($id) {
+        $user = User::findOrFail($id);
+        $newPassword = $this->generateRandomPassword();
+        $user->password = bcrypt($newPassword);
+        $user->save();
+
+        // Se estiver no ambiente local ou de desenvolvimento, não envie o e-mail
+        if (App::environment('local', 'development')) {
+            return;
+        }
+    
+        Mail::send('emails.new_password', ['password' => $newPassword], function ($message) use ($user) {
+            $message->to($user->email);
+            $message->subject('Nova Senha Gerada');
+        });
+    }
+    
 }

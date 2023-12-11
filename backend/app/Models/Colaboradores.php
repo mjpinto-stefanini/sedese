@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Colaboradores extends Model
 {
+
+    const STATUS_ATIVO = 1;
+    const STATUS_INATIVO = 0;
+
     use HasFactory;
     protected $table = "colaboradores";
     protected $fillable = [
@@ -14,5 +18,7 @@ class Colaboradores extends Model
         'uuid',
         'parceiros_id',
         'user_id',
+        'status',
+        'email'
     ];
 }
