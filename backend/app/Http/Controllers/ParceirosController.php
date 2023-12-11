@@ -20,7 +20,7 @@ class ParceirosController extends Controller
     const STATUS_INATIVO = 0;
     public function __construct()
     {
-        // $this->middleware('auth:api');
+        $this->middleware('auth:api');
     }
 
     public function index()
