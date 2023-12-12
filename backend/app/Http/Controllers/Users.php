@@ -83,6 +83,9 @@ class Users extends Controller
 
         $personalData = [
             'user_id' => $user['id'],
+            'is_active' => $user['is_active'],
+            'is_admin' => $user['is_admin'],
+            'type_admin' => $user['type_admin'],
             'name' => $request['personal']['name'],
             'social_name' => $request['personal']['socialName'],
             'gender_identity' => $request['personal']['genderIdentity'],

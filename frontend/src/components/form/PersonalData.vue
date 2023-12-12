@@ -246,6 +246,90 @@
 			</div>
 		</q-card-section>
 	</q-card>
+	<q-card>
+		<q-card-section class="row items-center">
+			<q-toolbar>
+				<q-avatar icon="person" color="primary" text-color="white" />
+				<q-toolbar-title>{{ selectedUser.name }} </q-toolbar-title>
+				<span class="q-ml-sm"> {{ selectedUser.created }} </span>
+				<q-btn
+					color="primary"
+					icon="close"
+					round
+					flat
+					@click="dialog = false"
+					class="q-ml-md"
+				/>
+			</q-toolbar>
+		</q-card-section>
+
+		<q-separator class="q-mb-lg" />
+
+		<q-card flat>
+			<q-card-section>
+				<div class="row q-col-gutter-md">
+					<div class="col-12">
+						<q-toggle
+							v-model="form.is_active"
+							color="green"
+							label="Ativado"
+							:disable="form.is_admin && form.type_admin === '3'"
+						/>
+					</div>
+
+					<div class="col-12">
+						<q-toggle
+							v-model="form.is_admin"
+							color="green"
+							label="Administrador"
+							:disable="form.is_admin && form.type_admin !== '1'"
+						/>
+					</div>
+
+					<div class="col-12">
+						<q-select
+							:disable="
+								form.is_admin &&
+								form.type_admin !== '1' &&
+								form.type_admin !== '2'
+							"
+							v-model="form.type_admin"
+							:options="optionsUser"
+							label="Tipo de Administrador"
+							outlined
+							use-input
+							clear-icon="close"
+							clearable
+						/>
+					</div>
+				</div>
+			</q-card-section>
+		</q-card>
+
+		<!-- {{ selectedUser }} -->
+
+		<q-card-actions align="right">
+			<!--
+				<q-btn
+				color="negative"
+				label="Resetar Senha"
+				no-caps
+				unelevated
+				padding="sm xl"
+				@click="dialog = true"
+				v-close-popup
+			/>
+		-->
+			<q-btn
+				color="primary"
+				label="Salvar"
+				no-caps
+				unelevated
+				padding="sm xl"
+				@click="onSave"
+			/>
+		</q-card-actions>
+	</q-card>
 </template>
 
 <script>
@@ -270,6 +354,9 @@ export default {
 				deficiency: "",
 				deficiencyOthers: "",
 				deficiencyStructure: "",
+				type_admin: "",
+				is_admin: false,
+				is_active: false,
 			},
 			genderIdentityList: [
 				"Homem (cis ou trans)",
