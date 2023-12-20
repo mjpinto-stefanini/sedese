@@ -11,8 +11,7 @@
 						outlined
 						clear-icon="close"
 						clearable
-						:rules="[isRequired, (v) =>
-								/^[a-zA-ZÀ-ÿ ]+$/.test(v) || 'Nome deve conter apenas letras',]"
+						:rules="[isRequired,isLetter]"
 					/>
 				</div>
 				<div class="col-4">
@@ -53,8 +52,7 @@
 						outlined
 						clear-icon="close"
 						clearable
-						:rules="[isRequired, (v) =>
-								/^[a-zA-ZÀ-ÿ ]+$/.test(v) || 'Nome deve conter apenas letras',]"
+						:rules="[isRequired, isLetter]"
 					/>
 				</div>
 				<div class="col-12 row">
@@ -105,13 +103,12 @@
 					<q-input
 						v-model="form.RG"
 						name="RG"
-						for="RG"
 						label="Numero do RG"
 						outlined
 						mask="##############################"
 						clear-icon="close"
 						clearable
-						:rules="[isRequired, isNumber]"
+						:rules="[isNumber]"
 					/>
 				</div>
 				<div class="col-4">
@@ -119,11 +116,10 @@
 						v-model="form.issuingBody"
 						label="Orgão emissor"
 						name="issuingBody"
-						for="issuingBody"
 						outlined
 						clear-icon="close"
 						clearable
-						:rules="[isRequired]"
+						:rules="[isLetter]"
 					/>
 				</div>
 				<div class="col-3">
@@ -131,13 +127,12 @@
 						v-model="form.uf"
 						:options="ufFiltered"
 						label="UF"
-						for="uf"
 						name="uf"
 						outlined
 						use-input
 						input-debounce="0"
 						@filter="onUfFilter"
-						:rules="[isRequired]"
+						:rules="[isLetter]"
 					/>
 				</div>
 				<div class="col-12">
@@ -246,90 +241,6 @@
 			</div>
 		</q-card-section>
 	</q-card>
-	<q-card>
-		<q-card-section class="row items-center">
-			<q-toolbar>
-				<q-avatar icon="person" color="primary" text-color="white" />
-				<q-toolbar-title>{{ selectedUser.name }} </q-toolbar-title>
-				<span class="q-ml-sm"> {{ selectedUser.created }} </span>
-				<q-btn
-					color="primary"
-					icon="close"
-					round
-					flat
-					@click="dialog = false"
-					class="q-ml-md"
-				/>
-			</q-toolbar>
-		</q-card-section>
-
-		<q-separator class="q-mb-lg" />
-
-		<q-card flat>
-			<q-card-section>
-				<div class="row q-col-gutter-md">
-					<div class="col-12">
-						<q-toggle
-							v-model="form.is_active"
-							color="green"
-							label="Ativado"
-							:disable="form.is_admin && form.type_admin === '3'"
-						/>
-					</div>
-
-					<div class="col-12">
-						<q-toggle
-							v-model="form.is_admin"
-							color="green"
-							label="Administrador"
-							:disable="form.is_admin && form.type_admin !== '1'"
-						/>
-					</div>
-
-					<div class="col-12">
-						<q-select
-							:disable="
-								form.is_admin &&
-								form.type_admin !== '1' &&
-								form.type_admin !== '2'
-							"
-							v-model="form.type_admin"
-							:options="optionsUser"
-							label="Tipo de Administrador"
-							outlined
-							use-input
-							clear-icon="close"
-							clearable
-						/>
-					</div>
-				</div>
-			</q-card-section>
-		</q-card>
-
-		<!-- {{ selectedUser }} -->
-
-		<q-card-actions align="right">
-			<!--
-				<q-btn
-				color="negative"
-				label="Resetar Senha"
-				no-caps
-				unelevated
-				padding="sm xl"
-				@click="dialog = true"
-				v-close-popup
-			/>
-		-->
-			<q-btn
-				color="primary"
-				label="Salvar"
-				no-caps
-				unelevated
-				padding="sm xl"
-				@click="onSave"
-			/>
-		</q-card-actions>
-	</q-card>
 </template>
 
 <script>
@@ -341,6 +252,7 @@ export default {
 			deficiency: "",
 			form: {
 				name: "",
+				dataNascimento:"",
 				socialName: "",
 				genderIdentity: "",
 				genderIdentityOthers: "",
@@ -357,6 +269,7 @@ export default {
 				type_admin: "",
 				is_admin: false,
 				is_active: false,
+				erroValidacao: "",
 			},
 			genderIdentityList: [
 				"Homem (cis ou trans)",
@@ -444,6 +357,9 @@ export default {
 				"SE",
 				"TO",
 			],
+		inputValue: "",
+		ignoredValue: "",
+
 		};
 	},
 	methods: {
@@ -451,13 +367,24 @@ export default {
 			return !!value || "Campo obrigatório";
 		},
 		isNumber(value) {
-			return (
-				(value && /^[\d.-]+$/.test(value)) || "Somente números"
-			);
+			if(value){
+				return (
+					(!!value && /^[\d.-]+$/.test(value)) || "Somente números"
+				);
+			}
+
+		},
+		isLetter(value) {
+			if(value){
+				return (
+					(!!value && /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/.test(value)) || "Somente letras"
+				);
+			}
 		},
 		isMax12(value) {
+			this.erroValidacao = "Corrija as informações inseridas"
 			return (
-				(value && value.length <= 12) || "Máximo de 12 caracteres"
+				(!!value && value.length <= 12) || "Máximo de 12 caracteres"
 			);
 		},
 		parseStringFilter(text) {

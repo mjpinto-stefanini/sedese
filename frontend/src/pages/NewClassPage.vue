@@ -183,7 +183,7 @@ export default {
 	watch: {
 		personalData: {
 			handler() {
-				// this.setData();
+				this.setData();
 				console.log("personalData");
 			},
 			deep: true,

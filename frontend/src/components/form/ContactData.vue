@@ -104,14 +104,19 @@ export default {
 			return !!value || "Campo obrigatório";
 		},
 		isCellPhoneNumber(value) {
-			return (
-				(value && /^\(\d{2}\) \d \d{4}-\d{4}$/.test(value)) || "Não permitido outros caracteres"
-			);
+			if(value){
+				return (
+					(value && /^\(\d{2}\) \d \d{4}-\d{4}$/.test(value)) || "Não permitido outros caracteres"
+				);
+			}
+
 		},
 		isPhoneNumber(value) {
-			return (
-				(value && /^\(\d{2}\) \d{4}-\d{4}$/.test(value)) || "Não permitido outros caracteres"
-			);
+			if(value){
+				return (
+					(value && /^\(\d{2}\) \d{4}-\d{4}$/.test(value)) || "Não permitido outros caracteres"
+				);
+			}
 		},
 		isNumber(value) {
 			return (
@@ -139,9 +144,11 @@ export default {
 			);
 		},
 		isEmail(value) {
-			return (
-				(value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido"
-			);
+			if(value){
+				return (
+					(value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido"
+				);
+			}
 		},
 	},
 	watch: {
