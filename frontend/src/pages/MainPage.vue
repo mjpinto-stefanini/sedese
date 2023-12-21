@@ -142,14 +142,11 @@ export default {
 
 			//try {
 				const user_id = JSON.parse(localStorage.getItem("user")).id;
-				console.log('try');
-				console.log(values);
-				const { status, data } = await this.$http.patch(
+				const { status } = await this.$http.patch(
 					`users/${user_id}/secondstage`,
 					values
 				);
-				console.log('aqui',data);
-
+				console.log(status);
 				if (status === 201 || status === 200) {
 					this.$q.notify({
 						message: "Dados salvos com sucesso!",
