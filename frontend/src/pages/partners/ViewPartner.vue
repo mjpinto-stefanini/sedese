@@ -181,8 +181,8 @@
                       Resetar Senha
                     </q-tooltip>
                   </q-btn>
-                  <q-btn outline class="bg-blue text-white"
-                    @click="$router.replace('/user/' + props.row.id )"
+                  <!-- <q-btn outline class="bg-blue text-white"
+                    @click="alterarDadosColab = true" 
                     style="margin: 0 5px;">
                     <font-awesome-icon :icon="['far', 'user']" />
                     <q-tooltip
@@ -191,7 +191,45 @@
                       style="max-width: 600px">
                       Informações do Colaborador
                     </q-tooltip>
-                  </q-btn>
+                  </q-btn> -->
+
+                  <!-- alterar dados colaborador -->
+                  <!-- <q-dialog v-model="alterarDadosColab">
+                    <q-card style="width: 700px; max-width: 80vw;">
+                      <q-card-section>
+                        <div class="text-h6">Alterar Dados do colaborador</div>
+                        {{ props.row }}
+                      </q-card-section>
+                      <q-separator />
+                      <q-card-section>  
+                        <div class="row" style="margin: 5px 0;">
+                          <div class="col-md-12">
+                            <q-input outlined v-model="dadoColaborador.nome" label="Nome do Colaborador" :rules="[isRequired]"/>
+                          </div>
+                        </div>
+                        <div class="row" style="margin: 5px 0;">
+                          <div class="col-md-12">
+                            <q-input outlined v-model="dadoColaborador.cpf" label="CPF" mask="###.###.###-##" :rules="[isRequired]"/>
+                          </div>
+                        </div>
+                        <div class="row" style="margin: 5px 0;">
+                          <div class="col-md-12">
+                            <q-input outlined v-model="dadoColaborador.email" label="Email" :rules="[isRequired, isEmail]"/>
+                          </div>
+                        </div>
+                        <div class="row" style="margin: 5px 0;">
+                          <div class="col-md-12">
+                            <q-input outlined v-model="dadoColaborador.repetirEmail" label="Confirmação de Email" :rules="[emailMatch]"/>
+                          </div>
+                        </div>
+                      </q-card-section>
+                      <q-separator />
+                      <q-card-actions align="right">
+                        <q-btn outlined label="cancelar" color="red" v-close-popup />
+                        <q-btn outlined label="alterar" color="green" v-close-popup />
+                      </q-card-actions>
+                    </q-card>
+                  </q-dialog> -->
                 </q-td>
               </template>
             </q-table>
@@ -199,6 +237,7 @@
         </div>
       </div>
     </div>
+
     <!-- Salvar novo Colaborador -->
     <q-dialog v-model="novoColaborador">
       <q-card style="width: 700px; max-width: 80vw;">
@@ -239,11 +278,8 @@
 </template>
 <script>
 import { ref } from 'vue';
-import {TheMask} from 'vue-the-mask';
 import accountMixin from "../../mixins/accountMixin";
-import { useQuasar } from 'quasar';
 import Swal from 'sweetalert2'
-import router from '@/router';
 
 const columns = [
   { name: 'status', label: 'Status', field: 'status', sortable: true },
@@ -265,7 +301,6 @@ rows.forEach((row, index) => {
 
 export default {
   name: "ViewPartner",
-  components: {TheMask},
   mixins: [accountMixin],
   data() {
     return {
@@ -303,19 +338,17 @@ export default {
     }
   },
   setup() {
-    const $q = useQuasar();
     return {
       novoColaborador: ref(false),
-      parceiroStatus: ref(true),
+      alterarDadosColab: ref(false)
     }
   },
   methods: {
     async getPartnerData() {
-      this.dadosParceiro = [];
       try {
-        const { data, status } =  await this.$http.get("parceiros/show/" + this.PartnerId);
-        this.parceiro = data;
-        if (status === 200) {
+        let result =  await this.$http.get("parceiros/show/" + this.PartnerId);
+        this.parceiro = result.data;
+        if (result.status === 200) {
           this.getColaboradoresData()
           // verificando status do parceiro
           this.parceiroStatus = this.parceiro.status === '1' ? true : false;
@@ -341,9 +374,9 @@ export default {
       // setando as rows como nulas
       this.colabRows = [];
       try {
-        const { data, status } = await this.$http.get("colaboradores/?id=" + this.PartnerId);
-        if (status === 200 && Array.isArray(data)) {
-          data.forEach((colab) => {
+        let result = await this.$http.get("colaboradores/?id=" + this.PartnerId);
+        if (result.status === 200 && Array.isArray(result.data)) {
+          result.data.forEach((colab) => {
             this.colabRows.push({
               status: colab.status,
               name: colab.nome,
@@ -364,13 +397,13 @@ export default {
       }
     },
     async consultarColaborador() {
-      const { data, status } = await this.$http.get("colaboradores?id=" + this.PartnerId , {
+      let result = await this.$http.get("colaboradores?id=" + this.PartnerId , {
         params: this.consultarColab
       });
       // limpando a tabela
       this.colabRows = [];
       //exibindo os resultados
-      data.forEach((colab) => {
+      result.data.forEach((colab) => {
         this.colabRows.push({
           status: colab.status,
           name: colab.nome,
@@ -388,12 +421,9 @@ export default {
         };
 
         const cadastroExistente = await this.verificaCadastroColaborador();
-        console.log(cadastroExistente);
         const instituicoes = cadastroExistente.map(cadastro => cadastro.instituicao).join(', ');
-        console.log(instituicoes);
 
         if (cadastroExistente.length > 0) {
-          // const instituicoes = cadastroExistente.map(cadastro => cadastro.instituicao).join(', ');
 
           const swalResult = await Swal.fire({
             title: "Aviso",
@@ -424,8 +454,8 @@ export default {
       }
     },
     async enviarDadosColaborador() {
-      const { data, status } = await this.$http.post("colaboradores/store", this.novoCadastro);
-      if (status === 200 || status === 201) {
+      let result = await this.$http.post("colaboradores/store", this.novoCadastro);
+      if (result.status === 200 || status === 201) {
         // mensagem de sucesso
         this.$q.notify({
           message: 'Novo colaborador criado com sucesso!',
@@ -433,7 +463,7 @@ export default {
           position: "top",
         });
         // adicionando na tabela
-        this.colabRows = data.map((colab) => ({
+        this.colabRows = result.data.map((colab) => ({
           status: colab.status,
           name: colab.nome,
           email: colab.email,
@@ -449,13 +479,11 @@ export default {
     },
     async atualizarParceiroData() {
       try {
-        console.log(this.colabRows);
-        const { data, status } = await this.$http.post('parceiros/update/' + this.PartnerId, this.dadosParceiro);
+        let result = await this.$http.post('parceiros/update/' + this.PartnerId, this.dadosParceiro);
 
         if (this.dadosParceiro.mudarResponsavelLegal === true) {
           const userIds = this.colabRows.map((colab) => colab.user_id);
-          data.forEach((colab) => {
-            console.log(id);
+          result.data.forEach((colab) => {
             if (!userIds.includes(colab.user_id)) {
               this.colabRows.push({
                 status: colab.status,
@@ -527,8 +555,8 @@ export default {
               'status': this.parceiroStatus === true ? 1 : 0,
               'id': this.PartnerId
             };
-            const { data, status } = await this.$http.post("parceiros/updateStatus/", parceiroStatusParams);
-            if (status === 200) {
+            let result = await this.$http.post("parceiros/updateStatus/", parceiroStatusParams);
+            if (result.status === 200) {
               this.$q.notify({
                 message: 'Status do Parceiro Atualiazado com sucesso.',
                 color: "positive",
@@ -563,8 +591,8 @@ export default {
           cancelButtonText: 'Cancelar'
         }).then(async (result) => {
           if (result.isConfirmed) {
-            const { data, status } = await this.$http.get('/colaboradores/trocarStatus?uuid=' + id);
-            if (status === 200) {
+            let result = await this.$http.get('/colaboradores/trocarStatus?uuid=' + id);
+            if (result.status === 200) {
               this.$q.notify({
                 message: 'Status do Colaborador Atualiazado com sucesso.',
                 color: "positive",
@@ -585,8 +613,8 @@ export default {
       }
     },
     isRequired(value) {
-			return !!value || "Campo obrigatório";
-		},
+      return !!value || "Campo obrigatório";
+    },
     isEmail(value) {
       return (
         (value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido"

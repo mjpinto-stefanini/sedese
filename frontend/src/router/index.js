@@ -112,7 +112,7 @@ const routes = [
 					path: "parceiro/:id",
 					name: "ViewPartner",
 					component: () => import(/* webpackChunkName: "main" */ "@/pages/partners/ViewPartner.vue")
-				},
+				}
 			],
 	},
 	{
