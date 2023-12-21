@@ -270,7 +270,7 @@
                             :rules="[isRequired]"
                         />
                     </div>
-                    <div class="col-12" v-else>
+                    <div class="col-12" v-else-if="form.orgao.value && form.orgao.value !== 5">
                         <q-select
                             v-model="form.funcao"
                             :options="funcaoDesempenhadaList"
@@ -321,7 +321,7 @@
                     </div>
 
                     <!-- Opções de input dependendo do valor do campo Serviço/Programa -->
-                    <div v-if="form.servicosPrograma.value === 4">
+                    <div class="col-12" v-if="form.servicosPrograma.value === 4">
                         <div class="col-12">
                             <q-select
                                 v-model="form.beneficiosMunicipal"
@@ -350,7 +350,7 @@
                         <div class="col-12">
                             <q-select
                                 v-model="form.areaRepresentada"
-                                :options="areaRepresentadaGovernamentalConselheiroList"
+                                :options="representacaoGovernamentalConselheiroList"
                                 label="Representação*"
                                 name="areaRepresentada"
                                 for="areaRepresentada"
@@ -422,7 +422,7 @@
                     </div>
 
                     <!-- Opções de input dependendo do valor do campo Proteção Social Especial -->
-                    <div v-if="form.protecaoSocialEspecialMunicipal.value === 1">
+                    <div class="col-12" v-if="form.protecaoSocialEspecialMunicipal.value === 1">
                         <div class="col-12">
                             <q-select
                                 v-model="form.servicosPrograma"
@@ -435,7 +435,7 @@
                             />
                         </div>
                     </div>
-                    <div v-else>
+                    <div class="col-12" v-else>
                         <div class="col-12" v-if="form.areadeAtuacao.value === 2">
                             <q-select
                                 v-model="form.servicosPrograma"
@@ -499,7 +499,7 @@
                             />
                         </div>
                     </div>
-                    <div v-if="false">
+                    <div class="col-12" v-if="false">
                         <div class="col-12">
                             <q-select
                                 v-model="form.areaRepresentada"
@@ -560,7 +560,7 @@
                     />
                 </div>
 
-                <div class="col-12" v-if="form.regional.value === 2">
+                <div class="col-12" v-if="form.regional.value === 2 && form.orgao.value !== 5">
                     <q-toggle
                         v-model="form.possuiRepresentacao"
                         label="Possui também alguma representação em conselho de assistência social (municipal ou estadual)?"
@@ -604,53 +604,83 @@
                             :rules="[isRequired]"
                         />
                     </div>
+                    <div class="col-12" v-if="form.representacaoConselho.value === 1">
+                        <div class="col-12" v-if="form.representacaoRepresentacao.value === 1">
+                            <q-select
+                                v-model="form.representacaoSegmento"
+                                :options="representacaoRepresentacaoList"
+                                label="Representação*"
+                                name="representacaoSegmento"
+                                for="representacaoSegmento"
+                                outlined
+                                clearable
+                                :rules="[isRequired]"
+                            />
+                        </div>
 
-                
-                    <div class="col-12" v-if="form.representacaoRepresentacao.value === 1">
-                        <q-select
-                            v-model="form.representacaoSegmento"
-                            :options="representacaoRepresentacaoList"
-                            label="Representação*"
-                            name="representacaoSegmento"
-                            for="representacaoSegmento"
-                            outlined
-                            :rules="[isRequired]"
-                        />
+                        <div class="col-12" v-if="form.representacaoRepresentacao.value === 2">
+                            <q-select
+                                v-model="form.representacaoSegmento"
+                                :options="representacaoSegmentoList"
+                                label="Representação*"
+                                name="representacaoSegmento"
+                                for="representacaoSegmento"
+                                outlined
+                                clearable
+                                :rules="[isRequired]"
+                            />
+                        </div>
+                        <div class="col-12" v-if="form.representacaoSegmento.value === 1">
+                            <q-select
+                                v-model="form.representacaoAreaRepresentada"
+                                :options="representacaoAreaRepresentadaList"
+                                label="Área Representada*"
+                                name="representacaoAreaRepresentada"
+                                for="representacaoAreaRepresentada"
+                                outlined
+                                clearable
+                                :rules="[isRequired]"
+                            />
+                        </div>
+
+                        <div class="col-12" v-if="form.representacaoAreaRepresentada === 'Outros'">
+                            <q-input
+                                v-model="form.outrosRepresentacaoAreaRepresentada"
+                                label="Informe qual é o sua área representada*"
+                                name="outrosRepresentacaoAreaRepresentada"
+                                for="outrosRepresentacaoAreaRepresentada"
+                                outlined
+                                :rules="[isRequired]"
+                            />
+                        </div>
                     </div>
+                    <div class="col-12" v-else>
+                        <div class="col-12" v-if="form.representacaoRepresentacao.value === 1">
+                            <q-select
+                                v-model="form.representacaoSegmento"
+                                :options="representacaoGovernamentalConselheiroList"
+                                label="Representação*"
+                                name="representacaoSegmento"
+                                for="representacaoSegmento"
+                                outlined
+                                clearable
+                                :rules="[isRequired]"
+                            />
+                        </div>
 
-                    <div class="col-12" v-if="form.representacaoSegmento.value === 1">
-                        <q-select
-                            v-model="form.representacaoAreaRepresentada"
-                            :options="representacaoAreaRepresentadaList"
-                            label="Área Representada*"
-                            name="representacaoAreaRepresentada"
-                            for="representacaoAreaRepresentada"
-                            outlined
-                            :rules="[isRequired]"
-                        />
-                    </div>
 
-                    <div class="col-12" v-if="form.representacaoAreaRepresentada === 'Outros'">
-                        <q-input
-                            v-model="form.outrosRepresentacaoAreaRepresentada"
-                            label="Informe qual é o sua área representada*"
-                            name="outrosRepresentacaoAreaRepresentada"
-                            for="outrosRepresentacaoAreaRepresentada"
-                            outlined
-                            :rules="[isRequired]"
-                        />
-                    </div>
-
-                    <div class="col-12" v-if="form.representacaoRepresentacao.value === 2">
-                        <q-select
-                            v-model="form.representacaoSegmento"
-                            :options="representacaoSegmentoList"
-                            label="Representação*"
-                            name="representacaoSegmento"
-                            for="representacaoSegmento"
-                            outlined
-                            :rules="[isRequired]"
-                        />
+                        <div class="col-12" v-if="form.representacaoRepresentacao.value === 2">
+                            <q-select
+                                v-model="form.representacaoSegmento"
+                                :options="areaRepresentadaCivilList"
+                                label="Representação*"
+                                name="representacaoSegmento"
+                                for="representacaoSegmento"
+                                outlined
+                                clearable
+                                :rules="[isRequired]"
+                            />
+                        </div>
                     </div>
                     <div class="col-12">
                         <q-select
@@ -909,7 +939,7 @@ export default {
                 {value: 1, label: "Governamental"},
                 {value: 2, label: "Sociedade Civil"},
             ],
-            areaRepresentadaGovernamentalConselheiroList: [
+            representacaoGovernamentalConselheiroList: [
                 "Representante Governamental",
             ],
             areaRepresentadaGovernamentalList: [
@@ -936,11 +966,12 @@ export default {
                 //{value: 5, label: "Membro"},
             ],
             representacaoConselhoCMASList: [
-                "Conselho Estadual de Assistência Social (CEAS)",
-                "Conselho Municipal de Assistência Social (CMAS)"
+                {value: 1, label: "Conselho Estadual de Assistência Social (CEAS)"},
+                {value: 2, label: "Conselho Municipal de Assistência Social (CMAS)"},
+                                
             ],
             representacaoConselhoList: [
-                "Conselho Estadual de Assistência Social (CEAS)",
+                {value: 1, label: "Conselho Estadual de Assistência Social (CEAS)"},
             ],
             representacaoTitularidadeList: [
                 "Titular",

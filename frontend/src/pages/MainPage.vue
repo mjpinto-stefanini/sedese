@@ -144,10 +144,11 @@ export default {
 				const user_id = JSON.parse(localStorage.getItem("user")).id;
 				console.log('try');
 				console.log(values);
-				const { status } = await this.$http.patch(
+				const { status, data } = await this.$http.patch(
 					`users/${user_id}/secondstage`,
 					values
 				);
+				console.log('aqui',data);
 
 				if (status === 201 || status === 200) {
 					this.$q.notify({
@@ -156,6 +157,7 @@ export default {
 						position: "top",
 					});
 					this.$router.push({ name: "SignIn" });
+					console.log(data);
 				}
 			//} catch (error) {
 				//console.log('catch');
