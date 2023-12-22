@@ -270,7 +270,7 @@ export default {
 	mixins: [accountMixin],
     data() {
         return {
-            baseURL: process.env.VUE_APP_API_URL,
+            baseURL:'http://api-sedese.stefanini.test/api/v1/',
             //baseURL: 'http://200.198.62.82/api/v1/',
             UserId: this.$route.params.id,
             user: [],

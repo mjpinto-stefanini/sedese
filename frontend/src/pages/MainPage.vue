@@ -140,7 +140,7 @@ export default {
 				professional: { ...this.professionalData },
 			};
 
-			//try {
+			try {
 				const user_id = JSON.parse(localStorage.getItem("user")).id;
 				const { status } = await this.$http.patch(
 					`users/${user_id}/secondstage`,
@@ -154,17 +154,17 @@ export default {
 						position: "top",
 					});
 					this.$router.push({ name: "SignIn" });
-					console.log(data);
+
 				}
-			//} catch (error) {
-				//console.log('catch');
-				//console.log(error);
-				// this.$q.notify({
-				//	message: error.response.data.message,
-				//	color: "negative",
-				//	position: "top",
-				//});
-			//}
+			} catch (error) {
+				console.log('catch');
+				console.log(error);
+				 this.$q.notify({
+					message: error.response.data.message,
+					color: "negative",
+					position: "top",
+				});
+			}
 		},
 		async checkAllInputs(formFields) {
 			if (!/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/.test(formFields.name )) {
