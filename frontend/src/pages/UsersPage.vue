@@ -1,355 +1,569 @@
 <template>
-	<q-page padding>
-		<q-dialog v-model="dialog" persistent>
-			<q-card>
-				<q-card-section class="row items-center">
-					<q-toolbar>
-						<q-avatar icon="person" color="primary" text-color="white" />
-						<q-toolbar-title>{{ selectedUser.name }} </q-toolbar-title>
-						<span class="q-ml-sm"> {{ selectedUser.created }} </span>
-						<q-btn
-							color="primary"
-							icon="close"
-							round
-							flat
-							@click="dialog = false"
-							class="q-ml-md"
-						/>
-					</q-toolbar>
-				</q-card-section>
+  <q-page padding>
+    <q-dialog v-model="dialog" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <q-toolbar>
+            <q-avatar icon="person" color="primary" text-color="white" />
+            <q-toolbar-title>{{ selectedUser.name }} </q-toolbar-title>
+            <span class="q-ml-sm"> {{ selectedUser.created }} </span>
+            <q-btn
+              color="primary"
+              icon="close"
+              round
+              flat
+              @click="dialog = false"
+              class="q-ml-md"
+            />
+          </q-toolbar>
+        </q-card-section>
 
-				<q-separator class="q-mb-lg" />
+        <q-separator class="q-mb-lg" />
 
-				<q-card flat>
-					<q-card-section>
-						<div class="row q-col-gutter-md">
-							<div class="col-12">
-								<q-toggle
-									v-model="form.is_active"
-									color="green"
-									label="Ativado"
-									:disable="user.is_admin && user.type_admin === '3'"
-								/>
-							</div>
+        <q-card flat>
+          <q-card-section>
+            <div class="row q-col-gutter-md">
+              <div class="col-12">
+                <q-toggle
+                  v-model="form.is_active"
+                  color="green"
+                  label="Ativado"
+                  :disable="user.is_admin && user.type_admin === '3'"
+                />
+              </div>
 
-							<div class="col-12">
-								<q-toggle
-									v-model="form.is_admin"
-									color="green"
-									label="Administrador"
-									:disable="user.is_admin && user.type_admin !== '1'"
-								/>
-							</div>
+              <div class="col-12">
+                <q-toggle
+                  v-model="form.is_admin"
+                  color="green"
+                  label="Administrador"
+                  :disable="user.is_admin && user.type_admin !== '1'"
+                />
+              </div>
 
-							<div class="col-12">
-								<q-select
-									:disable="
-										user.is_admin &&
-										user.type_admin !== '1' &&
-										user.type_admin !== '2'
-									"
-									v-model="form.type_admin"
-									:options="optionsUser"
-									label="Tipo de Administrador"
-									outlined
-									use-input
-									clear-icon="close"
-									clearable
-								/>
-							</div>
-						</div>
-					</q-card-section>
-				</q-card>
+              <div class="col-12">
+                <q-select
+                  :disable="
+                    user.is_admin &&
+                    user.type_admin !== '1' &&
+                    user.type_admin !== '2'
+                  "
+                  v-model="form.type_admin"
+                  :options="optionsUser"
+                  label="Tipo de Administrador"
+                  outlined
+                  use-input
+                  clear-icon="close"
+                  clearable
+                />
+              </div>
+            </div>
+          </q-card-section>
+        </q-card>
 
-				<!-- {{ selectedUser }} -->
+        <!-- {{ selectedUser }} -->
 
-				<q-card-actions align="right">
-					<!--
-						<q-btn
-						color="negative"
-						label="Resetar Senha"
-						no-caps
-						unelevated
-						padding="sm xl"
-						@click="dialog = true"
-						v-close-popup
-					/>
-				-->
-					<q-btn
-						color="primary"
-						label="Salvar"
-						no-caps
-						unelevated
-						padding="sm xl"
-						@click="onSave"
-					/>
-				</q-card-actions>
-			</q-card>
-		</q-dialog>
+        <q-card-actions align="right">
+          <!--
+            <q-btn
+            color="negative"
+            label="Resetar Senha"
+            no-caps
+            unelevated
+            padding="sm xl"
+            @click="dialog = true"
+            v-close-popup
+          />
+        -->
+          <q-btn
+            color="primary"
+            label="Salvar"
+            no-caps
+            unelevated
+            padding="sm xl"
+            @click="onSave"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
 
-		<q-toolbar>
-			<q-toolbar-title> Lista de usuários</q-toolbar-title>
-			<q-btn flat round dense icon="apps" class="q-mr-xs" />
-			<q-btn flat round dense icon="more_vert" />
-		</q-toolbar>
-		<q-table :rows="rows" :columns="columns" row-key="name" flat bordered>
-			<template v-slot:header-cell-is_active="props">
-				<q-th :props="props">
-					{{ props.col.label }}
-					<q-icon name="sym_o_info" size="1.2rem" color="primary">
-						<q-tooltip
-							class="bg-primary text-caption"
-							:offset="[10, 10]"
-							style="max-width: 600px"
-							>Informa se o usuario está ativo na plataforma, se desabilitar o
-							usuario não poderá acessar a plataforma.
-						</q-tooltip>
-					</q-icon>
-				</q-th>
-			</template>
+    <q-toolbar>
+      <q-toolbar-title> Lista de usuários</q-toolbar-title>
+      <q-btn flat round dense icon="apps" class="q-mr-xs" />
+      <q-btn flat round dense icon="more_vert" />
+    </q-toolbar>
 
-			<template v-slot:body-cell-id="props">
-				<q-td :props="props">
-					<div class="row">
-						<div class="q-gutter-xs q-pa-xs">
-							<q-btn
-								size="sm"
-								color="primary"
-								no-caps
-								unelevated
-								padding="sm"
-								@click="openModal(props)"
-								icon="sym_o_edit"
-							/>
-							<q-tooltip
-								class="bg-primary text-caption"
-								:offset="[10, 10]"
-								style="max-width: 600px"
-								>Editar Pefil de Acesso do Usuário
-							</q-tooltip>
-						</div>
-						<div class="q-gutter-xs q-pa-xs">
-							<q-btn
-								size="sm"
-								color="secondary"
-								no-caps
-								unelevated
-								padding="sm"
-								@click="$router.replace('/user/' + props.row.id )"
-								icon="visibility"
-							/>
-							<q-tooltip
-								class="bg-secondary text-caption"
-								:offset="[10, 10]"
-								style="max-width: 600px"
-								>Ver Dados do Usuário
-							</q-tooltip>
-						</div>
-					</div>
-				</q-td>
-			</template>
-			<template v-slot:body-cell-service="props">
-				<q-td :props="props">
-					<q-chip size="sm"
-						:label="props.row.service"
-						:color="props.row.service === 'Estadual' ? 'green' : 'blue'"
-						text-color="white"
-					/>
-				</q-td>
-			</template>
-			<template v-slot:body-cell-type_admin="props">
-				<q-td :props="props">
-					<q-chip
-						size="sm"
-						:text-color="props.row.type_admin === 'Outros parceiros / Participantes' ? 'black' : 'white'"
-						:label="props.row.type_admin"
-						:color="
-							props.row.type_admin === 'Super Admin / Equipe DEP'
-								? 'red'
-								: props.row.type_admin === 'SUBAS / Diretorias Regionais'
-								? 'orange'
-								: 'gray'
-						"
-					/>
-				</q-td>
-			</template>
-			<template v-slot:body-cell-is_admin="props">
-				<q-td :props="props">
-					<div class="q-gutter-sm">
-						<q-icon name="print" />
-						<!-- <q-toggle v-model="props.row.is_admin">
-										<q-icon name="sym_o_info" size="1.2rem" color="primary">
-												<q-tooltip
-														class="bg-primary text-caption"
-														:offset="[10, 10]"
-														style="max-width: 600px">Administrativo: Informa se o usuario é um administrador.
-												</q-tooltip>
-										</q-icon>
-								</q-toggle> -->
-					</div>
-				</q-td>
-			</template>
-			<template v-slot:body-cell-is_active="props">
-				<q-td :props="props">
-					<div class="q-gutter-sm">
-						<q-chip
-							size="sm"
-							:text-color="props.row.is_active ? 'white' : 'dark'"
-							:label="props.row.is_active ? 'Ativado' : 'Desativado'"
-							:color="props.row.is_active ? 'green' : 'gray'"
-						/>
-					</div>
-				</q-td>
-			</template>
-		</q-table>
-	</q-page>
+    <div class="row">
+      <div class="col-sm-12 col-md-4 offset-md-2">
+        <q-card flat>
+          <q-card-section>
+            <div class="q-pa-md">
+              <q-select
+              outlined
+              v-model="consulta.status"
+              :options="consultaStatusOptions"
+              label="Status"/>
+            </div>
+
+            <div class="q-pa-md">
+              <q-select
+                v-model="consulta.tipoPerfil"
+                :options="tipoPerfilOptions"
+                outlined
+                label="Perfil"/>
+            </div>
+
+            <div class="q-pa-md">
+              <q-select
+                v-model="consulta.ambitoAtuacao"
+                :options="ambitoAtuacaoOptions"
+                outlined
+                lazy-rules
+                label="Ambito Atuação"/>
+            </div>
+
+            <div class="q-pa-md">
+              <q-select
+                outlined
+                v-model="consulta.lotacao"
+                :options="filterSecretaries"
+                label="Lotação"
+                @filter="filterFn"
+                lazy-rules
+                use-input
+                input-debounce="0">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      Sem resultados!
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+
+          </q-card-section>
+        </q-card>
+      </div>
+      <div class="col-sm-12 col-md-4" style="margin-top: 15px;">
+        <div class="q-pa-md">
+          <q-input outlined v-model="consulta.name" label="Nome" />
+        </div>
+
+        <div class="q-pa-md">
+          <q-input outlined v-model="consulta.cpf" label="CPF" mask="###.###.###-##"/>
+        </div>
+        <div class="q-pa-md">
+          <q-input outlined v-model="consulta.email" label="E-mail" :rules="[isEmail]" />
+        </div>
+        <div class="q-pa-md" style="margin-top: -20px;">
+          <q-btn color="green" size="22px" class="q-px-xl q-py-xs" @click="ConsultarUsuario">
+            Pesquisar
+          </q-btn>
+        </div>
+      </div>
+    </div>
+
+    <q-table :rows="rows" :columns="columns" row-key="name" flat bordered>
+      <template v-slot:header-cell-is_active="props">
+        <q-th :props="props">
+          {{ props.col.label }}
+          <q-icon name="sym_o_info" size="1.2rem" color="primary">
+            <q-tooltip
+              class="bg-primary text-caption"
+              :offset="[10, 10]"
+              style="max-width: 600px"
+              >Informa se o usuario está ativo na plataforma, se desabilitar o
+              usuario não poderá acessar a plataforma.
+            </q-tooltip>
+          </q-icon>
+        </q-th>
+      </template>
+
+      <template v-slot:body-cell-id="props">
+        <q-td :props="props">
+          <div class="row">
+            <div class="q-gutter-xs q-pa-xs">
+              <q-btn
+                size="sm"
+                color="primary"
+                no-caps
+                unelevated
+                padding="sm"
+                @click="openModal(props)"
+                icon="sym_o_edit"
+              />
+              <q-tooltip
+                class="bg-primary text-caption"
+                :offset="[10, 10]"
+                style="max-width: 600px"
+                >Editar Pefil de Acesso do Usuário
+              </q-tooltip>
+            </div>
+            <div class="q-gutter-xs q-pa-xs">
+              <q-btn
+                size="sm"
+                color="secondary"
+                no-caps
+                unelevated
+                padding="sm"
+                @click="$router.replace('/user/' + props.row.id )"
+                icon="visibility"
+              />
+              <q-tooltip
+                class="bg-secondary text-caption"
+                :offset="[10, 10]"
+                style="max-width: 600px"
+                >Ver Dados do Usuário
+              </q-tooltip>
+            </div>
+          </div>
+        </q-td>
+      </template>
+      <template v-slot:body-cell-service="props">
+        <q-td :props="props">
+          <q-chip size="sm"
+            :label="props.row.service"
+            :color="props.row.service === 'Estadual' ? 'green' : 'blue'"
+            text-color="white"
+          />
+        </q-td>
+      </template>
+      <template v-slot:body-cell-type_admin="props">
+        <q-td :props="props">
+          <q-chip
+            size="sm"
+            :text-color="props.row.type_admin === 'Outros parceiros / Participantes' ? 'black' : 'white'"
+            :label="props.row.type_admin"
+            :color="
+              props.row.type_admin === 'Super Admin / Equipe DEP'
+                ? 'red'
+                : props.row.type_admin === 'SUBAS / Diretorias Regionais'
+                ? 'orange'
+                : 'gray'
+            "
+          />
+        </q-td>
+      </template>
+      <template v-slot:body-cell-is_admin="props">
+        <q-td :props="props">
+          <div class="q-gutter-sm">
+            <q-icon name="print" />
+            <!-- <q-toggle v-model="props.row.is_admin">
+                    <q-icon name="sym_o_info" size="1.2rem" color="primary">
+                        <q-tooltip
+                            class="bg-primary text-caption"
+                            :offset="[10, 10]"
+                            style="max-width: 600px">Administrativo: Informa se o usuario é um administrador.
+                        </q-tooltip>
+                    </q-icon>
+                </q-toggle> -->
+          </div>
+        </q-td>
+      </template>
+      <template v-slot:body-cell-is_active="props">
+        <q-td :props="props">
+          <div class="q-gutter-sm">
+            <q-chip
+              size="sm"
+              :text-color="props.row.is_active ? 'white' : 'dark'"
+              :label="props.row.is_active ? 'Ativado' : 'Desativado'"
+              :color="props.row.is_active ? 'green' : 'gray'"
+            />
+          </div>
+        </q-td>
+      </template>
+    </q-table>
+  </q-page>
 </template>
 
 <script>
+import { ref } from 'vue';
+import accountMixin from "../mixins/accountMixin";
+
+const consultaStatusOptions = [
+  {value:0, label: "Pendente"},
+  {value:1, label: "Ativado"},
+  {value:2, label: "Desativado"},
+  {value:3, label: "Recusado"}
+];
+
+const tipoPerfilOptions = [
+  {value: 1, label: "Super Admin / Equipe DEP"},
+  {value: 2, label: "SUBAS / Diretorias Regionais"},
+  {value: 3, label: "Outros parceiros / Participantes"},
+];
+
 export default {
-	name: "UsersPage",
-	data() {
-		return {
-			dialog: false,
-			user: {},
-			form: {
-				type_admin: "",
-				is_admin: false,
-				is_active: false,
-			},
-			optionsUser: [
-				{ label: "Super Admin / Equipe DEP", value: "1" }, //Diretor
-				{ label: "SUBAS / Diretorias Regionais", value: "2" }, //Operador
-				{ label: "Outros parceiros / Participantes", value: "3" }, //Usuário
-			],
-			columns: [
-				{
-					name: "is_active",
-					label: "Status",
-					field: "is_active",
-					align: "center",
-					sortable: true,
-				},
-				{
-					name: "name",
-					label: "Nome",
-					field: "name",
-					align: "left",
-					sortable: true,
-				},
-				{
-					name: "type_admin",
-					label: "Perfil",
-					field: "type_admin",
-					align: "left",
-					sortable: true,
-				},
-				{
-					name: "service",
-					label: "Âmbito de atuação",
-					field: "service",
-					align: "left",
-					sortable: true,
-				},
-				{
-					name: "secretary",
-					label: "Lotação/Município",
-					field: "secretary",
-					align: "left",
-					sortable: true,
-				},
-				{
-					name: "id",
-					label: "Ações",
-					field: "id",
-					align: "left",
-					sortable: true,
-				},
-			],
-			rows: [],
-			selectedUser: {},
-		};
-	},
-	methods: {
-		async onSave() {
-			console.log("salvar");
-			console.log(this.form.type_admin);
-			const data = {
-				is_active: this.form.is_active,
-				is_admin: this.form.is_admin,
-				type_admin: this.form.type_admin.value,
-			};
-			try {
-				console.log(data.type_admin);
-				const { status } = await this.$http.patch(
-					`users/${this.selectedUser.id}/user`,
-					data
-				);
-				if (status === 200) {
-					this.$q.notify({
-						message: "Usuário atualizado com sucesso!",
-						color: "green",
-						position: "top",
-						icon: "check_circle",
-					});
-					this.rows = [];
-					this.getUsers();
-					this.dialog = false;
-				}
-			} catch (error) {
-				console.log(error);
-			}
-		},
-		openModal(props) {
-			this.selectedUser = props.row;
-			this.form.is_active = this.selectedUser.is_active;
-			this.form.is_admin = this.selectedUser.is_admin;
-			this.form.type_admin = this.selectedUser.type_admin;
-			this.user = JSON.parse(localStorage.getItem("user"));
-			this.dialog = true;
-			console.log(this.user);
-			console.log(this.selectedUser);
-		},
-		async getUsers() {
-			try {
-				const { data, status } = await this.$http.get("users/");
-				if (status === 200) {
-					data.forEach((user) => {
-						this.rows.push({
-							name: user.name,
-							cpf: user.cpf.replace(
-								/(\d{3})(\d{3})(\d{3})(\d{2})/,
-								"$1.$2.$3-$4"
-							),
-							service: user.service === "1" ? "Estadual" : "Municipal",
-							secretary: user.secretary,
-							is_admin: !!user.is_admin,
-							id: user.id,
-							is_active: !!user.is_active,
-							type_admin:
-								user.type_admin === "1"
-									? "Super Admin / Equipe DEP"
-									: user.type_admin === "2"
-									? "SUBAS / Diretorias Regionais"
-									: "Outros parceiros / Participantes",
-							created: new Date(user.created_at).toLocaleString("pt-BR"),
-						});
-					});
-					// this.rows = data;
-				}
-			}   catch (error) {
-                this.$q.notify({
-                    message: error.response.data.message,
-                    color: "negative",
-                    position: "top",
-                });
-            }
-		},
-	},
-	created() {
-		this.getUsers();
-	},
+  name: "UsersPage",
+  mixins: [accountMixin],
+  data() {
+    return {
+      dialog: false,
+      user: {},
+      form: {
+        type_admin: "",
+        is_admin: false,
+        is_active: false,
+      },
+      optionsUser: [
+        { label: "Super Admin / Equipe DEP", value: "1" }, //Diretor
+        { label: "SUBAS / Diretorias Regionais", value: "2" }, //Operador
+        { label: "Outros parceiros / Participantes", value: "3" }, //Usuário
+      ],
+      columns: [
+        {
+          name: "is_active",
+          label: "Status",
+          field: "is_active",
+          align: "center",
+          sortable: true,
+        },
+        {
+          name: "name",
+          label: "Nome",
+          field: "name",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "type_admin",
+          label: "Perfil",
+          field: "type_admin",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "service",
+          label: "Âmbito de atuação",
+          field: "service",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "secretary",
+          label: "Lotação/Município",
+          field: "secretary",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "id",
+          label: "Ações",
+          field: "id",
+          align: "left",
+          sortable: true,
+        },
+      ],
+      rows: [],
+      selectedUser: {},
+      consulta: {
+        status: null,
+        tipoPerfil: null,
+        ambitoAtuacao: {
+          value: null,
+          label: null,
+        },
+        lotacao: {
+          value: null,
+          label: null,
+        },
+        name: null,
+        cpf: null,
+        email: null
+      },
+      allSecretaries: [],
+      filterSecretaries: [],
+      ambitoAtuacaoOptions: [
+        { label: "Estado", value: 1 },
+        { label: "Municipio", value: 2 },
+      ],
+    };
+  },
+  methods: {
+    async onSave() {
+      const data = {
+        is_active: this.form.is_active,
+        is_admin: this.form.is_admin,
+        type_admin: this.form.type_admin.value,
+      };
+      try {
+        const { status } = await this.$http.patch(
+          `users/${this.selectedUser.id}/user`,
+          data
+        );
+        if (status === 200) {
+          this.$q.notify({
+            message: "Usuário atualizado com sucesso!",
+            color: "green",
+            position: "top",
+            icon: "check_circle",
+          });
+          this.rows = [];
+          this.getUsers();
+          this.dialog = false;
+        }
+      } catch (error) {
+        this.$q.notify({
+          message: error.response.data.message,
+          color: "negative",
+          position: "top"
+        })
+      }
+    },
+    openModal(props) {
+      this.selectedUser = props.row;
+      this.form.is_active = this.selectedUser.is_active;
+      this.form.is_admin = this.selectedUser.is_admin;
+      this.form.type_admin = this.selectedUser.type_admin;
+      this.user = JSON.parse(localStorage.getItem("user"));
+      this.dialog = true;
+    },
+    async getUsers() {
+      try {
+        const { data, status } = await this.$http.get("users/");
+        if (status === 200) {
+          data.forEach((user) => {
+            this.rows.push({
+              name: user.name,
+              cpf: user.cpf.replace(
+                /(\d{3})(\d{3})(\d{3})(\d{2})/,
+                "$1.$2.$3-$4"
+              ),
+              service: user.service === "1" ? "Estadual" : "Municipal",
+              secretary: user.secretary,
+              is_admin: !!user.is_admin,
+              id: user.id,
+              is_active: !!user.is_active,
+              type_admin:
+                user.type_admin === "1"
+                  ? "Super Admin / Equipe DEP"
+                  : user.type_admin === "2"
+                  ? "SUBAS / Diretorias Regionais"
+                  : "Outros parceiros / Participantes",
+              created: new Date(user.created_at).toLocaleString("pt-BR"),
+            });
+          });
+          // this.rows = data;
+        }
+      } catch (error) {
+        this.$q.notify({
+          message: error.response.data.message,
+          color: "negative",
+          position: "top",
+        });
+      }
+    },
+    async ConsultarUsuario() {
+      try {
+        const queryParams = {
+          status: this.consulta.status,
+          tipoPerfil: this.consulta.tipoPerfil,
+          'ambitoAtuacao.value': this.consulta.ambitoAtuacao.value,
+          'ambitoAtuacao.label': this.consulta.ambitoAtuacao.label,
+          'lotacao.value': this.consulta.lotacao.value,
+          'lotacao.label': this.consulta.lotacao.label,
+          name: this.consulta.name,
+          cpf: this.consulta.cpf,
+          email: this.consulta.email,
+        };
+
+        const { data, status } = await this.$http.get("users", { params: queryParams });
+        if (status === 200) {
+          // limpando a row da tabela para que os novos dados sejam inceridos
+          this.rows = [];
+          // adicionando o resultado na tabela
+          data.forEach((user) => {
+            this.rows.push({
+              name: user.name,
+              cpf: user.cpf.replace(
+                /(\d{3})(\d{3})(\d{3})(\d{2})/,
+                "$1.$2.$3-$4"
+              ),
+              service: user.service === "1" ? "Estadual" : "Municipal",
+              secretary: user.secretary,
+              is_admin: !!user.is_admin,
+              id: user.id,
+              is_active: !!user.is_active,
+              type_admin:
+                user.type_admin === "1"
+                  ? "Super Admin / Equipe DEP"
+                  : user.type_admin === "2"
+                  ? "SUBAS / Diretorias Regionais"
+                  : "Outros parceiros / Participantes",
+              created: new Date(user.created_at).toLocaleString("pt-BR"),
+            });
+          });
+        }
+      } catch (error) {
+        this.$q.notify({
+          message: error.response?.data.message,
+          color: "negative",
+          position: "top"
+        })
+      }
+    },
+    async getSecretaries() {
+      try {
+        const { data, status } = await this.$http.get(
+          `ambitoatuacao/regiaoadm/${
+              this.consulta?.ambitoAtuacao.value === 1 ? "1" : "2"
+        }`);
+        if (status === 200) {
+          this.allSecretaries = data.map((ele) => {
+            return {
+              ...ele,
+              label: ele.nome,
+              value: ele.id,
+            };
+          });
+
+          this.filterSecretaries = this.allSecretaries;
+        }
+      } catch (error) {
+        this.$q.notify({
+          message: error.message,
+          color: "negative",
+          position: "top",
+        });
+      }
+    },
+    filterFn(val, update) {
+      if (val === "") {
+        update(() => {
+          this.filterSecretaries = this.allSecretaries;
+        });
+        return;
+      }
+      update(() => {
+        const needle = val.toLowerCase();
+        this.filterSecretaries = this.allSecretaries.filter((v) => {
+          return v.nome.toLowerCase().indexOf(needle) > -1;
+        });
+      });
+    },
+    isEmail(value) {
+      return ((value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido");
+		}
+  },
+  created() {
+    this.getUsers();
+    this.getSecretaries();
+  },
+  setup() {
+    return {
+      model: ref(null),
+      consultaStatusOptions,
+      tipoPerfilOptions,
+    }
+  },
+  watch: {
+    "consulta.ambitoAtuacao": {
+      handler() {
+        this.getSecretaries();
+      },
+      deep: true,
+    },
+  },
 };
 </script>
-
-<style></style>
