@@ -279,7 +279,6 @@
 
 <script>
 import { ref } from 'vue';
-import {TheMask} from 'vue-the-mask';
 import accountMixin from "../mixins/accountMixin";
 
 const consultaStatusOptions = [
@@ -297,7 +296,6 @@ const tipoPerfilOptions = [
 
 export default {
   name: "UsersPage",
-  components: {TheMask},
   mixins: [accountMixin],
   data() {
     return {
