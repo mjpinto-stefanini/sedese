@@ -34,6 +34,7 @@
 						label="Número"
 						name="number"
 						for="number"
+						mask="#################"
 						outlined
 						clear-icon="close"
 						clearable
@@ -71,7 +72,7 @@
 						outlined
 						clear-icon="close"
 						clearable
-						:rules="[isRequired]"
+						:rules="[isRequired,isLetter]"
 					/>
 				</div>
 				<div class="col-4">
@@ -110,6 +111,7 @@ export default {
 				neighborhood: "",
 				city: "",
 				state: "",
+
 			},
 			stateFiltered: [],
 			stateList: [
@@ -149,9 +151,18 @@ export default {
 			return !!value || "Campo obrigatório";
 		},
 		isNumber(value) {
-			return (
-				(value && /^\d+$/.test(value)) || "Somente números"
-			);
+			if(value){
+				return (
+					(value && /^\d+$/.test(value)) || "Somente números"
+				);
+			}
+		},
+		isLetter(value) {
+			if(value){
+				return (
+					(value && /^[a-zA-ZÀ-ÿ ]+$/.test(value)) || "Nome deve conter apenas letras"
+				);
+			}
 		},
 		onStateFilter(val, update) {
 			if (val === "") {

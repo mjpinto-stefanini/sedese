@@ -11,8 +11,7 @@
 						outlined
 						clear-icon="close"
 						clearable
-						:rules="[isRequired, (v) =>
-								/^[a-zA-ZÀ-ÿ ]+$/.test(v) || 'Nome deve conter apenas letras',]"
+						:rules="[isRequired,isLetter]"
 					/>
 				</div>
 				<div class="col-4">
@@ -53,8 +52,7 @@
 						outlined
 						clear-icon="close"
 						clearable
-						:rules="[isRequired, (v) =>
-								/^[a-zA-ZÀ-ÿ ]+$/.test(v) || 'Nome deve conter apenas letras',]"
+						:rules="[isRequired, isLetter]"
 					/>
 				</div>
 				<div class="col-12 row">
@@ -105,13 +103,12 @@
 					<q-input
 						v-model="form.RG"
 						name="RG"
-						for="RG"
 						label="Numero do RG"
 						outlined
 						mask="##############################"
 						clear-icon="close"
 						clearable
-						:rules="[isRequired, isNumber]"
+						:rules="[isNumber]"
 					/>
 				</div>
 				<div class="col-4">
@@ -119,11 +116,10 @@
 						v-model="form.issuingBody"
 						label="Orgão emissor"
 						name="issuingBody"
-						for="issuingBody"
 						outlined
 						clear-icon="close"
 						clearable
-						:rules="[isRequired]"
+						:rules="[isLetter]"
 					/>
 				</div>
 				<div class="col-3">
@@ -131,13 +127,12 @@
 						v-model="form.uf"
 						:options="ufFiltered"
 						label="UF"
-						for="uf"
 						name="uf"
 						outlined
 						use-input
 						input-debounce="0"
 						@filter="onUfFilter"
-						:rules="[isRequired]"
+						:rules="[isLetter]"
 					/>
 				</div>
 				<div class="col-12">
@@ -257,6 +252,7 @@ export default {
 			deficiency: "",
 			form: {
 				name: "",
+				dataNascimento:"",
 				socialName: "",
 				genderIdentity: "",
 				genderIdentityOthers: "",
@@ -270,6 +266,10 @@ export default {
 				deficiency: "",
 				deficiencyOthers: "",
 				deficiencyStructure: "",
+				type_admin: "",
+				is_admin: false,
+				is_active: false,
+				erroValidacao: "",
 			},
 			genderIdentityList: [
 				"Homem (cis ou trans)",
@@ -357,6 +357,9 @@ export default {
 				"SE",
 				"TO",
 			],
+		inputValue: "",
+		ignoredValue: "",
+
 		};
 	},
 	methods: {
@@ -364,13 +367,24 @@ export default {
 			return !!value || "Campo obrigatório";
 		},
 		isNumber(value) {
-			return (
-				(value && /^[\d.-]+$/.test(value)) || "Somente números"
-			);
+			if(value){
+				return (
+					(!!value && /^[\d.-]+$/.test(value)) || "Somente números"
+				);
+			}
+
+		},
+		isLetter(value) {
+			if(value){
+				return (
+					(!!value && /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/.test(value)) || "Somente letras"
+				);
+			}
 		},
 		isMax12(value) {
+			this.erroValidacao = "Corrija as informações inseridas"
 			return (
-				(value && value.length <= 12) || "Máximo de 12 caracteres"
+				(!!value && value.length <= 12) || "Máximo de 12 caracteres"
 			);
 		},
 		parseStringFilter(text) {
