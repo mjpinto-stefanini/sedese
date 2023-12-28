@@ -27,15 +27,46 @@ class Users extends Controller
         $this->middleware('auth:api', ['except' => ['secondStage']]);
     }
 
-    public function list(): JsonResponse
+    // public function list(): JsonResponse
+    // {
+    //     $users = User::all();
+    //     foreach ($users as $user) {
+    //         if (isset($user->secretary)) {
+    //             $user->secretary = AmbitoAtuacao::query()->find($user->secretary)['nome'];
+    //         }
+    //     }
+    //     return response()->json($users, 200);
+    // }
+
+    public function list(Request $request): JsonResponse
     {
-        $users = User::all();
-        foreach ($users as $user) {
+        $queryParams = $request->only([
+            'status', 'tipoPerfil', 'ambitoAtuacao', 'lotacao', 'name', 'cpf', 'email'
+        ]);
+
+        $users = $this->filterUsers($queryParams);
+        $this->modifyUsers($users);
+        return response()->json($users, 200);
+    }
+
+    private function filterUsers(array $queryParams): \Illuminate\Database\Eloquent\Collection
+    {
+        $query = User::query();
+        foreach ($queryParams as $key => $value) {
+            if ($value !== null) {
+                $query->where($key, $value);
+            }
+        }
+        return $query->get();
+    }
+
+    private function modifyUsers(\Illuminate\Database\Eloquent\Collection $users): void
+    {
+        $users->each(function ($user) {
             if (isset($user->secretary)) {
                 $user->secretary = AmbitoAtuacao::query()->find($user->secretary)['nome'];
             }
-        }
-        return response()->json($users, 200);
+        });
     }
 
     public function get(string $id): JsonResponse
