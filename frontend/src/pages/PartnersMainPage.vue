@@ -1,8 +1,8 @@
 <template>
-	<q-page padding>
-		<q-toolbar>
-			<q-toolbar-title> Lista de Parceiros </q-toolbar-title>
-		</q-toolbar>
+  <q-page padding>
+    <q-toolbar>
+      <q-toolbar-title> Lista de Parceiros </q-toolbar-title>
+    </q-toolbar>
 
     <q-card style="padding: 15px 0;">
       <div class="row" >
@@ -55,26 +55,26 @@
           <template v-slot:body-cell-id="props">
             <q-td :props="props">
               <q-btn
-								size="sm"
-								color="secondary"
-								no-caps
-								unelevated
-								padding="sm"
-								@click="$router.replace('/parceiro/' + props.row.uuid )"
-								icon="visibility"
-							/>
-							<q-tooltip
-								class="bg-secondary text-caption"
-								:offset="[10, 10]"
-								style="max-width: 600px"
-								>Ver Dados do Parceiro
-							</q-tooltip>
+                size="sm"
+                color="secondary"
+                no-caps
+                unelevated
+                padding="sm"
+                @click="$router.replace('/parceiro/' + props.row.uuid )"
+                icon="visibility"
+              />
+              <q-tooltip
+                class="bg-secondary text-caption"
+                :offset="[10, 10]"
+                style="max-width: 600px"
+                >Ver Dados do Parceiro
+              </q-tooltip>
             </q-td>
           </template>
         </q-table>
       </div>
     </div>
-		
+    
     <q-dialog v-model="modalNovoParceiro" persistent transition-show="scale" transition-hide="scale">
       <q-card class="bg-blue text-white" style="width: 700px; max-width: 80vw;">
         <q-card-section>
@@ -119,12 +119,11 @@
       </q-card>
     </q-dialog>
 
-	</q-page>
+  </q-page>
 </template>
 <style></style>
 <script>
 import { ref } from 'vue';
-import {TheMask} from 'vue-the-mask';
 
 const columns = [
   {
@@ -168,13 +167,10 @@ const options = [
   }
 ];
 
-const modalNovoParceiro = '';
-
 export default {
-	name: "PartnersMainPage",
-  components: {TheMask},
-	data() {
-		return {
+  name: "PartnersMainPage",
+  data() {
+    return {
       columns,
       parceirosRow: [],
       options,
@@ -194,8 +190,8 @@ export default {
         telefone:null,
         observacao:null
       }
-		};
-	},
+    };
+  },
   setup() {
     return {
       modalNovoParceiro: ref(false),
@@ -204,17 +200,17 @@ export default {
       })
     }
   },
-	methods: {
+  methods: {
     async salvarParceiros() {
       try {
         this.$q.loading.show();
-        const { data, status } = await this.$http.post("parceiros/store", this.novoParceiro);
-        if (status === 200 || status === 201) {
+        let result = await this.$http.post("parceiros/store", this.novoParceiro);
+        if (result.status === 200 || status === 201) {
           this.$q.notify({
             message: 'Novo parceiro criado com sucesso!',
             color: "positive",
             position: "top",
-				  });
+          });
           // carregando função
           this.getParceiros();
           // limpando os campos
@@ -222,13 +218,13 @@ export default {
         }
       } catch (error) {
         this.$q.notify({
-					message: error.response.data.message,
-					color: "negative",
-					position: "top",
-				});
+          message: error.response.data.message,
+          color: "negative",
+          position: "top",
+        });
       } finally {
-				this.$q.loading.hide();
-			}
+        this.$q.loading.hide();
+      }
     },
     async getParceiros() {
       try {
@@ -244,9 +240,9 @@ export default {
             });
           });
         } else {
-          const { data, status } = await this.$http.get("parceiros/");
-          if (status === 200) {
-            data.forEach((partner) => {
+          let result = await this.$http.get("parceiros/");
+          if (result.status === 200) {
+            result.data.forEach((partner) => {
               this.parceirosRow.push({
                 status: partner.status,
                 name: partner.nome_instituicao,
@@ -271,8 +267,8 @@ export default {
         this.$q.loading.show();
         const queryParams = new URLSearchParams(this.consulta).toString();
         const url = `/parceiros/consultar?${queryParams}`;
-        const { data, status } = await this.$http.get(url);
-        this.dadosConsulta = data; 
+        let result = await this.$http.get(url);
+        this.dadosConsulta = result.data; 
         this.getParceiros();
       } catch (error) {
         this.$q.notify({
@@ -285,8 +281,8 @@ export default {
       }
     },
     isRequired(value) {
-			return !!value || "Campo obrigatório";
-		},
+      return !!value || "Campo obrigatório";
+    },
     isEmail(value) {
       return (
         (value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido"
@@ -311,7 +307,7 @@ export default {
     }
   },
   created() {
-		this.getParceiros();
-	},
+    this.getParceiros();
+  },
 };
 </script>
