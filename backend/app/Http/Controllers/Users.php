@@ -88,9 +88,9 @@ class Users extends Controller
             'social_name' => $request['personal']['socialName'],
             'gender_identity' => $request['personal']['genderIdentity'],
             'gender_identity_others' => $request['personal']['genderIdentityOthers'],
-            'rg' => $request['personal']['RG'],
+            'rg' => $request['personal']['RG']?? '',
             'issuing_body' => $request['personal']['issuingBody'] ?? '',
-            'uf' => $request['personal']['uf'],
+            'uf' => $request['personal']['uf']?? '',
             'education' => $request['personal']['education'],
             'profission' => $request['personal']['profession'],
             'profission_others' => $request['personal']['profissionOthers'],
@@ -98,7 +98,6 @@ class Users extends Controller
             'deficiency' => $request['personal']['deficiency'],
             'deficiency_others' => $request['personal']['deficiencyOthers'],
             'deficiency_structure' => $request['personal']['deficiencyStructure'],
-            'birthday' => $request['personal']['dataNascimento'],
         ];
 
         $personalResult = Personal::query()->create($personalData);
@@ -179,13 +178,14 @@ class Users extends Controller
         }
 
         $representacaoSegmento = '';
-        if (isset($request['professional']['representacaoSegmento'])) {
-            $representacaoSegmento = $request['professional']['representacaoSegmento'];
-        } elseif (isset($request['professional']['seguimento_governo'])) {
-            $representacaoSegmento = $request['professional']['seguimento_governo'];
-        } elseif (isset($request['professional']['ceas_segmento'])) {
-            $representacaoSegmento = $request['professional']['ceas_segmento'];
+        if (isset($request['professional']['representacaoSegmento']['label'])) {
+            $representacaoSegmento = $request['professional']['representacaoSegmento']['label'];
+        } elseif (isset($request['professional']['seguimento_governo']['label'])) {
+            $representacaoSegmento = $request['professional']['seguimento_governo']['label'];
+        } elseif (isset($request['professional']['ceas_segmento']['label'])) {
+            $representacaoSegmento = $request['professional']['ceas_segmento']['label'];
         }
+        $areaRepresentada = $request['professional']['areaRepresentada']['label'] ?? $request['professional']['areaRepresentada'];
 
         $professionalData = [
             'user_id' => $user['id'],
@@ -212,14 +212,14 @@ class Users extends Controller
             'social_especial_municipal_media_complexidade' => $request['professional']['socialEspecialMunicipalMediaComplexidade'] ?? '',
             'social_especial_municipal_alta_complexidade' => $request['professional']['socialEspecialMunicipalAltaComplexidade'] ?? '',
             'representacao' => $representacao,
-            'area_representada' => $request['professional']['areaRepresentada'] ?? '',
+            'area_representada' => $areaRepresentada ?? '',
             'area_representada_outros' => $request['professional']['areaRepresentadaOutro'] ?? '',
             'cargo' => $request['professional']['cargo']['label'] ?? '',
             'representante' => $representante,
             'representacao_titularidade' => $representacaoTitularidade,
             'representacao_segmento' => $representacaoSegmento,
-            'representacao_representacao' => $request['professional']['representacaoRepresentacao'] ?? '',
-            'representacao_conselho' => $request['professional']['representacaoConselho'] ?? '',
+            'representacao_representacao' => $request['professional']['representacaoRepresentacao']['label'] ?? '',
+            'representacao_conselho' => $request['professional']['representacaoConselho']['label'] ?? '',
             'representacao_area_representada_outros' => $request['professional']['outrosRepresentacaoAreaRepresentada'] ?? '',
             'representacao_area_representada' => $request['professional']['representacaoAreaRepresentada'] ?? '',
             'funcao_outro' => $request['professional']['funcaoOutro'] ?? '',
@@ -244,6 +244,7 @@ class Users extends Controller
             return response()->json($errormsg, $errormsg['code']);
         }
 
+        $user['birthday'] = $request['personal']['dataNascimento'];
         $user['second_stage'] = true;
         $user->save();
 

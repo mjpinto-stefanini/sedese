@@ -4,8 +4,8 @@ export default {
 	install: (app) => {
 		app.config.globalProperties.$http = axios.create({
 			// baseURL: "http://200.198.62.82:9000/api/v1/",
-			//baseURL: "http://api-sedese.stefanini.test/api/v1/",
-			baseURL: process.env.VUE_APP_API_URL
+			baseURL: "http://api-sedese.stefanini.test/api/v1/",
+			//baseURL: process.env.VUE_APP_API_URL
 		});
 		app.config.globalProperties.$http.interceptors.request.use(
 			(config) => {
