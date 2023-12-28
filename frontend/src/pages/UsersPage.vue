@@ -151,12 +151,12 @@
         </div>
 
         <div class="q-pa-md">
-          <q-input outlined v-model="consulta.cpf" label="CPF" />
+          <q-input outlined v-model="consulta.cpf" label="CPF" mask="###.###.###-##"/>
         </div>
         <div class="q-pa-md">
-          <q-input outlined v-model="consulta.email" label="E-mail" />
+          <q-input outlined v-model="consulta.email" label="E-mail" :rules="[isEmail]" />
         </div>
-        <div class="q-pa-md">
+        <div class="q-pa-md" style="margin-top: -20px;">
           <q-btn color="green" size="22px" class="q-px-xl q-py-xs" @click="ConsultarUsuario">
             Pesquisar
           </q-btn>
@@ -279,6 +279,8 @@
 
 <script>
 import { ref } from 'vue';
+import {TheMask} from 'vue-the-mask';
+import accountMixin from "../mixins/accountMixin";
 
 const consultaStatusOptions = [
   {value:0, label: "Pendente"},
@@ -295,6 +297,8 @@ const tipoPerfilOptions = [
 
 export default {
   name: "UsersPage",
+  components: {TheMask},
+  mixins: [accountMixin],
   data() {
     return {
       dialog: false,
@@ -469,7 +473,7 @@ export default {
         const { data, status } = await this.$http.get("users", { params: queryParams });
         if (status === 200) {
           // limpando a row da tabela para que os novos dados sejam inceridos
-          this.row = [];
+          this.rows = [];
           // adicionando o resultado na tabela
           data.forEach((user) => {
             this.rows.push({
@@ -540,6 +544,9 @@ export default {
         });
       });
     },
+    isEmail(value) {
+      return ((value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido");
+		}
   },
   created() {
     this.getUsers();
