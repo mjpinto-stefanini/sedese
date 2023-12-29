@@ -24,43 +24,53 @@ class Users extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['secondStage']]);
+        // $this->middleware('auth:api', ['except' => ['secondStage']]);
     }
-
-    // public function list(): JsonResponse
-    // {
-    //     $users = User::all();
-    //     foreach ($users as $user) {
-    //         if (isset($user->secretary)) {
-    //             $user->secretary = AmbitoAtuacao::query()->find($user->secretary)['nome'];
-    //         }
-    //     }
-    //     return response()->json($users, 200);
-    // }
 
     public function list(Request $request): JsonResponse
     {
-        $queryParams = $request->only([
-            'status', 'tipoPerfil', 'ambitoAtuacao', 'lotacao', 'name', 'cpf', 'email'
-        ]);
-
-        $users = $this->filterUsers($queryParams);
-        $this->modifyUsers($users);
-        return response()->json($users, 200);
+        try {
+            $queryParams = $request->only([
+                'status', 'type_admin', 'secretary', 'service', 'name', 'cpf', 'email'
+            ]);
+    
+            $users = $this->filterUsers($queryParams);
+            $this->modifyUsers($users);
+            return response()->json($users, 200);
+        } catch (\Exception $e) {
+            throw new \Exception ($e);
+        }
     }
 
-    private function filterUsers(array $queryParams): \Illuminate\Database\Eloquent\Collection
+    private function filterUsers(array $queryParams)
     {
         $query = User::query();
-        foreach ($queryParams as $key => $value) {
-            if ($value !== null) {
-                $query->where($key, $value);
-            }
+        if (isset($queryParams['type_admin'])) {
+            $query->where('type_admin', $queryParams['type_admin']);
+        }
+        if (isset($queryParams['secretary'])) {
+            $query->where('secretary', $queryParams['secretary']);
+        }
+        if (isset($queryParams['service'])) {
+            $query->where('service', $queryParams['service']);
+        }
+        if (isset($queryParams['name'])) {
+            $query->where('name', 'like', '%'. $queryParams['name'] . '%');
+        }
+        if (isset($queryParams['cpf'])) {
+            $query->where('cpf', $queryParams['cpf']);
+        }
+        if (isset($queryParams['email'])) {
+            $query->where('email', $queryParams['email']);
+        }
+        if (isset($queryParams['status'])) {
+            $userIds = UserPerfilStatus::where('status', $queryParams['status'])->pluck('user_id')->toArray();
+            $query->whereIn('id', $userIds);
         }
         return $query->get();
     }
 
-    private function modifyUsers(\Illuminate\Database\Eloquent\Collection $users): void
+    private function modifyUsers($users)
     {
         $users->each(function ($user) {
             if (isset($user->secretary)) {
