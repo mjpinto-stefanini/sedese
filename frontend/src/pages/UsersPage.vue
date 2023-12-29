@@ -102,7 +102,15 @@
               outlined
               v-model="consulta.status"
               :options="consultaStatusOptions"
-              label="Status"/>
+              label="Status">
+              <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      &nbsp;
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
             </div>
 
             <div class="q-pa-md">
@@ -110,7 +118,15 @@
                 v-model="consulta.tipoPerfil"
                 :options="tipoPerfilOptions"
                 outlined
-                label="Perfil"/>
+                label="Perfil">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      &nbsp;
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
             </div>
 
             <div class="q-pa-md">
@@ -119,7 +135,15 @@
                 :options="ambitoAtuacaoOptions"
                 outlined
                 lazy-rules
-                label="Ambito Atuação"/>
+                label="Ambito Atuação">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      &nbsp;
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
             </div>
 
             <div class="q-pa-md">
@@ -222,11 +246,13 @@
       </template>
       <template v-slot:body-cell-service="props">
         <q-td :props="props">
-          <q-chip size="sm"
-            :label="props.row.service"
-            :color="props.row.service === 'Estadual' ? 'green' : 'blue'"
-            text-color="white"
-          />
+          <span v-if="props.row.service">
+            <q-chip size="sm"
+              :label="props.row.service"
+              :color="props.row.service === 'Estadual' ? 'green' : 'blue'"
+              text-color="white"
+            />
+          </span>
         </q-td>
       </template>
       <template v-slot:body-cell-type_admin="props">
@@ -430,7 +456,7 @@ export default {
                 /(\d{3})(\d{3})(\d{3})(\d{2})/,
                 "$1.$2.$3-$4"
               ),
-              service: user.service === "1" ? "Estadual" : "Municipal",
+              service: user.service === "1" ? "Estadual" : (user.service === "2" ? "Municipal" : null),
               secretary: user.secretary,
               is_admin: !!user.is_admin,
               id: user.id,
@@ -455,19 +481,17 @@ export default {
       }
     },
     async ConsultarUsuario() {
+      const queryParams = {
+        status: this.consulta.status ? this.consulta.status.value : null,
+        type_admin: this.consulta.tipoPerfil ? this.consulta.tipoPerfil.value : null,
+        secretary: this.consulta.ambitoAtuacao ? this.consulta.ambitoAtuacao.value : null,
+        service: this.consulta.lotacao ? this.consulta.lotacao.value : null,
+        name: this.consulta.name,
+        cpf: this.consulta.cpf,
+        email: this.consulta.email,
+      };
+      console.log(queryParams);
       try {
-        const queryParams = {
-          status: this.consulta.status,
-          tipoPerfil: this.consulta.tipoPerfil,
-          'ambitoAtuacao.value': this.consulta.ambitoAtuacao.value,
-          'ambitoAtuacao.label': this.consulta.ambitoAtuacao.label,
-          'lotacao.value': this.consulta.lotacao.value,
-          'lotacao.label': this.consulta.lotacao.label,
-          name: this.consulta.name,
-          cpf: this.consulta.cpf,
-          email: this.consulta.email,
-        };
-
         const { data, status } = await this.$http.get("users", { params: queryParams });
         if (status === 200) {
           // limpando a row da tabela para que os novos dados sejam inceridos
@@ -480,7 +504,7 @@ export default {
                 /(\d{3})(\d{3})(\d{3})(\d{2})/,
                 "$1.$2.$3-$4"
               ),
-              service: user.service === "1" ? "Estadual" : "Municipal",
+              service: user.service === "1" ? "Estadual" : (user.service === "2" ? "Municipal" : null),
               secretary: user.secretary,
               is_admin: !!user.is_admin,
               id: user.id,
