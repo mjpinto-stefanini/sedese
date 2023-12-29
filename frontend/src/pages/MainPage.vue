@@ -146,7 +146,7 @@ export default {
 					`users/${user_id}/secondstage`,
 					values
 				);
-				console.log(status);
+
 				if (status === 201 || status === 200) {
 					this.$q.notify({
 						message: "Dados salvos com sucesso!",
@@ -157,8 +157,6 @@ export default {
 
 				}
 			} catch (error) {
-				console.log('catch');
-				console.log(error);
 				 this.$q.notify({
 					message: error.response.data.message,
 					color: "negative",
