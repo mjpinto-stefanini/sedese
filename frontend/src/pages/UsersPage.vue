@@ -484,8 +484,8 @@ export default {
       const queryParams = {
         status: this.consulta.status ? this.consulta.status.value : null,
         type_admin: this.consulta.tipoPerfil ? this.consulta.tipoPerfil.value : null,
-        secretary: this.consulta.ambitoAtuacao ? this.consulta.ambitoAtuacao.value : null,
-        service: this.consulta.lotacao ? this.consulta.lotacao.value : null,
+        service: this.consulta.ambitoAtuacao ? this.consulta.ambitoAtuacao.value : null,
+        secretary: this.consulta.lotacao ? this.consulta.lotacao.value : null,
         name: this.consulta.name,
         cpf: this.consulta.cpf,
         email: this.consulta.email,
