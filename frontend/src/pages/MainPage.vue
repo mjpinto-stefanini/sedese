@@ -146,6 +146,7 @@ export default {
 					`users/${user_id}/secondstage`,
 					values
 				);
+
 				if (status === 201 || status === 200) {
 					this.$q.notify({
 						message: "Dados salvos com sucesso!",
@@ -153,9 +154,10 @@ export default {
 						position: "top",
 					});
 					this.$router.push({ name: "SignIn" });
+
 				}
 			} catch (error) {
-				this.$q.notify({
+				 this.$q.notify({
 					message: error.response.data.message,
 					color: "negative",
 					position: "top",
@@ -163,6 +165,36 @@ export default {
 			}
 		},
 		async checkAllInputs(formFields) {
+			if (!/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/.test(formFields.name )) {
+				Notify.create({
+					timeout: 2000,
+					position: 'center',
+					color: 'danger',
+					message: 'O campo Nome deve conter apenas letras'
+				});
+				return 1;
+			}
+
+			if (formFields.issuingBody && !/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/.test(formFields.issuingBody)) {
+				Notify.create({
+					timeout: 2000,
+					position: 'center',
+					color: 'danger',
+					message: 'O campo órgão emissor deve conter apenas letras'
+				});
+				return 1;
+			}
+
+			if (!/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/.test(formFields.city )) {
+				Notify.create({
+					timeout: 2000,
+					position: 'center',
+					color: 'danger',
+					message: 'O campo cidade deve conter apenas letras'
+				});
+				return 1;
+			}
+
 			if (Object.keys(formFields).length === 0) {
 				Notify.create({
 					timeout: 2000,
@@ -176,7 +208,17 @@ export default {
 			let erro = 0;
 
 			Object.keys(formFields).forEach(key => {
-				if (isVisibleAndNotEmpty(key) === false) {  ++erro; }
+
+				if (isVisibleAndNotEmpty(key) === false) {  
+					++erro; 
+
+					Notify.create({
+					timeout: 2000,
+					position: 'center',
+					color: 'danger',
+					message: 'Por favor, preencha os campos corretamente'
+				});
+				}
 			});
 
 			return erro;
