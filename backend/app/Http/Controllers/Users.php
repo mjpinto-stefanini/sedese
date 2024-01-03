@@ -24,7 +24,7 @@ class Users extends Controller
 
     public function __construct()
     {
-        // $this->middleware('auth:api', ['except' => ['secondStage']]);
+        $this->middleware('auth:api', ['except' => ['secondStage']]);
     }
 
     public function list(Request $request): JsonResponse
