@@ -33,7 +33,7 @@ class Users extends Controller
             $queryParams = $request->only([
                 'status', 'type_admin', 'secretary', 'service', 'name', 'cpf', 'email'
             ]);
-    
+
             $users = $this->filterUsers($queryParams);
             $this->modifyUsers($users);
             return response()->json($users, 200);
@@ -79,18 +79,67 @@ class Users extends Controller
         });
     }
 
-    public function get(string $id): JsonResponse
+    public function get(string $id)
     {
-        $dateFormat = '%d/%m/%Y'; 
-        $user = User::selectRaw("*, DATE_FORMAT(birthday, ?) as birthday_txt", [$dateFormat])
-        ->findOrFail($id);
+        $dateFormat = '%d/%m/%Y';
+        $user = User::with(['userPerfilStatus.tipoPerfil'])
+            ->selectRaw("*, DATE_FORMAT(birthday, ?) as birthday_txt", [$dateFormat])
+            ->findOrFail($id);
+
         if (!$user) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'User not found 1',
+                'message' => 'User not found',
             ], self::HTTP_NOT_FOUND);
         }
-        return response()->json($user, 200);
+
+        $tipoPerfilId = $user->userPerfilStatus->tipo_perfil_id ?? null;
+        $tipoPerfil = $tipoPerfilId ? TipoPerfil::find($tipoPerfilId)->nome : null;
+        $personal = Personal::where('user_id', $user->id)->first();
+
+        $statusId = $user->userPerfilStatus->status ?? null;
+        $status = match ($statusId) {
+            UserPerfilStatus::STATUS_ATIVO => 'Ativo',
+            UserPerfilStatus::STATUS_INATIVO => 'Inativo',
+            UserPerfilStatus::STATUS_PENDENTE => 'Pendente',
+            UserPerfilStatus::STATUS_REJEITADO => 'Rejeitado',
+            default => null,
+        };
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'birthday' => $user->birthday,
+            'type_admin' => $user->type_admin,
+            'cpf' => $user->cpf,
+            'email_verified_at' => $user->email_verified_at,
+            'created_at' => $user->created_at,
+            'updated_at' => $user->updated_at,
+            'is_active' => $user->is_active,
+            'is_admin' => $user->is_admin,
+            'is_superuser' => $user->is_superuser,
+            'secretary' => $user->secretary,
+            'service' => $user->service,
+            'second_stage' => $user->second_stage,
+            'tipo_perfil_id' => $tipoPerfilId,
+            'tipo_perfil' => $tipoPerfil,
+            'status_id' => $statusId,
+            'status' => $status,
+            'social_name' => $personal->social_name ?? null,
+            'gender_identity' => $personal->gender_identity ?? null,
+            'gender_identity_others' => $personal->gender_identity_others ?? null,
+            'rg' => $personal->rg,
+            'issuing_body' => $personal->issuing_body,
+            'uf' => $personal->uf,
+            'education' => $personal->education,
+            'profission' => $personal->profission,
+            'profission_others' => $personal->profission_others ?? null,
+            'is_deficiency' => $personal->is_deficiency,
+            'deficiency' => $personal->deficiency ?? null,
+            'deficiency_others' => $personal->deficiency_others ?? null,
+            'deficiency_structure' => $personal->deficiency_structure ?? null,
+        ], 200);
     }
 
     public function updateuser(Request $request, string $id): JsonResponse

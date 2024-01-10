@@ -46,6 +46,11 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
+    public function userPerfilStatus()
+    {
+        return $this->hasOne(UserPerfilStatus::class, 'user_id');
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

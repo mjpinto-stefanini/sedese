@@ -189,13 +189,12 @@ export default {
         const response = await this.$http.get("users/");
         return response;
       } catch (error) {
-        console.log(error.response.status);
         if (error.response.status === 401) {
           this.$router.push({ name: "SignIn" });
           return
         }
         this.$q.notify({
-          message: error.response.data.message,
+          message: "Seu tempo de login expirou, faça login novamente!",
           color: "negative",
           position: "top",
         });
