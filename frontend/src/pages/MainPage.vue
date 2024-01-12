@@ -209,8 +209,8 @@ export default {
 
             Object.keys(formFields).forEach(key => {
 
-                if (isVisibleAndNotEmpty(key) === false) {  
-                    ++erro; 
+                if (isVisibleAndNotEmpty(key) === false) {
+                    ++erro;
 
                     Notify.create({
                     timeout: 2000,
