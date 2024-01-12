@@ -104,7 +104,7 @@
             </q-card-section>
             <q-card-section>
               <strong>Situação Cadastral:</strong>
-              <q-select outlined :options="userPerfilStatus" v-model="user.status"/>
+              <q-select outlined :options="userPerfilStatus" v-model="user.status" @update:model-value="changeStatusUsuario($event)"/>
             </q-card-section>
           </q-card>
 
@@ -119,7 +119,7 @@
             </q-card-section>
             <q-card-actions>
               <strong style="margin: 0px 5px;">Tipo de perfil:</strong>
-              <q-select outlined :options="tipoPerfilOptions" v-model="user.tipo_perfil" style="width: 98%; margin: 0px 5px;"/>
+              <q-select outlined :options="tipoPerfilOptions" v-model="user.tipo_perfil" @update:model-value="changeTipoPerfilUsuario($event)" style="width: 98%; margin: 0px 5px;"/>
             </q-card-actions>
           </q-card>
         </div>
@@ -847,8 +847,219 @@
                 <q-card-section>
                   <div class="row ">
                     <!-- ESTADUAL -->
-                    <div class="row " v-if="professional.regional === 'Estadual'">
-                      
+                    <div class="col-12 row q-col-gutter-y-md" v-if="professional.regional === 'Estadual'">
+                      <div class="col-12">
+                        <q-select
+                            v-model="professional.lotacao"
+                            :options="filterLotacao"
+                            label="Lotação*"
+                            name="lotacao"
+                            for="lotacao"
+                            outlined
+                            :rules="[isRequired]"
+                            disable />
+                        </div>
+                        <div class="col-12" v-if="professional.lotacao === 'Subsecretaria de Assistência Social'">
+                          <q-select
+                            v-model="professional.superintendencia"
+                            :options="superintendenciaList"
+                            label="Superintendência/Assessoria*"
+                            name="superintendencia"
+                            for="superintendencia"
+                            outlined
+                            :rules="[isRequired]" />
+                        </div>
+                        <div class="col-12" v-if="professional.lotacao === 'Diretoria Regional de Desenvolvimento Social'">
+                          <q-select
+                            v-model="professional.diretoria_regional_des_social"
+                            :options="diretoriaRegionalDesSocialList"
+                            label="Diretorias*"
+                            name="diretoriaRegionalDesSocial"
+                            for="diretoriaRegionalDesSocial"
+                            outlined
+                            :rules="[isRequired]" />
+                        </div>
+                        <div class="col-12" v-if="professional.lotacao === 'CREAS Regional'">
+                          <q-select
+                            v-model="professional.creas_regional"
+                            :options="creasRegionalList"
+                            label="Unidade*"
+                            name="creasRegional"
+                            for="creasRegional"
+                            outlined
+                            :rules="[isRequired]" />
+                        </div>
+                      <div class="col-12" v-if="professional.lotacao === 'Outros Públicos'">
+                        <q-select
+                          v-model="professional.outros_publicos"
+                          :options="outrosPublicosList"
+                          name="outrosPublicos"
+                          for="outrosPublicos"
+                          label="Órgão de Atuação*"
+                          outlined
+                          :rules="[isRequired]" />
+                      </div>
+                      <div class="col-12" v-if="professional.outros_publicos === 'Outros'">
+                        <q-input
+                          v-model="professional.outros_publicos_outro"
+                          label="Informe qual é o seu órgão de atuação*"
+                          name="outrosPublicosOutro"
+                          for="outrosPublicosOutro"
+                          outlined
+                          :rules="[isRequired]" />
+                      </div>
+                      <div class="col-12" v-if="professional.lotacao === 'Perceiros (Inscrição Interna)'">
+                        <q-select
+                          v-model="professional.parceiros_insc_interna"
+                          :options="parceirosInscInternaList"
+                          label="Parceiros*"
+                          name="parceirosInscInterna"
+                          for="parceirosInscInterna"
+                          outlined
+                          :rules="[isRequired]" />
+                      </div>
+                      <div class="col-12" v-if="professional.superintendencia === 'Superintendência de Proteção Social Básica'">
+                        <q-select
+                          v-model="professional.protecao_social_basica"
+                          :options="protecaoSocialBasicaList"
+                          label="Diretorias*"
+                          name="protecaoSocialBasica"
+                          for="protecaoSocialBasica"
+                          outlined
+                          :rules="[isRequired]" />
+                      </div>
+                      <div class="col-12" v-if="professional.superintendencia === 'Superintendência de Proteção Social Especial'">
+                        <q-select
+                          v-model="professional.protecao_social_especial_estadual"
+                          :options="protecaoSocialEspecialEstadualList"
+                          label="Diretorias*"
+                          name="protecaoSocialEspecialEstadual"
+                          for="protecaoSocialEspecialEstadual"
+                          outlined
+                          :rules="[isRequired]" />
+                      </div>
+                      <div class="col-12" v-if="professional.superintendencia === 'Superintendência de Vigilância e Capacitação'">
+                        <q-select
+                          v-model="professional.vigilancia_capacitacao"
+                          :options="vigilanciaCapacitacaoList"
+                          label="Diretorias*"
+                          name="vigilanciaCapacitacao"
+                          for="vigilanciaCapacitacao"
+                          outlined
+                          :rules="[isRequired]" />
+                      </div>
+                      <div class="col-12" v-if="professional.regional === 'Estadual'">
+                        <div v-if="professional.lotacao === 'Ceas'">
+                          <q-select
+                            v-model="professional.funcao"
+                            :options="funcaoDesempenhadaCeasList"
+                            label="Função desempenhada*"
+                            name="funcao"
+                            for="funcao"
+                            outlined
+                            :rules="[isRequired]" />
+                        </div>
+                        <div v-else>
+                          <q-select
+                            v-model="professional.funcao"
+                            :options="funcaoDesempenhadaList"
+                            label="Função desempenhada*"
+                            name="funcao"
+                            for="funcao"
+                            outlined
+                            :rules="[isRequired]" />
+                        </div>
+                      </div>
+                      <div class="col-12" v-if="professional.funcao === 'Conselheiro'">
+                        <q-select
+                          v-model="professional.ceas_representacao"
+                          :options="funcaoDesempenhadaSecratariaList"
+                          label="Segmento*"
+                          name="segmento"    
+                          for="segmento"
+                          outlined
+                          :rules="[isRequired]" />
+                      </div>
+                      <div class="col-12" v-if="professional.ceas_representacao === 'Governamental'">
+                        <div class="col-12">
+                          <q-select 
+                            v-model="professional.seguimento_governo"
+                            :options="representacaoRepresentacaoList"
+                            label="Representação*"
+                            name="representação"
+                            for="representação"
+                            outlined
+                            :rules="[isRequired]" />
+                        </div>
+                        <div class="col-12" v-if="professional.seguimento_governo === 1">
+                          <q-select
+                            v-model="professional.representacao_area_representada"
+                            :options="representacaoAreaRepresentadaList"
+                            label="Área Representada*"
+                            name="representacaoAreaRepresentada"
+                            for="representacaoAreaRepresentada"
+                            outlined
+                            clearable
+                            :rules="[isRequired]" />
+                        </div>
+                        <div class="col-12" v-if="professional.representacaoAreaRepresentada === 'Outros'">
+                          <q-input
+                            v-model="professional.outros_representacao_area_representada"
+                            label="Informe qual é o sua área representada*"
+                            name="outrosRepresentacaoAreaRepresentada"
+                            for="outrosRepresentacaoAreaRepresentada"
+                            outlined
+                            :rules="[isRequired]" />
+                        </div>
+                      </div>    
+                      <div class="col-12" v-if="professional.seguimento_governo === 'Outro'">
+                        <q-input
+                          v-model="professional.ceas_segmento"
+                          label="Representação*"
+                          name="representação"
+                          for="representação"
+                          outlined
+                          counter
+                          maxlength="30"
+                          clear-icon="close"
+                          clearable
+                          :rules="[isRequired]" />
+                      </div>
+                      <div class="col-12" v-if="professional.ceas_representacao === 'Sociedade Civil'">
+                        <q-select
+                          v-model="professional.ceas_segmento"
+                          :options="representacaoSegmentoList"
+                          label="Representação*"
+                          name="representação"
+                          for="representação"
+                          outlined
+                          :rules="[isRequired]" />
+                      </div>
+                      <div class="col-12" v-if="professional.funcao === 'Outro'">
+                        <q-input
+                          v-model="professional.funcao_outro"
+                          label="Função Outro*"
+                          name="funcaoOutro"
+                          for="funcaoOutro"
+                          outlined
+                          placeholder="Função Outro"
+                          counter
+                          maxlength="50"
+                          clear-icon="close"
+                          clearable
+                          :rules="[isRequired]" />
+                      </div>
+
+                      <div class="col-12" v-if="professional.funcao === 'Conselheiro'">
+                        <q-select
+                          v-model="professional.ceas_titularidade"
+                          :options="funcaoDesempenhadaConselheiroList"
+                          label="Titularidade*"
+                          name="titularidade"
+                          for="titularidade"
+                          outlined
+                          :rules="[isRequired]" />
+                      </div>
                     </div>
                     <!-- FIM ESTADUAL -->
                     <!-- MUNICIPAL -->
@@ -1116,125 +1327,80 @@
                             outlined
                             :rules="[isRequired]" />
                         </div>
-                      </div>
-                      <!-- FIM MUNICIPAL -->
-                      <div class="col-12" v-if="professional.funcao === 'Secretaria Executiva'">
+                    </div>
+                    <!-- FIM MUNICIPAL -->
+                    <div class="col-12" v-if="professional.funcao === 'Secretaria Executiva'">
+                      <q-select
+                        v-model="professional.vinculo_empregaticio"
+                        :options="vinculoEmpregaticioList"
+                        label="Vínculo empregaticio*"
+                        name="vinculoEmpregaticio"
+                        for="vinculoEmpregaticio"
+                        outlined
+                        :rules="[isRequired]" />
+                    </div>
+                    <div class="col-12" v-if="professional.vinculo_empregaticio === 'Outro'">
+                      <q-input
+                        v-model="professional.vinculo_empregaticio_outro"
+                        label="Informe qual é o seu vínculo empregatício*"
+                        name="vinculoEmpregaticioOutro"
+                        for="vinculoEmpregaticioOutro"
+                        outlined
+                        :rules="[isRequired]" />
+                    </div>
+                    <div class="col-12" v-if="professional.regional === 'Municipal' && professional.orgao !== 'Conselho Tutelar'">
+                      <q-toggle
+                        v-model="professional.possui_representacao"
+                        label="Possui também alguma representação em conselho de assistência social (municipal ou estadual)?" />
+                    </div>
+                    <div class="col-12" v-if="professional.possui_representacao">
+                      <div class="col-12" v-if="professional.orgao === 2">
                         <q-select
-                          v-model="professional.vinculo_empregaticio"
-                          :options="vinculoEmpregaticioList"
-                          label="Vínculo empregaticio*"
-                          name="vinculoEmpregaticio"
-                          for="vinculoEmpregaticio"
+                          v-model="professional.representacao_conselho"
+                          :options="representacaoConselhoList"
+                          label="Conselho*"
+                          name="representacaoConselho"
+                          for="representacaoConselho"
+                          outlined
+                          :rules="[isRequired]"/>
+                      </div>
+                      <div class="col-12" v-else>
+                        <q-select
+                          v-model="professional.representacao_conselho"
+                          :options="representacaoConselhoCMASList"
+                          label="Conselho*"
+                          name="representacaoConselho"
+                          for="representacaoConselho"
                           outlined
                           :rules="[isRequired]" />
                       </div>
-                      <div class="col-12" v-if="professional.vinculo_empregaticio === 'Outro'">
-                        <q-input
-                          v-model="professional.vinculo_empregaticio_outro"
-                          label="Informe qual é o seu vínculo empregatício*"
-                          name="vinculoEmpregaticioOutro"
-                          for="vinculoEmpregaticioOutro"
+                      <div class="col-12">
+                        <q-select
+                          v-model="professional.representacao_representacao"
+                          :options="representanteList"
+                          label="Segmento*"
+                          name="representacaoRepresentacao"
+                          for="representacaoRepresentacao"
                           outlined
                           :rules="[isRequired]" />
                       </div>
-                      <div class="col-12" v-if="professional.regional === 'Municipal' && professional.orgao !== 'Conselho Tutelar'">
-                        <q-toggle
-                          v-model="professional.possui_representacao"
-                          label="Possui também alguma representação em conselho de assistência social (municipal ou estadual)?" />
-                      </div>
-                      <div class="col-12" v-if="professional.possui_representacao">
-                        <div class="col-12" v-if="professional.orgao === 2">
+                      <div class="col-12" v-if="professional.representacao_conselho === 1">
+                        <div class="col-12" v-if="professional.representacao_representacao === 1">
                           <q-select
-                            v-model="professional.representacao_conselho"
-                            :options="representacaoConselhoList"
-                            label="Conselho*"
-                            name="representacaoConselho"
-                            for="representacaoConselho"
+                            v-model="professional.representacao_segmento"
+                            :options="representacaoRepresentacaoList"
+                            label="Representação*"
+                            name="representacaoSegmento"
+                            for="representacaoSegmento"
                             outlined
-                            :rules="[isRequired]"/>
-                        </div>
-                        <div class="col-12" v-else>
-                          <q-select
-                            v-model="professional.representacao_conselho"
-                            :options="representacaoConselhoCMASList"
-                            label="Conselho*"
-                            name="representacaoConselho"
-                            for="representacaoConselho"
-                            outlined
+                            clearable
                             :rules="[isRequired]" />
-                        </div>
-                        <div class="col-12">
-                          <q-select
-                            v-model="professional.representacao_representacao"
-                            :options="representanteList"
-                            label="Segmento*"
-                            name="representacaoRepresentacao"
-                            for="representacaoRepresentacao"
-                            outlined
-                            :rules="[isRequired]" />
-                        </div>
-                        <div class="col-12" v-if="professional.representacao_conselho === 1">
-                          <div class="col-12" v-if="professional.representacao_representacao === 1">
-                            <q-select
-                              v-model="professional.representacao_segmento"
-                              :options="representacaoRepresentacaoList"
-                              label="Representação*"
-                              name="representacaoSegmento"
-                              for="representacaoSegmento"
-                              outlined
-                              clearable
-                              :rules="[isRequired]" />
-                            </div>
-
-                            <div class="col-12" v-if="professional.representacao_representacao === 2">
-                              <q-select
-                                v-model="professional.representacao_segmento"
-                                :options="representacaoSegmentoList"
-                                label="Representação*"
-                                name="representacaoSegmento"
-                                for="representacaoSegmento"
-                                outlined
-                                clearable
-                                :rules="[isRequired]" />
-                            </div>
-                            <div class="col-12" v-if="professional.representacao_segmento === 1">
-                              <q-select
-                                v-model="professional.representacao_area_representada"
-                                :options="representacaoAreaRepresentadaList"
-                                label="Área Representada*"
-                                name="representacaoAreaRepresentada"
-                                for="representacaoAreaRepresentada"
-                                outlined
-                                clearable
-                                :rules="[isRequired]" />
-                            </div>
-
-                            <div class="col-12" v-if="professional.representacao_area_representada === 'Outros'">
-                              <q-input
-                                v-model="professional.outros_representacao_area_representada"
-                                label="Informe qual é o sua área representada*"
-                                name="outrosRepresentacaoAreaRepresentada"
-                                for="outrosRepresentacaoAreaRepresentada"
-                                outlined
-                                :rules="[isRequired]" />
-                            </div>
-                        </div>
-                        <div class="col-12" v-else>
-                          <div class="col-12" v-if="professional.representacao_representacao === 1">
-                            <q-select
-                              v-model="professional.representacao_segmento"
-                              :options="representacaoGovernamentalConselheiroList"
-                              label="Representação*"
-                              name="representacaoSegmento"
-                              for="representacaoSegmento"
-                              outlined
-                              clearable
-                              :rules="[isRequired]" />
                           </div>
+
                           <div class="col-12" v-if="professional.representacao_representacao === 2">
                             <q-select
                               v-model="professional.representacao_segmento"
-                              :options="areaRepresentadaCivilList"
+                              :options="representacaoSegmentoList"
                               label="Representação*"
                               name="representacaoSegmento"
                               for="representacaoSegmento"
@@ -1242,19 +1408,63 @@
                               clearable
                               :rules="[isRequired]" />
                           </div>
-                        </div>
-                        <div class="col-12">
+                          <div class="col-12" v-if="professional.representacao_segmento === 1">
+                            <q-select
+                              v-model="professional.representacao_area_representada"
+                              :options="representacaoAreaRepresentadaList"
+                              label="Área Representada*"
+                              name="representacaoAreaRepresentada"
+                              for="representacaoAreaRepresentada"
+                              outlined
+                              clearable
+                              :rules="[isRequired]" />
+                          </div>
+
+                          <div class="col-12" v-if="professional.representacao_area_representada === 'Outros'">
+                            <q-input
+                              v-model="professional.outros_representacao_area_representada"
+                              label="Informe qual é o sua área representada*"
+                              name="outrosRepresentacaoAreaRepresentada"
+                              for="outrosRepresentacaoAreaRepresentada"
+                              outlined
+                              :rules="[isRequired]" />
+                          </div>
+                      </div>
+                      <div class="col-12" v-else>
+                        <div class="col-12" v-if="professional.representacao_representacao === 1">
                           <q-select
-                            v-model="professional.representacao_titularidade"
-                            :options="representacaoTitularidadeList"
-                            label="Titularidade*"
-                            name="representacaoTitularidade"
-                            for="representacaoTitularidade"
+                            v-model="professional.representacao_segmento"
+                            :options="representacaoGovernamentalConselheiroList"
+                            label="Representação*"
+                            name="representacaoSegmento"
+                            for="representacaoSegmento"
                             outlined
+                            clearable
+                            :rules="[isRequired]" />
+                        </div>
+                        <div class="col-12" v-if="professional.representacao_representacao === 2">
+                          <q-select
+                            v-model="professional.representacao_segmento"
+                            :options="areaRepresentadaCivilList"
+                            label="Representação*"
+                            name="representacaoSegmento"
+                            for="representacaoSegmento"
+                            outlined
+                            clearable
                             :rules="[isRequired]" />
                         </div>
                       </div>
-
+                      <div class="col-12">
+                        <q-select
+                          v-model="professional.representacao_titularidade"
+                          :options="representacaoTitularidadeList"
+                          label="Titularidade*"
+                          name="representacaoTitularidade"
+                          for="representacaoTitularidade"
+                          outlined
+                          :rules="[isRequired]" />
+                      </div>
+                    </div>
                   </div>
                 </q-card-section>
                 <q-card-actions>
@@ -1913,16 +2123,76 @@ export default {
       }
     },
     async salvarDadosEndereco() {
-      
+      try {
+        const result = await this.$http.post('address/updatebyuser', this.address);
+        if (result.status === 200) {
+          this.$q.notify({
+            message: 'Novo colaborador criado com sucesso!',
+            color: "positive",
+            position: "top",
+          });
+        }
+      } catch (error) {
+        this.$q.notify({
+          message: error.message,
+          color: "negative",
+          position: "top",
+        });
+      }
     },
     async salvarDadosContato() {
-      
+      try {
+        const result = await this.$http.post('contact/updatebyuser', this.contact);
+        if (result.status === 200) {
+          this.$q.notify({
+            message: 'Novo colaborador criado com sucesso!',
+            color: "positive",
+            position: "top",
+          });
+        }
+      } catch (error) {
+        this.$q.notify({
+          message: error.message,
+          color: "negative",
+          position: "top",
+        });
+      }
     },
     async salvarDadosPessoais() {
-      
+      try {
+        const result =  await this.$http.post('personal/updatebyuser', this.personal);
+        if (result.status === 200) {
+          this.$q.notify({
+            message: 'Novo colaborador criado com sucesso!',
+            color: "positive",
+            position: "top",
+          });
+        }
+      } catch (error) {
+        this.$q.notify({
+          message: error.message,
+          color: "negative",
+          position: "top",
+        });
+      }
     },
     async salvarDadosProfissionais() {
-      
+      try {
+        const result =  await this.$http.post('professionals/updatebyuser', this.profission)
+        if (result.status === 200) {
+          this.$q.notify({
+            message: 'Novo colaborador criado com sucesso!',
+            color: "positive",
+            position: "top",
+          });
+        }
+      } catch (error) {
+        this.$q.notify({
+          message: error.message,
+          color: "negative",
+          position: "top",
+        });
+      }
     },
     async resetarSenhaUsuario() {
       try {
@@ -1939,7 +2209,14 @@ export default {
         });
 
         if (swalResult.isConfirmed) {
-          // await this.enviarDadosColaborador();
+          const result = await this.$http.post(`users/reset-password/${this.userId}`);
+          if (result.status === 200) {
+            this.$q.notify({
+              message: 'Sucesso ao resetar a senha do usuário',
+              color: "positive",
+              position: "top",
+            });
+          }
         } else if (swalResult.isDenied) {
           this.$router.go();
         }
@@ -1949,6 +2226,67 @@ export default {
           color: "negative",
           position: "top",
         });
+      }
+    },
+    async changeStatusUsuario(target) {
+      try {
+        this.$q.loading.show({
+          message: 'Atualizando Usuário',
+          backgroundColor: 'indigo',
+        });
+        let params = {
+          'user_id': this.userId,
+          'status': target.status
+        }
+        const result = await this.$http.post('users/change-status', this.params);
+        if (result.status === 200) {
+          this.$q.notify({
+            message: 'Usuário Atualizado com sucesso',
+            color: "positive",
+            position: "top",
+          });
+        }
+
+        // atualizando a página
+        this.$router.go();
+      } catch (error) {
+        this.$q.notify({
+          message: error.message || 'Falha ao cadastrar novo colaborador',
+          color: "negative",
+          position: "top",
+        });
+        // atualizando a página
+        this.$router.go();
+      }
+    },
+    async changeTipoPerfilUsuario(target) {
+      try {
+        this.$q.loading.show({
+          message: 'Atualizando Usuário',
+          backgroundColor: 'indigo',
+        });
+        let params = {
+          'user_id': this.userId,
+          'perfil': target.status
+        }
+        const result = await this.$http.post('users/change-perfil', this.params);
+        if (result.status === 200) {
+          this.$q.notify({
+            message: 'Usuário Atualizado com sucesso',
+            color: "positive",
+            position: "top",
+          });
+        }
+        // atualizando a página
+        this.$router.go();
+      } catch (error) {
+        this.$q.notify({
+          message: error.message || 'Falha ao cadastrar novo colaborador',
+          color: "negative",
+          position: "top",
+        });
+        // atualizando a página
+        this.$router.go();
       }
     },
     voltarPagina() {

@@ -52,7 +52,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/confirm-email/{token}', [Users::class, 'confirmEmail']);
         Route::patch('/{id}/user', [Users::class, 'updateuser']);
         Route::patch('/{id}/secondstage', [Users::class, 'secondStage']);
-        Route::get('/whereigo', [Users::class, 'whereigo']);
+        Route::get('/reset-password/{id}', [Users::class, 'sendPasswordByEmail']);
+        Route::post('/change-status', [Users::class, 'changeStatus']);
+        Route::post('/change-perfil', [Users::class, 'changePerfil']);
     });
 
     Route::prefix('auth')->group(function () {
@@ -104,6 +106,7 @@ Route::prefix('v1')->group(function () {
         Route::put('/update/{id}', [PersonalController::class, 'update']);
         Route::delete('/destroy/{id}', [PersonalController::class, 'destroy']);
         Route::get('/{id}/user', [PersonalController::class, 'personalUser']);
+        Route::post('/updatebyuser', [PersonalController::class, 'updatePersonalDataByUser']);
     });
 
     Route::prefix('address')->group(function () {
@@ -113,6 +116,7 @@ Route::prefix('v1')->group(function () {
         Route::put('/update/{id}', [AddressController::class, 'update']);
         Route::delete('/destroy/{id}', [AddressController::class, 'destroy']);
         Route::get('/{id}/user', [AddressController::class, 'addressUser']);
+        Route::post('/updatebyuser',[AddressController::class, 'updateAddressDataByUser']);
     });
 
     Route::prefix('contact')->group(function () {
@@ -122,6 +126,7 @@ Route::prefix('v1')->group(function () {
         Route::put('/update/{id}', [ContactController::class, 'update']);
         Route::delete('/destroy/{id}', [ContactController::class, 'destroy']);
         Route::get('/{id}/user', [ContactController::class, 'contactUser']);
+        Route::post('/updatebyuser', [ContactController::class, 'updateContactDataByUser']);
     });
 
     Route::prefix('respresentation')->group(function () {
@@ -155,6 +160,7 @@ Route::prefix('v1')->group(function () {
         Route::put('/update/{id}', [ProfessionalController::class, 'update']);
         Route::delete('/destroy/{id}', [ProfessionalController::class, 'destroy']);
         Route::get('/{id}/user', [ProfessionalController::class, 'professionalsUser']);
+        Route::post('/updatebyuser', [ProfessionalController::class, 'updateProfessionalDataByUser']);
     });
 
     Route::prefix('acoes')->group(function () {

@@ -263,8 +263,8 @@ class Users extends Controller
         $representacaoTitularidade = '';
         if (isset($request['professional']['representacaoTitularidade'])) {
             $representacaoTitularidade = $request['professional']['representacaoTitularidade'];
-        } elseif(isset($request['profissional']['ceas_titularidade'])) {
-            $representacaoTitularidade = $request['profissional']['ceas_titularidade'];
+        } elseif(isset($request['professional']['ceas_titularidade'])) {
+            $representacaoTitularidade = $request['professional']['ceas_titularidade'];
         }
 
         $representacaoSegmento = '';
@@ -404,7 +404,8 @@ class Users extends Controller
         ], self::HTTP_UNAUTHORIZED);
     }
 
-    public function generateRandomPassword() {
+    public function generateRandomPassword()
+    {
         $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         $password = '';
     
@@ -415,7 +416,8 @@ class Users extends Controller
         return $password;
     }
 
-    public function sendPasswordByEmail($id) {
+    public function sendPasswordByEmail($id)
+    {
         $user = User::findOrFail($id);
         $newPassword = $this->generateRandomPassword();
         $user->password = bcrypt($newPassword);
@@ -432,4 +434,27 @@ class Users extends Controller
         });
     }
     
+    public function changeStatus(Request $request): JsonResponse
+    {
+        $userId = $request['user_id'];
+        $status = $request['status'];
+        $userStatus = UserPerfilStatus::where('user_id', $userId)->first();
+        if ($userStatus) {
+            $status->status($status);
+            $status->save();
+        }
+        return response()->json(200, 'Status atualizado com sucesso');
+    }
+
+    public function changePerfil(Request $request): JsonResponse
+    {
+        $userId = $request['user_id'];
+        $perfil = $request['perfil'];
+        $userStatus = UserPerfilStatus::where('user_id', $userId)->first();
+        if ($userStatus) {
+            $userStatus->tipo_perfil_id($perfil);
+            $userStatus->save();
+        }
+        return response()->json(200, 'Status atualizado com sucesso');
+    }
 }
