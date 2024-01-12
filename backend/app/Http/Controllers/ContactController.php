@@ -77,4 +77,35 @@ class ContactController extends Controller
         $contact = Contact::query()->where('user_id', $user_id)->first();
         return response()->json($contact, self::HTTP_OK);
     }
+
+    public function updateContactDataByUser(Request $request)
+    {
+        $isWhatsapp = false;
+        if ($request['cell_phone_whatsapp'] == 'Sim') {
+            $isWhatsapp = true;
+        }
+        if (isset($request['cell_phone_whatsapp'])) {
+            $contactData['cell_phone_whatsapp'] = 'Não';
+        }
+        $contactData = [
+            'user_id' => $request['id'],
+            'phone' => $request['phone'],
+            'cell_phone' => $request['cell_phone'],
+            'cell_phone_whatsapp' => $request['cell_phone_whatsapp'],
+            'institutional_phone' => $request['institutional_phone'],
+            'institutional_email' => $request['institutional_email'],
+            'isWhatsapp' => $isWhatsapp,
+        ];
+        // Verifica se o registro já existe na tabela Personal
+        $contact = Contact::query()->where('user_id', $request['user_id'])->first();
+
+        // Se o registro existir, atualiza os dados; caso contrário, cria um novo registro
+        if ($contact) {
+            $contact->update($contactData);
+        } else {
+            Contact::create($contactData);
+        }
+        // Retorno de sucesso ou outra lógica necessária
+        return response()->json(['message' => 'Dados de endereço atualizados com sucesso']);
+    }
 }

@@ -13,6 +13,7 @@ class UserPerfilStatus extends Model
     const STATUS_ATIVO = 1;
     const STATUS_INATIVO = 2;
     const STATUS_PENDENTE = 3;
+    const STATUS_REJEITADO = 4;
 
     protected $table = 'users_perfil_status';
 
@@ -22,4 +23,9 @@ class UserPerfilStatus extends Model
         'tipo_perfil_id',
         'status'
     ];
+
+    public function tipoPerfil()
+    {
+        return $this->belongsTo(TipoPerfil::class, 'tipo_perfil_id');
+    }
 }
