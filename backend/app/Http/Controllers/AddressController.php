@@ -63,4 +63,31 @@ class AddressController extends Controller
         return response()->json($personal, self::HTTP_OK);
     }
 
+    public function updateAddressDataByUser(Request $request)
+    {
+        // Dados de endereço recebidos na requisição
+        $addressData = [
+            'user_id' => $request['user_id'],
+            'zip_code' => $request['zip_code'],
+            'street' => $request['street'],
+            'number' => $request['number'],
+            'complement' => $request['complement'] ?? '',
+            'neighborhood' => $request['neighborhood'],
+            'city' => $request['city'],
+            'state' => $request['state'],
+        ];
+
+        // Verifica se o registro já existe na tabela Address
+        $address = Address::where('user_id', $addressData['user_id'])->first();
+
+        // Se o registro existir, atualiza os dados; caso contrário, cria um novo registro
+        if ($address) {
+            $address->update($addressData);
+        } else {
+            Address::create($addressData);
+        }
+
+        // Retorno de sucesso ou outra lógica necessária
+        return response()->json(['message' => 'Dados de endereço atualizados com sucesso']);
+    }
 }

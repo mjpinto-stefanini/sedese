@@ -85,4 +85,39 @@ class PersonalController extends Controller
         $personal = Personal::query()->where('user_id', $user_id)->first();
         return response()->json($personal, self::HTTP_OK);
     }
+
+    public function updatePersonalDataByUser(Request $request)
+    {
+        // Dados pessoais recebidos na requisição
+        $personalData = [
+            'user_id' => $request['user_id'],
+            'name' => $request['name'],
+            'social_name' => $request['socialName'],
+            'gender_identity' => $request['genderIdentity'],
+            'gender_identity_others' => $request['genderIdentityOthers'],
+            'rg' => $request['rg'] ?? '',
+            'issuing_body' => $request['issuingBody'] ?? '',
+            'uf' => $request['uf'] ?? '',
+            'education' => $request['education'],
+            'profession' => $request['profession'],
+            'profession_others' => $request['professionOthers'],
+            'is_deficiency' => $request['isDeficiency'],
+            'deficiency' => $request['deficiency'],
+            'deficiency_others' => $request['deficiencyOthers'],
+            'deficiency_structure' => $request['deficiencyStructure'],
+        ];
+
+        // Verifica se o registro já existe na tabela Personal
+        $personal = Personal::where('user_id', $personalData['user_id'])->first();
+
+        // Se o registro existir, atualiza os dados; caso contrário, cria um novo registro
+        if ($personal) {
+            $personal->update($personalData);
+        } else {
+            Personal::create($personalData);
+        }
+
+        // Retorno de sucesso ou outra lógica necessária
+        return response()->json(['message' => 'Dados pessoais atualizados com sucesso']);
+    }
 }

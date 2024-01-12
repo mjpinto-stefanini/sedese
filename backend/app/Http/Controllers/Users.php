@@ -24,7 +24,7 @@ class Users extends Controller
 
     public function __construct()
     {
-        // $this->middleware('auth:api', ['except' => ['secondStage']]);
+        $this->middleware('auth:api', ['except' => ['secondStage']]);
     }
 
     public function list(Request $request): JsonResponse
@@ -33,7 +33,7 @@ class Users extends Controller
             $queryParams = $request->only([
                 'status', 'type_admin', 'secretary', 'service', 'name', 'cpf', 'email'
             ]);
-    
+
             $users = $this->filterUsers($queryParams);
             $this->modifyUsers($users);
             return response()->json($users, 200);
@@ -79,18 +79,67 @@ class Users extends Controller
         });
     }
 
-    public function get(string $id): JsonResponse
+    public function get(string $id)
     {
-        $dateFormat = '%d/%m/%Y'; 
-        $user = User::selectRaw("*, DATE_FORMAT(birthday, ?) as birthday_txt", [$dateFormat])
-        ->findOrFail($id);
+        $dateFormat = '%d/%m/%Y';
+        $user = User::with(['userPerfilStatus.tipoPerfil'])
+            ->selectRaw("*, DATE_FORMAT(birthday, ?) as birthday_txt", [$dateFormat])
+            ->findOrFail($id);
+
         if (!$user) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'User not found 1',
+                'message' => 'User not found',
             ], self::HTTP_NOT_FOUND);
         }
-        return response()->json($user, 200);
+
+        $tipoPerfilId = $user->userPerfilStatus->tipo_perfil_id ?? null;
+        $tipoPerfil = $tipoPerfilId ? TipoPerfil::find($tipoPerfilId)->nome : null;
+        $personal = Personal::where('user_id', $user->id)->first();
+
+        $statusId = $user->userPerfilStatus->status ?? null;
+        $status = match ($statusId) {
+            UserPerfilStatus::STATUS_ATIVO => 'Ativo',
+            UserPerfilStatus::STATUS_INATIVO => 'Inativo',
+            UserPerfilStatus::STATUS_PENDENTE => 'Pendente',
+            UserPerfilStatus::STATUS_REJEITADO => 'Rejeitado',
+            default => null,
+        };
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'birthday' => $user->birthday,
+            'type_admin' => $user->type_admin,
+            'cpf' => $user->cpf,
+            'email_verified_at' => $user->email_verified_at,
+            'created_at' => $user->created_at,
+            'updated_at' => $user->updated_at,
+            'is_active' => $user->is_active,
+            'is_admin' => $user->is_admin,
+            'is_superuser' => $user->is_superuser,
+            'secretary' => $user->secretary,
+            'service' => $user->service,
+            'second_stage' => $user->second_stage,
+            'tipo_perfil_id' => $tipoPerfilId,
+            'tipo_perfil' => $tipoPerfil,
+            'status_id' => $statusId,
+            'status' => $status,
+            'social_name' => $personal->social_name ?? null,
+            'gender_identity' => $personal->gender_identity ?? null,
+            'gender_identity_others' => $personal->gender_identity_others ?? null,
+            'rg' => $personal->rg,
+            'issuing_body' => $personal->issuing_body,
+            'uf' => $personal->uf,
+            'education' => $personal->education,
+            'profission' => $personal->profission,
+            'profission_others' => $personal->profission_others ?? null,
+            'is_deficiency' => $personal->is_deficiency,
+            'deficiency' => $personal->deficiency ?? null,
+            'deficiency_others' => $personal->deficiency_others ?? null,
+            'deficiency_structure' => $personal->deficiency_structure ?? null,
+        ], 200);
     }
 
     public function updateuser(Request $request, string $id): JsonResponse
@@ -214,8 +263,8 @@ class Users extends Controller
         $representacaoTitularidade = '';
         if (isset($request['professional']['representacaoTitularidade'])) {
             $representacaoTitularidade = $request['professional']['representacaoTitularidade'];
-        } elseif(isset($request['profissional']['ceas_titularidade'])) {
-            $representacaoTitularidade = $request['profissional']['ceas_titularidade'];
+        } elseif(isset($request['professional']['ceas_titularidade'])) {
+            $representacaoTitularidade = $request['professional']['ceas_titularidade'];
         }
 
         $representacaoSegmento = '';
@@ -355,7 +404,8 @@ class Users extends Controller
         ], self::HTTP_UNAUTHORIZED);
     }
 
-    public function generateRandomPassword() {
+    public function generateRandomPassword()
+    {
         $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         $password = '';
     
@@ -366,7 +416,8 @@ class Users extends Controller
         return $password;
     }
 
-    public function sendPasswordByEmail($id) {
+    public function sendPasswordByEmail($id)
+    {
         $user = User::findOrFail($id);
         $newPassword = $this->generateRandomPassword();
         $user->password = bcrypt($newPassword);
@@ -383,4 +434,27 @@ class Users extends Controller
         });
     }
     
+    public function changeStatus(Request $request): JsonResponse
+    {
+        $userId = $request['user_id'];
+        $status = $request['status'];
+        $userStatus = UserPerfilStatus::where('user_id', $userId)->first();
+        if ($userStatus) {
+            $status->status($status);
+            $status->save();
+        }
+        return response()->json(200, 'Status atualizado com sucesso');
+    }
+
+    public function changePerfil(Request $request): JsonResponse
+    {
+        $userId = $request['user_id'];
+        $perfil = $request['perfil'];
+        $userStatus = UserPerfilStatus::where('user_id', $userId)->first();
+        if ($userStatus) {
+            $userStatus->tipo_perfil_id($perfil);
+            $userStatus->save();
+        }
+        return response()->json(200, 'Status atualizado com sucesso');
+    }
 }
