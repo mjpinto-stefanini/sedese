@@ -571,6 +571,7 @@
                         for="vinculoEmpregaticio"
                         outlined
                         :rules="[isRequired]"
+                        @update:model-value="limparVinculoEmpregaticio()"
                     />
                 </div>
 
@@ -1034,8 +1035,8 @@ export default {
         },
     },
     methods: {
-        isRequired(value) {
-            return !!value || "Campo obrigatório";
+        isRequired(value, errorMessage = "Campo obrigatório") {
+            return !!value || errorMessage;
         },
         async getMunicipios() {
             try {
@@ -1051,7 +1052,7 @@ export default {
                     this.filterMunicipios = this.allMunicipios;
                 }
             } catch (error) {
-                console.log(error);
+                return error;
             }
         },
         async getLotacao() {
@@ -1068,9 +1069,12 @@ export default {
                     this.filterLotacao = this.allLotacao;
                 }
             } catch (error) {
-                console.log(error);
+                return error;
             }
         },
+        limparVinculoEmpregaticio() {
+            this.form.vinculoEmpregaticioOutro = '';
+        }
     },
     watch: {
         filterLotacao (val) {
