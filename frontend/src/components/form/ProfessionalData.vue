@@ -140,6 +140,7 @@
                                 for="funcao"
                                 outlined
                                 :rules="[isRequired]"
+                                @update:model-value="limparCamposCeasFuncaoDesempenhada()"
                             />
                         </div>
                         <div v-else>
@@ -163,6 +164,7 @@
                             for="segmento"
                             outlined
                             :rules="[isRequired]"
+                            @update:model-value="limparCamposCeasSegmento()"
                         />
                     </div>
                     <div class="col-12" v-if="form.ceas_representacao === 'Governamental'">
@@ -1037,6 +1039,25 @@ export default {
     methods: {
         isRequired(value, errorMessage = "Campo obrigatório") {
             return !!value || errorMessage;
+        },
+        limparCamposCeasFuncaoDesempenhada() {
+            if (this.form.funcao === 'Secretaria Executiva') {
+                // console.log('secretaria executiva');
+                this.form.ceas_representacao = '';
+                // this.form.representacaoTitularidade = '';
+                this.form.ceas_titularidade = '';
+                this.form.representacaoAreaRepresentada = '';
+                this.form.outrosRepresentacaoAreaRepresentada = '';
+            }
+            if (this.form.funcao === 'Conselheiro') {
+                // console.log('conselheiro');
+                this.form.ceas_representacao = '';
+            }
+        },
+        limparCamposCeasSegmento() {
+            this.form.seguimento_governo = '';
+            this.form.representacaoAreaRepresentada = '';
+            this.form.ceas_titularidade = '';
         },
         async getMunicipios() {
             try {

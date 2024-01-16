@@ -181,17 +181,16 @@ export default {
       }
     },
     async checkAuthenticationAndCallApi() {
-      try {
-        if (!this.isAuthenticated()) {
-          this.$router.push({ name: "SignIn" });
+      try {        
+        if (!this.isAuthenticated() && this.$route.name !== "SignUp" && this.$route.name !== 'SignIn') {
+          // Verifica se a rota atual é SignUp antes de redirecionar para SignIn
+          this.$router.push({ name: 'SignIn' });
           return;
         }
-        const response = await this.$http.get("users/");
-        return response;
       } catch (error) {
         if (error.response.status === 401) {
           this.$router.push({ name: "SignIn" });
-          return
+          return;
         }
         this.$q.notify({
           message: "Seu tempo de login expirou, faça login novamente!",
@@ -204,7 +203,7 @@ export default {
         }, 2000);
       }
     },
-    isAuthenticated() {
+    async isAuthenticated() {
       // Implemente a lógica para verificar se o usuário está autenticado ou não
       // Por exemplo, verifique se há um token de autenticação válido ou se o usuário está logado de alguma outra forma
       // Retorne true se estiver autenticado, caso contrário, retorne false
