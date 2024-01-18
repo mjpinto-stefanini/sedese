@@ -26,14 +26,14 @@
               </div>
               <div>
                 <q-chip size="sm" 
-                  :text-color="user.is_active ? 'white' : 'dark'"
-                  :label="user.is_active ? 'Ativado' : 'Desativado'"
-                  :color="user.is_active ? 'green' : 'gray'"
+                  :text-color="chipTextColor"
+                  :label="chipLabel"
+                  :color="chipColor"
                 />
                 <q-chip v-if="user.type_admin == 1" size="sm"
-                    :text-color="'white'"
-                    :label="'Super Admin / Equipe DEP'"
-                    :color="'primary'"
+                  :text-color="'white'"
+                  :label="'Super Admin / Equipe DEP'"
+                  :color="'primary'"
                 />
                 <q-chip v-if="user.type_admin == 2" size="sm"
                     :text-color="'white'"
@@ -65,7 +65,7 @@
                   <span class="text-grey">Nome Social</span> {{ personal.social_name }}
                 </div>
                 <div class="col-sm-12 q-pa-xs" v-if="user.birthday">
-                  <span class="text-grey">Data de nascimento</span> {{ user.birthday_txt }}
+                  <span class="text-grey">Data de nascimento</span> {{ user.birthday }}
                 </div>
                 <div class="col-sm-12 q-pa-xs" v-if="user.cpf">
                   <span class="text-grey">CPF</span> {{ user.cpf }}
@@ -157,17 +157,15 @@
                   />
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-12">
-                  <q-input
-                    v-model="user.birthday"
-                    hint="Data de Nascimento"
-                    name="dataNascimento"
-                    for="dataNascimento"
-                    type="date"
-                    outlined
-                    clear-icon="close"
-                    clearable
-                    :rules="[isRequired]"
-                  />
+                  <q-input outlined v-model="user.birthday" label="Data de Nascimento">
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy>
+                          <q-date v-model="user.birthday" mask="DD/MM/YYYY"></q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
                 </div>
                 <div class="col-12">
                   <q-toggle v-model="checkSocialName"
@@ -583,7 +581,7 @@
           <q-dialog v-model="modalDadosContato">
             <q-card style="width: 80%; max-width: 80vw;">
               <q-card-section>
-                <h6 style="margin:0px; padding: 0px;">Editar Dados Residenciais</h6>
+                <h6 style="margin:0px; padding: 0px;">Editar Dados de Contato</h6>
               </q-card-section>
               <q-card-section>
                 <div class="col-12">
@@ -780,7 +778,7 @@
             <q-dialog v-model="modalDadosProfissionais">
               <q-card style="width: 80%; max-width: 80vw;">
                 <q-card-section>
-                  <h6 style="margin:0px; padding: 0px;">Editar Dados Profissionai</h6>
+                  <h6 style="margin:0px; padding: 0px;">Editar Dados Profissionais</h6>
                 </q-card-section>
                 <q-card-section>
                   <div class="row">
@@ -819,20 +817,22 @@
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12">
                       <q-select
-                        v-show="user.service.label !== null"
+                        v-show="user.service !== null"
                         outlined
-                        v-model="user.secretary"
-                        :options="filterSecretaries"
-                        :label="user.service.value === 2 ? 'Município' : 'Lotação'"
+                        v-model="user.secretaria"
+                        :options="user.service=== '2' ? filterMunicipios : filterSecretaries"
+                        :label="user.service === '2' ? 'Município' : 'Lotação'"
                         @filter="filterFn"
                         :rules="[isRequired]"
                         lazy-rules
-                        use-input
-                        style="padding: 0 5px"
-                        input-debounce="0">
+                        emit-value
+                        map-options
+                        input-debounce="0"
+                      >
                         <template v-slot:prepend>
                           <q-icon name="mdi-domain" class="cursor-pointer" />
                         </template>
+
                         <template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
@@ -1619,10 +1619,10 @@ export default {
       ],
       baseUrlViaCep: "https://viacep.com.br/ws/",
       userPerfilStatus: [
-        {value: 1, label: 'ATIVO'},
-        {value: 2, label: 'INATIVO'},
-        {value: 3, label: 'PENDENTE'},
-        {value: 4, label: 'REJEITADO'},
+        {value: 1, label: 'ATIVO', color: 'green'},
+        {value: 2, label: 'INATIVO', color: 'gray'},
+        {value: 3, label: 'PENDENTE', color: 'orange'},
+        {value: 4, label: 'REJEITADO', color: 'red'},
       ],
       tipoPerfilOptions: [
         {value:1, label: 'Responsavel Técnico'},
@@ -1946,10 +1946,17 @@ export default {
         "Planejamento",
         "Outros",
       ],
+      chipTextColor: null,
+      chipLabel: null,
+      chipColor: null,
     };
   },
   methods: {
     async getUserData() {
+      this.$q.loading.show({
+        message: 'Carregando informações do usuário',
+        backgroundColor: 'indigo',
+      });
       try {
         const { data, status } = await this.apiUser(this.UserId, 'users');
         if (data) {
@@ -1963,6 +1970,9 @@ export default {
           this.getUserContact();
           this.getUserAddress();
           this.getUserProfessionals();
+
+          this.updateChipProperties(this.user.status_id);
+          this.$q.loading.hide();
         }
         if (status !== 200) {
           this.$q.notify({
@@ -1972,11 +1982,21 @@ export default {
           });
         }
       } catch (error) {
+        this.$q.loading.hide();
         this.$q.notify({
           message: error.message,
           color: "negative",
           position: "top",
         });
+      }
+      this.$q.loading.hide();
+    },
+    updateChipProperties(status) {
+      const perfilStatus = this.userPerfilStatus.find(item => item.value === status);
+      if (perfilStatus) {
+        this.chipTextColor = 'white';
+        this.chipLabel = perfilStatus.label;
+        this.chipColor = perfilStatus.color;
       }
     },
     async getUserPersonal() {
@@ -2061,14 +2081,14 @@ export default {
           this.$q.loading.hide();
         }
       } catch (error) {
-        console.log(error);
         this.$q.loading.hide();
+        return error;
       }
     },
     async getSecretaries() {
       try {
         const { data, status } = await this.$http.get(
-          `ambitoatuacao/regiaoadm/${this.user?.service.value === 1 ? "1" : "2"}`
+          `ambitoatuacao/regiaoadm/${this.user?.service === 1 ? "1" : "2"}`
         );
         if (status === 200) {
           this.allSecretaries = data.map((ele) => {
@@ -2102,7 +2122,7 @@ export default {
           this.filterMunicipios = this.allMunicipios;
         }
       } catch (error) {
-        console.log(error);
+        return error;
       }
     },
     async getLotacao() {
@@ -2119,7 +2139,7 @@ export default {
           this.filterLotacao = this.allLotacao;
         }
       } catch (error) {
-        console.log(error);
+        return error;
       }
     },
     async salvarDadosEndereco() {
@@ -2159,8 +2179,14 @@ export default {
       }
     },
     async salvarDadosPessoais() {
+      let params = {
+        'name': this.user.name,
+        'birthday': this.user.birthday,
+        'personal': this.personal
+      };
+  
       try {
-        const result =  await this.$http.post('personal/updatebyuser', this.personal);
+        const result =  await this.$http.post('personal/updatebyuser', params);
         if (result.status === 200) {
           this.$q.notify({
             message: 'Novo colaborador criado com sucesso!',
@@ -2235,10 +2261,10 @@ export default {
           backgroundColor: 'indigo',
         });
         let params = {
-          'user_id': this.userId,
-          'status': target.status
+          'user_id': this.UserId,
+          'status': target.value
         }
-        const result = await this.$http.post('users/change-status', this.params);
+        const result = await this.$http.post('users/change-status', params);
         if (result.status === 200) {
           this.$q.notify({
             message: 'Usuário Atualizado com sucesso',
@@ -2246,7 +2272,7 @@ export default {
             position: "top",
           });
         }
-
+        this.$q.loading.hide();
         // atualizando a página
         this.$router.go();
       } catch (error) {
@@ -2255,6 +2281,7 @@ export default {
           color: "negative",
           position: "top",
         });
+        this.$q.loading.hide();
         // atualizando a página
         this.$router.go();
       }
@@ -2266,10 +2293,10 @@ export default {
           backgroundColor: 'indigo',
         });
         let params = {
-          'user_id': this.userId,
-          'perfil': target.status
+          'user_id': this.UserId,
+          'perfil': target.value
         }
-        const result = await this.$http.post('users/change-perfil', this.params);
+        const result = await this.$http.post('users/change-perfil', params);
         if (result.status === 200) {
           this.$q.notify({
             message: 'Usuário Atualizado com sucesso',
@@ -2277,6 +2304,7 @@ export default {
             position: "top",
           });
         }
+        this.$q.loading.hide();
         // atualizando a página
         this.$router.go();
       } catch (error) {
@@ -2285,6 +2313,7 @@ export default {
           color: "negative",
           position: "top",
         });
+        this.$q.loading.hide();
         // atualizando a página
         this.$router.go();
       }
@@ -2363,11 +2392,16 @@ export default {
   },  
   created() {
     this.getUserData();
-    this.getSecretaries();
     this.getMunicipios();
     this.getLotacao();
   },
   watch: {
+    "professional": {
+      handler() {
+        this.getSecretaries()
+      },
+      deep: true,
+    },
     form: {
       handler() {
         this.$emit("address", this.address);

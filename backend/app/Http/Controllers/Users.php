@@ -76,14 +76,15 @@ class Users extends Controller
             if (isset($user->secretary)) {
                 $user->secretary = AmbitoAtuacao::query()->find($user->secretary)['nome'];
             }
+            $user->status = UserPerfilStatus::firstWhere('user_id', $user->id)['status'];
         });
     }
 
-    public function get(string $id)
+    public function get($id)
     {
         $dateFormat = '%d/%m/%Y';
         $user = User::with(['userPerfilStatus.tipoPerfil'])
-            ->selectRaw("*, DATE_FORMAT(birthday, ?) as birthday_txt", [$dateFormat])
+            ->selectRaw("*, DATE_FORMAT(birthday, ?) as birthday", [$dateFormat])
             ->findOrFail($id);
 
         if (!$user) {
@@ -110,7 +111,7 @@ class Users extends Controller
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'birthday' => $user->birthday,
+            'birthday' => date('d/m/Y', strtotime($user->birthday)),
             'type_admin' => $user->type_admin,
             'cpf' => $user->cpf,
             'email_verified_at' => $user->email_verified_at,
@@ -129,13 +130,13 @@ class Users extends Controller
             'social_name' => $personal->social_name ?? null,
             'gender_identity' => $personal->gender_identity ?? null,
             'gender_identity_others' => $personal->gender_identity_others ?? null,
-            'rg' => $personal->rg,
-            'issuing_body' => $personal->issuing_body,
-            'uf' => $personal->uf,
-            'education' => $personal->education,
-            'profission' => $personal->profission,
+            'rg' => $personal->rg ?? null,
+            'issuing_body' => $personal->issuing_body ?? null,
+            'uf' => $personal->uf ?? null,
+            'education' => $personal->education ?? null,
+            'profission' => $personal->profission ?? null,
             'profission_others' => $personal->profission_others ?? null,
-            'is_deficiency' => $personal->is_deficiency,
+            'is_deficiency' => $personal->is_deficiency ?? null,
             'deficiency' => $personal->deficiency ?? null,
             'deficiency_others' => $personal->deficiency_others ?? null,
             'deficiency_structure' => $personal->deficiency_structure ?? null,
@@ -434,27 +435,27 @@ class Users extends Controller
         });
     }
     
-    public function changeStatus(Request $request): JsonResponse
+    public function changeStatus(Request $request)
     {
-        $userId = $request['user_id'];
-        $status = $request['status'];
-        $userStatus = UserPerfilStatus::where('user_id', $userId)->first();
-        if ($userStatus) {
-            $status->status($status);
-            $status->save();
-        }
-        return response()->json(200, 'Status atualizado com sucesso');
+        $userId = $request->input('user_id');
+        $status = intval($request->input('status'));
+        UserPerfilStatus::where('user_id', $userId)->update(['status' => $status]);
+        return response()->json([
+            'status' => 'success',
+            'type' => 'positive',
+            'message' => 'Status Atualizado com sucesso.',
+        ], self::HTTP_OK);
     }
 
     public function changePerfil(Request $request): JsonResponse
     {
-        $userId = $request['user_id'];
-        $perfil = $request['perfil'];
-        $userStatus = UserPerfilStatus::where('user_id', $userId)->first();
-        if ($userStatus) {
-            $userStatus->tipo_perfil_id($perfil);
-            $userStatus->save();
-        }
-        return response()->json(200, 'Status atualizado com sucesso');
+        $userId = $request->input('user_id');
+        $perfil = intval($request->input('perfil'));
+        UserPerfilStatus::where('user_id', $userId)->update(['tipo_perfil_id' => $perfil]);
+        return response()->json([
+            'status' => 'success',
+            'type' => 'positive',
+            'message' => 'Perfil atualizado com sucesso.',
+        ], self::HTTP_OK);
     }
 }

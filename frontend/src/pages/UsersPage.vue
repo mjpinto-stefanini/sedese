@@ -210,23 +210,6 @@
             <div class="q-gutter-xs q-pa-xs">
               <q-btn
                 size="sm"
-                color="primary"
-                no-caps
-                unelevated
-                padding="sm"
-                @click="openModal(props)"
-                icon="sym_o_edit"
-              />
-              <q-tooltip
-                class="bg-primary text-caption"
-                :offset="[10, 10]"
-                style="max-width: 600px"
-                >Editar Pefil de Acesso do Usuário
-              </q-tooltip>
-            </div>
-            <div class="q-gutter-xs q-pa-xs">
-              <q-btn
-                size="sm"
                 color="secondary"
                 no-caps
                 unelevated
@@ -290,11 +273,10 @@
       <template v-slot:body-cell-is_active="props">
         <q-td :props="props">
           <div class="q-gutter-sm">
-            <q-chip
-              size="sm"
-              :text-color="props.row.is_active ? 'white' : 'dark'"
-              :label="props.row.is_active ? 'Ativado' : 'Desativado'"
-              :color="props.row.is_active ? 'green' : 'gray'"
+            <q-chip size="sm"
+              :text-color="getRowChipProperties(props.row).textColor"
+              :label="getRowChipProperties(props.row).label"
+              :color="getRowChipProperties(props.row).color"
             />
           </div>
         </q-td>
@@ -306,13 +288,6 @@
 <script>
 import { ref } from 'vue';
 import accountMixin from "../mixins/accountMixin";
-
-const consultaStatusOptions = [
-  {value:0, label: "Pendente"},
-  {value:1, label: "Ativado"},
-  {value:2, label: "Desativado"},
-  {value:3, label: "Recusado"}
-];
 
 const tipoPerfilOptions = [
   {value: 1, label: "Super Admin / Equipe DEP"},
@@ -404,7 +379,20 @@ export default {
         { label: "Estado", value: 1 },
         { label: "Municipio", value: 2 },
       ],
+      chipTextColor: null,
+      chipLabel: null,
+      chipColor: null,
     };
+  },
+  computed: {
+    consultaStatusOptions() {
+      return [
+        { value: 1, label: 'ATIVO', color: 'green' },
+        { value: 2, label: 'INATIVO', color: 'gray' },
+        { value: 3, label: 'PENDENTE', color: 'orange' },
+        { value: 4, label: 'REJEITADO', color: 'red' },
+      ];
+    },
   },
   methods: {
     async onSave() {
@@ -468,7 +456,9 @@ export default {
                   ? "SUBAS / Diretorias Regionais"
                   : "Outros parceiros / Participantes",
               created: new Date(user.created_at).toLocaleString("pt-BR"),
+              status: user.status
             });
+            // this.updateChipProperties(user.status);
           });
           // this.rows = data;
         }
@@ -479,6 +469,15 @@ export default {
           position: "top",
         });
       }
+    },
+    getRowChipProperties(row) {
+      const perfilStatus = this.consultaStatusOptions.find(item => item.value === row.status);
+
+      return {
+        textColor: perfilStatus ? 'white' : '',
+        label: perfilStatus ? perfilStatus.label : '',
+        color: perfilStatus ? perfilStatus.color : '',
+      };
     },
     async ConsultarUsuario() {
       const queryParams = {
@@ -515,6 +514,7 @@ export default {
                   ? "SUBAS / Diretorias Regionais"
                   : "Outros parceiros / Participantes",
               created: new Date(user.created_at).toLocaleString("pt-BR"),
+              status: user.status
             });
           });
         }
@@ -576,7 +576,6 @@ export default {
   setup() {
     return {
       model: ref(null),
-      consultaStatusOptions,
       tipoPerfilOptions,
     }
   },
