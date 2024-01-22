@@ -61,8 +61,6 @@
           </q-card-section>
         </q-card>
 
-        <!-- {{ selectedUser }} -->
-
         <q-card-actions align="right">
           <!--
             <q-btn
@@ -181,8 +179,11 @@
           <q-input outlined v-model="consulta.email" label="E-mail" :rules="[isEmail]" />
         </div>
         <div class="q-pa-md" style="margin-top: -20px;">
-          <q-btn color="green" size="22px" class="q-px-xl q-py-xs" @click="ConsultarUsuario">
+          <q-btn color="green" size="18px"  @click="ConsultarUsuario" style="margin-right: 10px;">
             Pesquisar
+          </q-btn>
+          <q-btn color="orange" outline size="18px"  @click="limparFiltrosPagina">
+            Limpar Filtros
           </q-btn>
         </div>
       </div>
@@ -424,6 +425,9 @@ export default {
           position: "top"
         })
       }
+    },
+    limparFiltrosPagina() {
+      this.$router.go();
     },
     openModal(props) {
       this.selectedUser = props.row;
