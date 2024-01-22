@@ -61,9 +61,6 @@
                 <div class="col-sm-12 q-pa-xs" v-if="personal.gender_identity">
                   <span class="text-grey">Identidade de Gênero</span> {{ personal.gender_identity }}
                 </div>
-                <div class="col-sm-12 q-pa-xs" v-if="personal.social_name">
-                  <span class="text-grey">Nome Social</span> {{ personal.social_name }}
-                </div>
                 <div class="col-sm-12 q-pa-xs" v-if="user.birthday">
                   <span class="text-grey">Data de nascimento</span> {{ user.birthday }}
                 </div>
@@ -89,7 +86,9 @@
                   <span class="text-grey">Profissão</span> {{ personal.profission_others }}
                 </div>
                 <div class="col-sm-12 q-pa-xs" v-if="personal.is_deficiency">
-                  <span class="text-grey">Deficiência</span> <span v-if="personal.deficiency !== 'Outros'"> {{ personal.deficiency }}</span><span v-if="personal.deficiency === 'Outros'"> {{ personal.deficiency_others }}</span>
+                  <span class="text-grey">Deficiência</span> 
+                  <span v-if="personal.deficiency !== 'Outros'"> {{ personal.deficiency }}</span>
+                  <span v-if="personal.deficiency === 'Outros'"> {{ personal.deficiency_others }}</span>
                 </div>
                 <div class="col-sm-12 q-pa-xs" v-if="personal.deficiency_structure">
                   <span class="text-grey">Necessita de estrutura para participar da ação?</span> {{ personal.deficiency_structure }}
@@ -684,206 +683,205 @@
               </q-card-section>
               <q-card-section>
                 <!-- ESTADUAL -->
-                <div class="col-12 row q-col-gutter-y-md" v-if="professional.regional === 'Estadual'">
+                <div class="col-12 row q-col-gutter-y-md" v-if="professionalData.regional === 'Estadual'">
                   <div class="col-12">
-                    <span class="text-grey">Lotação:</span> {{professional.lotacao}}
+                    <span class="text-grey">Lotação:</span> {{professionalData.lotacao}}
                     </div>
-                    <div class="col-12" v-if="professional.lotacao === 'Subsecretaria de Assistência Social'">
-                      <span class="text-grey">Superintendência/Assessoria:</span> {{professional.superintendencia}}
+                    <div class="col-12" v-if="professionalData.lotacao === 'Subsecretaria de Assistência Social'">
+                      <span class="text-grey">Superintendência/Assessoria:</span> {{professionalData.superintendencia}}
                     </div>
-                    <div class="col-12" v-if="professional.lotacao === 'Diretoria Regional de Desenvolvimento Social'">
-                      <span class="text-grey">Diretorias:</span> {{professional.diretoria_regional_des_social}}
+                    <div class="col-12" v-if="professionalData.lotacao === 'Diretoria Regional de Desenvolvimento Social'">
+                      <span class="text-grey">Diretorias:</span> {{professionalData.diretoria_regional_des_social}}
                     </div>
-                    <div class="col-12" v-if="professional.lotacao === 'CREAS Regional'">
-                      <span class="text-grey">Unidade:</span> {{professional.creas_regional}}
+                    <div class="col-12" v-if="professionalData.lotacao === 'CREAS Regional'">
+                      <span class="text-grey">Unidade:</span> {{professionalData.creas_regional}}
                     </div>
-                  <div class="col-12" v-if="professional.lotacao === 'Outros Públicos'">
-                    <span class="text-grey">Órgão de Atuação:</span> {{professional.outros_publicos}}
+                  <div class="col-12" v-if="professionalData.lotacao === 'Outros Públicos'">
+                    <span class="text-grey">Órgão de Atuação:</span> {{professionalData.outros_publicos}}
                   </div>
-                  <div class="col-12" v-if="professional.outros_publicos === 'Outros'">
-                    <span class="text-grey">Outro órgão de atuação:</span> {{professional.outros_publicos_outro}}
+                  <div class="col-12" v-if="professionalData.outros_publicos === 'Outros'">
+                    <span class="text-grey">Outro órgão de atuação:</span> {{professionalData.outros_publicos_outro}}
                   </div>
-                  <div class="col-12" v-if="professional.lotacao === 'Perceiros (Inscrição Interna)'">
-                    <span class="text-grey">Parceiros:</span> {{professional.parceiros_insc_interna}}
+                  <div class="col-12" v-if="professionalData.lotacao === 'Perceiros (Inscrição Interna)'">
+                    <span class="text-grey">Parceiros:</span> {{professionalData.parceiros_insc_interna}}
                   </div>
-                  <div class="col-12" v-if="professional.superintendencia === 'Superintendência de Proteção Social Básica'">
-                    <span class="text-grey">Diretorias:</span> {{professional.protecao_social_basica}}
+                  <div class="col-12" v-if="professionalData.superintendencia === 'Superintendência de Proteção Social Básica'">
+                    <span class="text-grey">Diretorias:</span> {{professionalData.protecao_social_basica}}
                     
                   </div>
-                  <div class="col-12" v-if="professional.superintendencia === 'Superintendência de Proteção Social Especial'">
-                    <span class="text-grey">Diretorias:</span> {{professional.protecao_social_especial_estadual}}
+                  <div class="col-12" v-if="professionalData.superintendencia === 'Superintendência de Proteção Social Especial'">
+                    <span class="text-grey">Diretorias:</span> {{professionalData.protecao_social_especial_estadual}}
                   </div>
-                  <div class="col-12" v-if="professional.superintendencia === 'Superintendência de Vigilância e Capacitação'">
-                    <span class="text-grey">Diretorias:</span> {{professional.vigilancia_capacitacao}}
+                  <div class="col-12" v-if="professionalData.superintendencia === 'Superintendência de Vigilância e Capacitação'">
+                    <span class="text-grey">Diretorias:</span> {{professionalData.vigilancia_capacitacao}}
                   </div>
-                  <div class="col-12" v-if="professional.regional === 'Estadual'">
-                    <span class="text-grey">Função desempenhada:</span> {{professional.funcao}}
+                  <div class="col-12" v-if="professionalData.regional === 'Estadual'">
+                    <span class="text-grey">Função desempenhada:</span> {{professionalData.funcao}}
                   </div>
-                  <div class="col-12" v-if="professional.funcao === 'Conselheiro'">
-                    <span class="text-grey">Segmento:</span> {{professional.ceas_representacao}}
+                  <div class="col-12" v-if="professionalData.funcao === 'Conselheiro'">
+                    <span class="text-grey">Segmento:</span> {{professionalData.ceas_representacao}}
                   </div>
-                  <div class="col-12" v-if="professional.ceas_representacao === 'Governamental'">
+                  <div class="col-12" v-if="professionalData.ceas_representacao === 'Governamental'">
                     <div class="col-12">
-                      <span class="text-grey">Representação:</span> {{professional.seguimento_governo}}
+                      <span class="text-grey">Representação:</span> {{professionalData.seguimento_governo}}
                     </div>
-                    <div class="col-12" v-if="professional.seguimento_governo === 'Representante Governamental'">
-                      <span class="text-grey">Área Representada:</span> {{professional.representacao_area_representada}}
+                    <div class="col-12" v-if="professionalData.seguimento_governo === 'Representante Governamental'">
+                      <span class="text-grey">Área Representada:</span> {{professionalData.representacao_area_representada}}
                     </div>
-                    <div class="col-12" v-if="professional.representacaoAreaRepresentada === 'Outros'">
-                      <span class="text-grey">Área Representada Outros:</span> {{professional.outros_representacao_area_representada}}
+                    <div class="col-12" v-if="professionalData.representacao_area_representada === 'Outros'">
+                      <span class="text-grey">Área Representada Outros:</span> {{professionalData.outros_representacao_area_representada}}
                     </div>
                   </div>    
-                  <div class="col-12" v-if="professional.seguimento_governo === 'Outro'">
-                    <span class="text-grey">Representação:</span> {{professional.ceas_segmento}}    
+                  <div class="col-12" v-if="professionalData.seguimento_governo === 'Outro'">
+                    <span class="text-grey">Representação:</span> {{professionalData.ceas_segmento}}    
                   </div>
-                  <div class="col-12" v-if="professional.ceas_representacao === 'Sociedade Civil'">
-                    <span class="text-grey">Representação:</span> {{professional.ceas_segmento}}
+                  <div class="col-12" v-if="professionalData.ceas_representacao === 'Sociedade Civil'">
+                    <span class="text-grey">Representação:</span> {{professionalData.ceas_segmento}}
                   </div>
-                  <div class="col-12" v-if="professional.funcao === 'Outro'">
-                    <span class="text-grey">Função Outro:</span> {{professional.funcao_outro}}
+                  <div class="col-12" v-if="professionalData.funcao === 'Outro'">
+                    <span class="text-grey">Função Outro:</span> {{professionalData.funcao_outro}}
                   </div>
 
-                  <div class="col-12" v-if="professional.funcao === 'Conselheiro'">
-                    <span class="text-grey">Titularidade:</span> {{ professional.ceas_titularidade }}
+                  <div class="col-12" v-if="professionalData.funcao === 'Conselheiro'">
+                    <span class="text-grey">Titularidade:</span> {{ professionalData.ceas_titularidade }}
                   </div>
                 </div>
                 <!-- FIM ESTADUAL -->
-
                 <!-- MUNICIPAL -->
-                <div class="col-12 row q-col-gutter-y-md" v-if="professional.regional === 'Municipal'">
+                <div class="col-12 row q-col-gutter-y-md" v-if="professionalData.regional === 'Municipal'">
                   <div class="col-12">
-                    <span class="text-grey">Órgão:</span> {{professional.orgao}}
+                    <span class="text-grey">Órgão:</span> {{professionalData.orgao}}
                   </div>
                   <!-- Opções de input dependendo do valor do campo Orgão -->
-                  <div class="col-12" v-if="professional.orgao === 'Conselho Municipal de Assistência Social'">
-                    <span class="text-grey">Função desempenhada:</span> {{professional.funcao}}
+                  <div class="col-12" v-if="professionalData.orgao === 'Conselho Municipal de Assistência Social'">
+                    <span class="text-grey">Função desempenhada:</span> {{professionalData.funcao}}
                   </div>
-                  <div class="col-12" v-else-if="professional.orgao && professional.orgao !== 'Conselho Tutelar'">
-                    <span class="text-grey">Função desempenhada:</span> {{professional.funcao}}
+                  <div class="col-12" v-else-if="professionalData.orgao && professionalData.orgao !== 'Conselho Tutelar'">
+                    <span class="text-grey">Função desempenhada:</span> {{professionalData.funcao}}
                   </div>
                   <!-- Opções de input dependendo do valor do campo Orgão -->
-                  <div class="col-12" v-if="professional.funcao === 'Conselheiro'">
-                    <span class="text-grey">Segmento:</span> {{professional.representante}}
+                  <div class="col-12" v-if="professionalData.funcao === 'Conselheiro'">
+                    <span class="text-grey">Segmento:</span> {{professionalData.representante}}
                   </div>                    
-                  <div class="col-12" v-if="professional.orgao === 'Secretaria Municipal de Assistência Social'">
-                    <span class="text-grey">Área de atuação:</span> {{professional.area_de_atuacao}}
+                  <div class="col-12" v-if="professionalData.orgao === 'Secretaria Municipal de Assistência Social'">
+                    <span class="text-grey">Área de atuação:</span> {{professionalData.area_de_atuacao}}
                     <!-- Opções de input dependendo do valor do campo Área de atuação -->
-                    <div class="col-12" v-if="professional.area_de_atuacao === 'Proteção Social Básica'">
-                      <span class="text-grey">Serviço/Programa:</span> {{professional.servicos_programa}}
+                    <div class="col-12" v-if="professionalData.area_de_atuacao === 'Proteção Social Básica'">
+                      <span class="text-grey">Serviço/Programa:</span> {{professionalData.servicos_programa}}
                     </div>
                   </div>
                   <!-- Opções de input dependendo do valor do campo Serviço/Programa -->
-                  <div class="col-12" v-if="professional.servicos_programa === 4">
+                  <div class="col-12" v-if="professionalData.servicos_programa === 4">
                     <div class="col-12">
-                      <span class="text-grey">Benefício</span> {{professional.beneficios_municipal}}
+                      <span class="text-grey">Benefício</span> {{professionalData.beneficios_municipal}}
                     </div>
-                    <div class="col-12" v-if="professional.beneficios_municipal === 'Outro'">
-                      <span class="text-grey">Outro - Benefícios:</span> {{professional.beneficios_municipal_outro}}
+                    <div class="col-12" v-if="professionalData.beneficios_municipal === 'Outro'">
+                      <span class="text-grey">Outro - Benefícios:</span> {{professionalData.beneficios_municipal_outro}}
                     </div>
                   </div>
                   <!-- Opções de input dependendo do valor do campo Representante -->
-                  <div class="col-12" v-if="professional.representante === 'Governamental'">
+                  <div class="col-12" v-if="professionalData.representante === 'Governamental'">
                     <div class="col-12">
-                      <span class="text-grey">Representação:</span> {{professional.area_representada}}
+                      <span class="text-grey">Representação:</span> {{professionalData.area_representada}}
                     </div>
 
-                    <div class="col-12" v-if="professional.area_representada === 'Outro'">
-                      <span class="text-grey">Outro - Área representada:</span> {{professional.area_representada_outro}}
+                    <div class="col-12" v-if="professionalData.area_representada === 'Outro'">
+                      <span class="text-grey">Outro - Área representada:</span> {{professionalData.area_representada_outro}}
                     </div>
                   </div>
-                  <div class="col-12" v-if="professional.representante === 'Sociedade Civil'">
-                    <span class="text-grey">Representação:</span> {{professional.area_representada}}
+                  <div class="col-12" v-if="professionalData.representante === 'Sociedade Civil'">
+                    <span class="text-grey">Representação:</span> {{professionalData.area_representada}}
                   </div>
-                  <div class="col-12" v-if="professional.orgao === 'Entidades e Organizações de Assistência Social'">
-                    <span class="text-grey">Área de Atuação:</span> {{professional.area_de_atuacao}}
+                  <div class="col-12" v-if="professionalData.orgao === 'Entidades e Organizações de Assistência Social'">
+                    <span class="text-grey">Área de Atuação:</span> {{professionalData.area_de_atuacao}}
                   </div>
                   <!-- Opções de input dependendo do valor do campo Área de Atuacao -->
-                  <div class="col-12" v-if="professional.area_de_atuacao === 'Proteção Social Básica'">
-                    <span class="text-grey">Área de Atuação:</span> {{professional.area_de_atuacao}}
+                  <div class="col-12" v-if="professionalData.area_de_atuacao === 'Proteção Social Básica'">
+                    <span class="text-grey">Área de Atuação:</span> {{professionalData.area_de_atuacao}}
                   </div>
 
-                  <div class="col-12" v-if="professional.area_de_atuacao === 'Proteção Social Especial'">
-                    <span class="text-grey">Nível de Complexidade:</span> {{professional.protecao_social_especial_municipal}}      
+                  <div class="col-12" v-if="professionalData.area_de_atuacao === 'Proteção Social Especial'">
+                    <span class="text-grey">Nível de Complexidade:</span> {{professionalData.protecao_social_especial_municipal}}      
                   </div>
                   <!-- Opções de input dependendo do valor do campo Proteção Social Especial -->
-                  <div class="col-12" v-if="professional.protecao_social_especial_municipal === 'Média Complexidade'">
+                  <div class="col-12" v-if="professionalData.protecao_social_especial_municipal === 'Média Complexidade'">
                     <div class="col-12">
-                      <span class="text-grey">Serviço/Programa:</span> {{professional.servicos_programa}}
+                      <span class="text-grey">Serviço/Programa:</span> {{professionalData.servicos_programa}}
                     </div>
                   </div>
                   <div class="col-12" v-else>
-                    <div class="col-12" v-if="professional.area_de_atuacao === 'Proteção Social Especial'">
-                      <span class="text-grey">Serviço/Programa:</span> {{professional.servicos_programa}}
+                    <div class="col-12" v-if="professionalData.area_de_atuacao === 'Proteção Social Especial'">
+                      <span class="text-grey">Serviço/Programa:</span> {{professionalData.servicos_programa}}
                     </div>
                   </div>
                   <!-- Opções de input dependendo do valor do campo Área de atuação -->
-                  <div class="col-12" v-if="professional.area_de_atuacao === 'Gestão do SUAS'">
+                  <div class="col-12" v-if="professionalData.area_de_atuacao === 'Gestão do SUAS'">
                     <div class="col-12">
-                      <span class="text-grey">Serviço/Programa:</span> {{professional.servicos_programa}}
+                      <span class="text-grey">Serviço/Programa:</span> {{professionalData.servicos_programa}}
                     </div>
-                    <div class="col-12" v-if="professional.servicos_programa === 'Outro'">
-                      <span class="text-grey">Outro - Serviço/Programa:</span> {{professional.servicos_programa_outro}}
+                    <div class="col-12" v-if="professionalData.servicos_programa === 'Outro'">
+                      <span class="text-grey">Outro - Serviço/Programa:</span> {{professionalData.servicos_programa_outro}}
                     </div>
                   </div>
                   <!-- Opções de input dependendo do valor do campo Área de atuação -->
-                  <div class="col-12" v-if="professional.area_de_atuacao === 'Gestão do SUAS'">
-                    <div class="col-12" v-if="professional.servicos_programa === 'Outro'">
-                      <span class="text-grey">Outro - Serviço/Programa:</span> {{professional.servicos_programa_outro}}
+                  <div class="col-12" v-if="professionalData.area_de_atuacao === 'Gestão do SUAS'">
+                    <div class="col-12" v-if="professionalData.servicos_programa === 'Outro'">
+                      <span class="text-grey">Outro - Serviço/Programa:</span> {{professionalData.servicos_programa_outro}}
                     </div>
                   </div>
                   <div class="col-12">
-                    <div class="col-12">
-                      <span class="text-grey">Área Representada:</span> {{professional.area_representada}}
+                    <div class="col-12" v-if="professionalData.area_representada">
+                      <span class="text-grey">Área Representada:</span> {{professionalData.area_representada}}
                     </div>
-                    <div class="col-12" v-if="professional.area_representada_outro">
-                      <span class="text-grey">Outro - Área Representada:</span> {{professional.area_representada_outro}}
+                    <div class="col-12" v-if="professionalData.area_representada_outro">
+                      <span class="text-grey">Outro - Área Representada:</span> {{professionalData.area_representada_outro}}
                     </div>
                   </div>
-                  <div class="col-12" v-if="professional.area_representada !== ''">
-                    <span class="text-grey">Titularidade:</span> {{professional.cargo}}
+                  <div class="col-12" v-if="professionalData.area_representada !== ''">
+                    <span class="text-grey">Titularidade:</span> {{professionalData.cargo}}
                   </div>
                 </div>
                 <!-- FIM MUNICIPAL -->
 
-                <div class="col-12" v-if="professional.funcao === 'Secretaria Executiva'">
-                  <span class="text-grey">Vínculo empregaticio:</span> {{professional.vinculo_empregaticio}}
+                <div class="col-12" v-if="professionalData.funcao === 'Secretaria Executiva'">
+                  <span class="text-grey">Vínculo empregaticio:</span> {{professionalData.vinculo_empregaticio}}
                 </div>
-                <div class="col-12" v-if="professional.vinculo_empregaticio === 'Outro'">
-                  <span class="text-grey">Outro - Vínculo empregaticio:</span> {{professional.vinculo_empregaticio_outro}}
+                <div class="col-12" v-if="professionalData.vinculo_empregaticio === 'Outro'">
+                  <span class="text-grey">Outro - Vínculo empregaticio:</span> {{professionalData.vinculo_empregaticio_outro}}
                 </div>
-                <div class="col-12" v-if="professional.possui_representacao">
+                <div class="col-12" v-if="professionalData.possui_representacao">
                   <div class="col-12">
-                    <span class="text-grey">Conselho:</span> {{professional.representacao_conselho}}
+                    <span class="text-grey">Conselho:</span> {{professionalData.representacao_conselho}}
                   </div>
                   <div class="col-12">
-                    <span class="text-grey">Segmento:</span> {{professional.representacao_representacao}}
+                    <span class="text-grey">Segmento:</span> {{professionalData.representacao_representacao}}
                   </div>
-                  <div class="col-12" v-if="professional.representacao_conselho === 'Conselho Estadual de Assistência Social (CEAS)'">
-                    <div class="col-12" v-if="professional.representacao_representacao === 'Representante Governamental'">
-                      <span class="text-grey">Representação:</span> {{professional.representacao_segmento}}
+                  <div class="col-12" v-if="professionalData.representacao_conselho === 'Conselho Estadual de Assistência Social (CEAS)'">
+                    <div class="col-12" v-if="professionalData.representacao_representacao === 'Representante Governamental'">
+                      <span class="text-grey">Representação:</span> {{professionalData.representacao_segmento}}
                     </div>
 
-                    <div class="col-12" v-if="professional.representacao_representacao === 'CMAS Governamental'">
-                      <span class="text-grey">Representação:</span> {{professional.representacao_segmento}}
+                    <div class="col-12" v-if="professionalData.representacao_representacao === 'CMAS Governamental'">
+                      <span class="text-grey">Representação:</span> {{professionalData.representacao_segmento}}
                     </div>
-                    <div class="col-12" v-if="professional.representacao_segmento === 'Usuários de Assistencia Social'">
-                      <span class="text-grey">Área Representada:</span> {{professional.representacao_area_representada}}
+                    <div class="col-12" v-if="professionalData.representacao_segmento === 'Usuários de Assistencia Social'">
+                      <span class="text-grey">Área Representada:</span> {{professionalData.representacao_area_representada}}
                     </div>
 
-                    <div class="col-12" v-if="professional.representacao_area_representada === 'Outros'">
-                      <span class="text-grey">Outro - Área Representada</span> {{professional.outros_representacao_area_representada}}
+                    <div class="col-12" v-if="professionalData.representacao_area_representada === 'Outros'">
+                      <span class="text-grey">Outro - Área Representada</span> {{professionalData.outros_representacao_area_representada}}
                     </div>
                   </div>
                   <div class="col-12" v-else>
-                    <div class="col-12" v-if="professional.representacao_representacao === 'Representante Governamental'">
-                      <span class="text-grey">Representação:</span> {{professional.representacao_segmento}}
+                    <div class="col-12" v-if="professionalData.representacao_representacao === 'Representante Governamental'">
+                      <span class="text-grey">Representação:</span> {{professionalData.representacao_segmento}}
                     </div>
-                    <div class="col-12" v-if="professional.representacao_representacao === 'CMAS Governamental'">
-                      <span class="text-grey">Representação:</span> {{professional.representacao_segmento}}
+                    <div class="col-12" v-if="professionalData.representacao_representacao === 'CMAS Governamental'">
+                      <span class="text-grey">Representação:</span> {{professionalData.representacao_segmento}}
                     </div>
                   </div>
                   <div class="col-12">
-                    <span class="text-grey">Titularidade:</span> {{professional.representacao_titularidade}}
+                    <span class="text-grey">Titularidade:</span> {{professionalData.representacao_titularidade}}
                   </div>
                 </div>
               </q-card-section>
@@ -964,7 +962,7 @@
                     <div class="col-12 row q-col-gutter-y-md" v-if="professional.regional === 'Estadual'">
                       <div class="col-12">
                         <q-select
-                            v-model="professional.lotacao"
+                            v-model="professionalData.lotacao"
                             :options="filterLotacao"
                             label="Lotação*"
                             name="lotacao"
@@ -975,7 +973,7 @@
                         </div>
                         <div class="col-12" v-if="professional.lotacao === 'Subsecretaria de Assistência Social'">
                           <q-select
-                            v-model="professional.superintendencia"
+                            v-model="professionalData.superintendencia"
                             :options="superintendenciaList"
                             label="Superintendência/Assessoria*"
                             name="superintendencia"
@@ -985,7 +983,7 @@
                         </div>
                         <div class="col-12" v-if="professional.lotacao === 'Diretoria Regional de Desenvolvimento Social'">
                           <q-select
-                            v-model="professional.diretoria_regional_des_social"
+                            v-model="professionalData.diretoria_regional_des_social"
                             :options="diretoriaRegionalDesSocialList"
                             label="Diretorias*"
                             name="diretoriaRegionalDesSocial"
@@ -1813,29 +1811,29 @@ export default {
       ],
       /* ESTADUAL */
       creasRegionalList: [
-        {value: 1, label: "CREAS Regional Alto Jequitinhonha"},
-        {value: 2, label: "CREAS Regional Médio/Baixo Jequitinhonha"},
-        {value: 3, label: "CREAS Regional Mucuri"},
-        {value: 4, label: "CREAS Regional Vale do Rio Doce"},
+        "CREAS Regional Alto Jequitinhonha",
+        "CREAS Regional Médio/Baixo Jequitinhonha",
+        "CREAS Regional Mucuri",
+        "CREAS Regional Vale do Rio Doce",
       ],
       outrosPublicosList: [
-        {value: 1, label: "Minitério Público"},
-        {value: 2, label: "Direitos Humanos"},
-        {value: 3, label: "Defesa Civil"},
-        {value: 4, label: "Saúde"},
-        {value: 5, label: "Educação"},
-        {value: 6, label: "Esportes"},
-        {value: 7, label: "Trabalho e Emprego"},
-        {value: 8, label: "Outros"},
+        "Minitério Público",
+        "Direitos Humanos",
+        "Defesa Civil",
+        "Saúde",
+        "Educação",
+        "Esportes",
+        "Trabalho e Emprego",
+        "Outros",
       ],
       filterMunicipios: [],
       filterLotacao: [],
       superintendenciaList: [
-        {value: 1, label: "Superintendência de Proteção Social Básica"},
-        {value: 2, label: "Superintendência de Proteção Social Especial"},
-        {value: 3, label: "Superintendência de Vigilância e Capacitação"},
-        {value: 4, label: "Assessoria de gestão do Fundo Estadual de Assistência Social",},
-        {value: 5, label: "Gabinete"},
+        "Superintendência de Proteção Social Básica",
+        "Superintendência de Proteção Social Especial",
+        "Superintendência de Vigilância e Capacitação",
+        "Assessoria de gestão do Fundo Estadual de Assistência Social",
+        "Gabinete",
       ],
       protecaoSocialBasicaList: [
         "Diretoria de Serviços e Benefícios Socioassistenciais",
@@ -1936,28 +1934,28 @@ export default {
       ],
       /* MUNICIPAL */
       orgaoList: [
-        {value: 1, label: "Secretaria Municipal de Assistência Social"},
-        {value: 2, label: "Conselho Municipal de Assistência Social"},
-        {value: 3, label: "Entidades e Organizações de Assistência Social"},
-        {value: 4, label: "Outras secretarias/orgãos da Prefeitura"},
-        {value: 5, label: "Conselho Tutelar"},
+        "Secretaria Municipal de Assistência Social",
+        "Conselho Municipal de Assistência Social",
+        "Entidades e Organizações de Assistência Social",
+        "Outras secretarias/orgãos da Prefeitura",
+        "Conselho Tutelar"
       ],
       areadeAtuacaoList1: [
-        {value: 1, label: "Proteção Social Básica"},
-        {value: 2, label: "Proteção Social Especial"},
-        {value: 3, label: "Gestão do SUAS"},
-        {value: 4, label: "Gestão Financeira e Orçamentária do SUAS"},
+        "Proteção Social Básica",
+        "Proteção Social Especial",
+        "Gestão do SUAS",
+        "Gestão Financeira e Orçamentária do SUAS",
       ],
       areadeAtuacaoList2: [
-        {value: 5, label: "Atendimento"},
-        {value: 6, label: "Assessoramento"},
-        {value: 7, label: "Defesa e garantia de direitos"},
+        "Atendimento",
+        "Assessoramento",
+        "Defesa e garantia de direitos",
       ],
       protecaoSocialList: [
-        {value: 1,label: "Serviço de Proteção e Atendimento Integral à Família (PAIF)",},
-        {value: 2,label: "Serviço de Convivência e Fortalecimento de Vínculos (SCFV)",},
-        {value: 3,label:"Serviço de Proteção Social Básica no Domicílio para pessoas com deficiência e idosas",},
-        {value: 4,label: "Gestão de Benefícios Socioassistenciais/Cad. Único",},
+        "Serviço de Proteção e Atendimento Integral à Família (PAIF)",
+        "Serviço de Convivência e Fortalecimento de Vínculos (SCFV)",
+        "Serviço de Proteção Social Básica no Domicílio para pessoas com deficiência e idosas",
+        "Gestão de Benefícios Socioassistenciais/Cad. Único",
       ],
       beneficioslList: [
         "Programa Bolsa Família e/ou outra ação de transferência de renda",
@@ -1966,8 +1964,8 @@ export default {
         "Outro",
       ],
       protecaoSocialEspecialMunicipalList: [
-        {value: 1, label: "Média Complexidade"},
-        {value: 2, label: "Alta Complexidade"},
+        "Média Complexidade",
+        "Alta Complexidade",
       ],
       socialEspecialMediaComplexidadeList: [
         "Serviço de Proteção e Atendimento Especializado a Famílias e Indivíduos (PAEFI)",
@@ -1993,13 +1991,13 @@ export default {
         "Outro",
       ],
       conselheiroList: [
-        {value: 1, label: "Representação"},
-        {value: 2, label: "Área Representada"},
-        {value: 3, label: "Cargo"},
+        "Representação",
+        "Área Representada",
+        "Cargo",
       ],
       representanteList: [
-        {value: 1, label: "Governamental"},
-        {value: 2, label: "Sociedade Civil"},
+        "Governamental",
+        "Sociedade Civil",
       ],
       representacaoGovernamentalConselheiroList: [
         "Representante Governamental",
@@ -2016,23 +2014,23 @@ export default {
         "Outro",
       ],
       areaRepresentadaCivilList: [
-        {value: 1, label: "Usuários de Assistencia Social"},
-        {value: 2, label: "Trabalhadores de Assistencia Social"},
-        {value: 3, label: "Entidades de Assistencia Social"},
+        "Usuários de Assistencia Social",
+        "Trabalhadores de Assistencia Social",
+        "Entidades de Assistencia Social",
       ],
       cargoList: [
-        {value: 1, label: "Titular"},
-        {value: 2, label: "Suplente"},
-        {value: 3, label: "Presidente"},
-        {value: 4, label: "Vice-Presidente"},
+        "Titular",
+        "Suplente",
+        "Presidente",
+        "Vice-Presidente",
         //{value: 5, label: "Membro"},
       ],
       representacaoConselhoCMASList: [
-        {value: 1, label: "Conselho Estadual de Assistência Social (CEAS)"},
-        {value: 2, label: "Conselho Municipal de Assistência Social (CMAS)"},                  
+        "Conselho Estadual de Assistência Social (CEAS)",
+        "Conselho Municipal de Assistência Social (CMAS)",
       ],
       representacaoConselhoList: [
-        {value: 1, label: "Conselho Estadual de Assistência Social (CEAS)"},
+      "Conselho Estadual de Assistência Social (CEAS)",
       ],
       representacaoTitularidadeList: [
         "Titular",
@@ -2041,14 +2039,14 @@ export default {
         "Vice-Presidente",
       ],
       representacaoRepresentacaoList: [
-        {value: 1, label: "Representante Governamental"},
-        {value: 2, label: "CMAS Governamental"},
+      "Representante Governamental",
+        "CMAS Governamental",
       ],
       representacaoSegmentoList: [
-        {value: 1, label: "Usuários de Assistencia Social"},
-        {value: 2, label: "Trabalhadores de Assistencia Social"},
-        {value: 3, label: "Entidades de Assistencia Social"},
-        {value: 4, label: "CMAS Sociedade Civil"},
+      "Usuários de Assistencia Social",
+        "Trabalhadores de Assistencia Social",
+        "Entidades de Assistencia Social",
+        "CMAS Sociedade Civil",
       ],
       representacaoAreaRepresentadaList: [
         "Assistência Social",
@@ -2063,6 +2061,7 @@ export default {
       chipTextColor: null,
       chipLabel: null,
       chipColor: null,
+      professionalData: [],
     };
   },
   methods: {
@@ -2155,7 +2154,10 @@ export default {
     async getUserProfessionals() {
       try {
         const { data, status } = await this.apiUser(this.UserId, 'professionals');
-        if (data) { this.professional = data; }
+        if (data) { 
+          this.professional = data;
+          this.professionalData = data;
+        }
         if (status !== 200) { console.warn('Error professional'); }
       } catch (error) {
         this.$q.notify({
@@ -2317,8 +2319,12 @@ export default {
       }
     },
     async salvarDadosProfissionais() {
+      let params = {
+        'user_id': this.UserId,
+        'profession': this.professionalData
+      }
       try {
-        const result =  await this.$http.post('professionals/updatebyuser', this.profission)
+        const result =  await this.$http.post('professionals/updatebyuser', params);
         if (result.status === 200) {
           this.$q.notify({
             message: 'Novo colaborador criado com sucesso!',
