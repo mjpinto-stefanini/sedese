@@ -538,9 +538,9 @@
                                 :rules="[isRequired]"
                             />
                         </div>
-                        <div class="col-12" v-if="areaRepresentadaOutro">
+                        <div class="col-12" v-if="form.areaRepresentadaOutro">
                             <q-input
-                                v-model="areaRepresentadaOutro"
+                                v-model="form.areaRepresentadaOutro"
                                 label="Outro - Área Representada*"
                                 name="areaRepresentadaOutro"
                                 for="areaRepresentadaOutro"

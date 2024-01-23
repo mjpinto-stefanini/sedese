@@ -99,59 +99,58 @@ class ProfessionalController extends Controller
     public function updateProfessionalDataByUser(Request $request)
     {
         // Extração dos dados da representação
-        $representacao = $request['ceas_representacao'] ?? $request['representante']['label'] ?? '';
-        $representacaoTitularidade = $request['representacaoTitularidade'] ?? $request['ceas_titularidade'] ?? '';
-        $representacaoSegmento = $request['representacaoSegmento']['label'] ?? $request['seguimento_governo']['label'] ?? $request['ceas_segmento']['label'] ?? '';
-        $areaRepresentada = $request['areaRepresentada']['label'] ?? $request['areaRepresentada'];
-        $representante = $request['representante']['label'] ?? '';
+        $representacao = $request['profession']['ceas_representacao'] ?? $request['profession']['representante'] ?? '';
+        $representacaoTitularidade = $request['profession']['representacao_titularidade'] ?? $request['profession']['ceas_titularidade'] ?? '';
+        $representacaoSegmento = $request['profession']['representacaoSegmento']['label'] ?? $request['profession']['seguimento_governo']['label'] ?? $request['profession']['ceas_segmento']['label'] ?? '';
+        $areaRepresentada = $request['profession']['area_representada']['label'] ?? $request['areaRepresentada'];
+        $representante = $request['profession']['representante']['label'] ?? '';
 
         // Dados profissionais recebidos na requisição
         $professionalData = [
-            'user_id' => $request['user_id'],
-            'regional' => $request['regional']['label'] ?? '',
-            'superintendencia' => $request['superintendencia']['label'] ?? '',
-            'lotacao' => $request['lotacao']['label'] ?? '',
-            'protecao_social_basica' => $request['protecaoSocialBasica'] ?? '',
-            'protecao_social_especial' => $request['protecaoSocialEspecialEstadual'] ?? '',
-            'vigilancia_capacitacao' => $request['vigilanciaCapacitacao'] ?? '',
-            'vinculo_empregaticio' => $request['vinculoEmpregaticio'] ?? '',
-            'funcao' => $request['funcao'] ?? '',
-            'diretoria_regional_des_social' => $request['diretoriaRegionalDesSocial'] ?? '',
-            'creas_regional' => $request['creasRegional'] ?? '',
-            'exe_creas_funcao' => '',
-            'exe_creas_vinc_empreg' => '',
-            'outros_publicos' => $request['outrosPublicos']['label'] ?? '',
-            'outros_publicos_others' => $request['outrosPublicosOutro'] ?? '',
-            'parceiros' => $request['parceirosInscInterna']['label'] ?? '',
-            'orgao' => $request['orgao']['label'] ?? '',
-            'area_de_atuacao' => $request['areadeAtuacao']['label'] ?? '',
-            'protecao_social_basica_municipal' => '',
-            'beneficios_socioassistenciais' => '',
-            'protecao_social_especial_municipal' => $request['protecaoSocialEspecialMunicipal']['label'] ?? '',
-            'social_especial_municipal_media_complexidade' => $request['socialEspecialMunicipalMediaComplexidade'] ?? '',
-            'social_especial_municipal_alta_complexidade' => $request['socialEspecialMunicipalAltaComplexidade'] ?? '',
+            'regional' => $request['profession']['regional'] ?? '',
+            'superintendencia' => $request['profession']['superintendencia'] ?? '',
+            'lotacao' => $request['profession']['lotacao'] ?? '',
+            'protecao_social_basica' => $request['profession']['protecao_social_basica'] ?? '',
+            'protecao_social_especial' => $request['profession']['protecao_social_especial'] ?? '',
+            'vigilancia_capacitacao' => $request['profession']['vigilancia_capacitacao'] ?? '',
+            'vinculo_empregaticio' => $request['profession']['vinculo_empregaticio'] ?? '',
+            'funcao' => $request['profession']['funcao'] ?? '',
+            'diretoria_regional_des_social' => $request['profession']['diretoria_regional_des_social'] ?? '',
+            'creas_regional' => $request['profession']['creas_regional'] ?? '',
+            'exe_creas_funcao' => $request['profession']['exe_creas_funcao'] ?? '',
+            'exe_creas_vinc_empreg' => $request['profession']['exe_creas_vinc_empreg'] ?? '',
+            'outros_publicos' => $request['profession']['outros_publicos'] ?? '',
+            'outros_publicos_others' => $request['profession']['outros_publicos_others'] ?? '',
+            'parceiros' => $request['profession']['parceiros_insc_interna'] ?? '',
+            'orgao' => $request['profession']['orgao'] ?? '',
+            'area_de_atuacao' => $request['profession']['area_de_atuacao'] ?? '',
+            'protecao_social_basica_municipal' => $request['profession']['protecao_social_basica_municipal'] ?? '',
+            'beneficios_socioassistenciais' => $request['profession']['beneficios_socioassistenciais'] ?? '',
+            'protecao_social_especial_municipal' => $request['profession']['protecao_social_especial_municipal'] ?? '',
+            'social_especial_municipal_media_complexidade' => $request['profession']['social_especial_municipal_media_complexidade'] ?? '',
+            'social_especial_municipal_alta_complexidade' => $request['profession']['social_especial_municipal_alta_complexidade'] ?? '',
             'representacao' => $representacao,
             'area_representada' => $areaRepresentada ?? '',
-            'area_representada_outros' => $request['areaRepresentadaOutro'] ?? '',
-            'cargo' => $request['cargo']['label'] ?? '',
+            'area_representada_outros' => $request['profession']['area_representada_outros'] ?? '',
+            'cargo' => $request['profession']['cargo'] ?? '',
             'representante' => $representante,
             'representacao_titularidade' => $representacaoTitularidade,
             'representacao_segmento' => $representacaoSegmento,
-            'representacao_representacao' => $request['representacaoRepresentacao']['label'] ?? '',
-            'representacao_conselho' => $request['representacaoConselho']['label'] ?? '',
-            'representacao_area_representada_outros' => $request['outrosRepresentacaoAreaRepresentada'] ?? '',
-            'representacao_area_representada' => $request['representacaoAreaRepresentada'] ?? '',
-            'funcao_outro' => $request['funcaoOutro'] ?? '',
-            'vinculo_empregaticio_outro' => $request['vinculoEmpregaticioOutro'] ?? '',
-            'municipio_id' => $request['municipio']['id'] ?? null,
-            'servicos_programa_outro' => $request['servicosProgramaOutro'] ?? '',
-            'servicos_programa' => $request['servicosPrograma']['label'] ?? '',
-            'beneficios_municipal_outro' => $request['beneficiosMunicipalOutro'] ?? '',
-            'beneficios_municipal' => $request['beneficiosMunicipal'] ?? '',
+            'representacao_representacao' => $request['profession']['representacao_representacao'] ?? '',
+            'representacao_conselho' => $request['profession']['representacao_conselho'] ?? '',
+            'representacao_area_representada_outros' => $request['profession']['representacao_area_representada_outros'] ?? '',
+            'representacao_area_representada' => $request['profession']['representacao_area_representada'] ?? '',
+            'funcao_outro' => $request['profession']['funcao_outro'] ?? '',
+            'vinculo_empregaticio_outro' => $request['profession']['vinculo_empregaticio_outro'] ?? '',
+            'municipio_id' => $request['profession']['municipio']['id'] ?? null,
+            'servicos_programa_outro' => $request['profession']['servicos_programa_outro'] ?? '',
+            'servicos_programa' => $request['profession']['servicos_programa'] ?? '',
+            'beneficios_municipal_outro' => $request['profession']['beneficios_municipal_outro'] ?? '',
+            'beneficios_municipal' => $request['profession']['beneficios_municipal'] ?? '',
         ];
 
         // Verifica se o registro já existe na tabela Professional
-        $professional = Professional::where('user_id', $professionalData['user_id'])->first();
+        $professional = Professional::where('user_id', $request['user_id'])->first();
 
         // Se o registro existir, atualiza os dados; caso contrário, cria um novo registro
         if ($professional) {
