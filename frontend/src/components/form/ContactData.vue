@@ -23,7 +23,9 @@
 						outlined
 						clear-icon="close"
 						mask="(##) ####-####"
-						:rules="[isPhoneNumber, notLessThanNormal, notMoreThanNormal]"
+						:rules="[isPhoneNumber]"
+						min="11"
+						max="14"
 						clearable
 						type="tel"
 					/>
@@ -37,7 +39,9 @@
 						outlined
 						clear-icon="close"
 						mask="(##) # ####-####"
-						:rules="[isRequired, isCellPhoneNumber, notLessThan, notMoreThan]"
+						:rules="[isRequired, isCellPhoneNumber]"
+						min="11"
+						max="14"
 						clearable
 						type="tel"
 					>
@@ -63,7 +67,8 @@
 						clearable
 						type="tel"
 						mask="(##) ####-####"
-						:rules="[isPhoneNumber, notLessThanNormal, notMoreThanNormal]"
+						min="11"
+						max="14"
 					/>
 				</div>
 				<div class="col-12">

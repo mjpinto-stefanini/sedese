@@ -189,6 +189,7 @@ class Users extends Controller
             'deficiency' => $request['personal']['deficiency'],
             'deficiency_others' => $request['personal']['deficiencyOthers'],
             'deficiency_structure' => $request['personal']['deficiencyStructure'],
+            'birthday' => date('Y-m-d', strtotime($request['personal']['birthday'])),
         ];
 
         $personalResult = Personal::query()->create($personalData);
@@ -289,7 +290,7 @@ class Users extends Controller
             'vinculo_empregaticio' => $request['professional']['vinculoEmpregaticio'] ?? '',
             'funcao' => $request['professional']['funcao'] ?? '',
             'diretoria_regional_des_social' => $request['professional']['diretoriaRegionalDesSocial'] ?? '',
-            'creas_regional' => $request['professional']['creasRegional'] ?? '',
+            'creas_regional' => $request['professional']['creasRegional']['label'] ?? '',
             'exe_creas_funcao' => '',
             'exe_creas_vinc_empreg' => '',
             'outros_publicos' => $request['professional']['outrosPublicos']['label'] ?? '',
@@ -335,7 +336,6 @@ class Users extends Controller
             return response()->json($errormsg, $errormsg['code']);
         }
 
-        $user['birthday'] = $request['personal']['dataNascimento'];
         $user['second_stage'] = true;
         $user->save();
 
