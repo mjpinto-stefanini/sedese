@@ -584,79 +584,69 @@
               </q-card-section>
               <q-card-section>
                 <div class="col-12">
-                  <q-input
-                    v-model="user.email"
-                    label="Email*"
-                    outlined
-                    clear-icon="close"
-                    name="email"
-                    for="email"
-                    disable
-                    clearable
-                    type="email"
-                    :rules="[isRequired]"
-                  />
-                  </div>
-                  <div class="col-12">
                     <q-input
                     v-model="contact.phone"
                     label="Telefone Residencial"
                     outlined
                     clear-icon="close"
                     mask="(##) ####-####"
-                    :rules="[isPhoneNumber, notLessThanNormal, notMoreThanNormal]"
+                    min="11"
+                    max="14"
+                    :rules="[isPhoneNumber]"
                     clearable
                     type="tel"
                   />
-                  </div>
-                  <div class="col-6">
-                    <q-input
-                      v-model="contact.cell_phone"
-                      label="Nº Celular*"
-                      name="cell_phone"
-                      for="cell_phone"
-                      outlined
-                      clear-icon="close"
-                      mask="(##) # ####-####"
-                      :rules="[isRequired, isCellPhoneNumber, notLessThan, notMoreThan]"
-                      clearable
-                      type="tel"
-                    />
-                  </div>
-                  <div class="col-6">
-                    <q-select
-                      v-model="contact.cell_phone_whatsapp"
-                      name="cell_phone_whatsapp"
-                      for="cell_phone_whatsapp"
-                      label="Este número possui WhatsApp?"
-                      :options="['Sim', 'Não']"
-                      :rules="[isRequired]"
-                      outlined
-                    />
-                  </div>
-                  <div class="col-12">
-                    <q-input
-                      v-model="contact.institutional_phone"
-                      label="Telefone Institucional"
-                      outlined
-                      clear-icon="close"
-                      clearable
-                      type="tel"
-                      mask="(##) ####-####"
-                      :rules="[isPhoneNumber, notLessThanNormal, notMoreThanNormal]"
-                    />
-                  </div>
-                  <div class="col-12">
-                    <q-input
-                      v-model="contact.institutional_email"
-                      label="Email Institucional"
-                      outlined
-                      clear-icon="close"
-                      clearable
-                      type="email"
-                      :rules="[isEmail]"
-                    />
-                  </div>
+                </div>
+                <div class="col-6">
+                  <q-input
+                    v-model="contact.cell_phone"
+                    label="Nº Celular*"
+                    name="cell_phone"
+                    for="cell_phone"
+                    outlined
+                    clear-icon="close"
+                    mask="(##) # ####-####"
+                    :rules="[isRequired, isCellPhoneNumber]"
+                    clearable
+                    type="tel"
+                  />
+                </div>
+                <div class="col-6">
+                  <q-select
+                    v-model="contact.cell_phone_whatsapp"
+                    name="cell_phone_whatsapp"
+                    for="cell_phone_whatsapp"
+                    label="Este número possui WhatsApp?"
+                    :options="['Sim', 'Não']"
+                    :rules="[isRequired]"
+                    outlined
+                  />
+                </div>
+                <div class="col-12">
+                  <q-input
+                    v-model="contact.institutional_phone"
+                    label="Telefone Institucional"
+                    outlined
+                    clear-icon="close"
+                    clearable
+                    type="tel"
+                    mask="(##) ####-####"
+                    min="11"
+                    max="14"
+                    :rules="[isPhoneNumber,]"
+                  />
+                </div>
+                <div class="col-12">
+                  <q-input
+                    v-model="contact.institutional_email"
+                    label="Email Institucional"
+                    outlined
+                    clear-icon="close"
+                    clearable
+                    type="email"
+                    :rules="[isEmail]"
+                  />
+                </div>
               </q-card-section>
               <q-card-actions>
                 <q-btn outlined label="Cancelar" color="red" v-close-popup style="float: left !important; margin-left:10px;" />
