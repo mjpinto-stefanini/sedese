@@ -66,6 +66,8 @@ class Users extends Controller
         if (isset($queryParams['status'])) {
             $userIds = UserPerfilStatus::where('status', $queryParams['status'])->pluck('user_id')->toArray();
             $query->whereIn('id', $userIds);
+        } else {
+            $query->orderByRaw("FIELD((SELECT status FROM users_perfil_status WHERE users_perfil_status.user_id = users.id), 3, 1)");
         }
         return $query->get();
     }
@@ -111,7 +113,7 @@ class Users extends Controller
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'birthday' => date('d/m/Y', strtotime($user->birthday)),
+            'birthday' => $user->birthday,
             'type_admin' => $user->type_admin,
             'cpf' => $user->cpf,
             'email_verified_at' => $user->email_verified_at,

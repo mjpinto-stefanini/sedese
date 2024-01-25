@@ -122,7 +122,7 @@ class AuthController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function register(Request $request): JsonResponse
+    public function register(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -164,8 +164,6 @@ class AuthController extends Controller
         $perfil = ($ambitoAtuacao === 'estado' && in_array($lotacaoTipo, $respTecnico)) ? TipoPerfil::RESPONSAVEL_TECNICO : (in_array($lotacaoTipo, $participanteList) ? TipoPerfil::PARTICIPANTE : TipoPerfil::PARTICIPANTE);
         $statusPerfil = ($perfil === TipoPerfil::PARTICIPANTE) ? UserPerfilStatus::STATUS_ATIVO : UserPerfilStatus::STATUS_PENDENTE;
         $user = User::create($userData);
-        
-
         // criando o tipo de usuário por perfil deixando ele ativo
         UserPerfilStatus::create([
             'user_id' => $user->id,

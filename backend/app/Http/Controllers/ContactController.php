@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ContactController extends Controller
@@ -102,6 +103,11 @@ class ContactController extends Controller
         // Se o registro existir, atualiza os dados; caso contrário, cria um novo registro
         if ($contact) {
             $contact->update($contactData);
+            // caso seja necessário fazer a função de enviar email
+            // para a pessoa desejada, caso tenha sido alterado
+            User::find($contactData['user_id'])->update([
+                'email' => $request['email'],
+            ]);
         } else {
             Contact::create($contactData);
         }
