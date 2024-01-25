@@ -68,6 +68,7 @@ class DatabaseSeeder extends Seeder
         // cadastrando dentro da seed o tipo de perfil
         TipoPerfil::create(['id' => 1,'nome' => 'Responsável técnico']);
         TipoPerfil::create(['id' => 2,'nome' => 'Participante']);
+        TipoPerfil::create(['id' => 3,'nome' => 'Colaborador']);
         $usersTiposPerfils = [
             [
                 'user_id' => '485cad85-b3ee-48d2-b791-6aac05f878cf',

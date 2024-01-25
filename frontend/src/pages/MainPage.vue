@@ -153,17 +153,17 @@ export default {
                         this.$q.notify({
                         	message: "Usuario registrado, em instantes você receberá um email com as instruções para ativar sua conta",
                         	type: "positive",
-                        }, 5000);
+                        });
                         this.$router.push("/dashboard");
                     }
-                    // validar se municipal logar, caso contrario mandar para pagina de login
-                    // caso seja usuário estadual remove do localstorage
-                    this.$q.notify({
-                        message: "Dados salvos com sucesso!",
-                        color: "positive",
-                        position: "top",
-                    });
-                    // this.$router.push({ name: "SignIn" });
+                    if (user.service === '1' || user.service === 1) {
+                        this.$q.notify({
+                            message: "Dados salvos com sucesso!",
+                            color: "positive",
+                            position: "top",
+                        });
+                        this.$router.push({ name: "SignIn" });
+                    }
                 }
             } catch (error) {
                  this.$q.notify({

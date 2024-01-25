@@ -31,7 +31,6 @@
 						<q-icon name="sym_o_info" size="1.2rem" color="primary">
 							<q-tooltip
 								class="bg-primary text-caption"
-								:offset="[10, 10]"
 								style="max-width: 600px"
 							>
 								Nome Social: designação pela qual a pessoa travesti ou

@@ -85,9 +85,9 @@
                 <div class="col-sm-12 q-pa-xs" v-if="personal.profission === 'Outros'">
                   <span class="text-grey">Profissão</span> {{ personal.profission_others }}
                 </div>
-                <div class="col-sm-12 q-pa-xs" v-if="personal.is_deficiency">
-                  <span class="text-grey">Deficiência</span> 
-                  <span v-if="personal.deficiency !== 'Outros'"> {{ personal.deficiency }}</span>
+                <div class="col-sm-12 q-pa-xs" v-if="personal.deficiency">
+                  <span class="text-grey">Deficiência:</span>  
+                  <span v-if="personal.deficiency !== 'Outros'"> {{ personal.deficiency }} </span> 
                   <span v-if="personal.deficiency === 'Outros'"> {{ personal.deficiency_others }}</span>
                 </div>
                 <div class="col-sm-12 q-pa-xs" v-if="personal.deficiency_structure">
@@ -583,8 +583,16 @@
                 <h6 style="margin:0px; padding: 0px;">Editar Dados de Contato</h6>
               </q-card-section>
               <q-card-section>
+                <div class="col-12" style="margin:10px 0px; margin-bottom: 20px;">
+                  <q-input
+                    v-model="user.email"
+                    label="Telefone Residencial"
+                    outlined
+                    type="tel"
+                  />
+                </div>
                 <div class="col-12">
-                    <q-input
+                  <q-input
                     v-model="contact.phone"
                     label="Telefone Residencial"
                     outlined
@@ -673,6 +681,14 @@
               </q-card-section>
               <q-card-section>
                 <!-- ESTADUAL -->
+                <div class="col-12 row q-col-gutter-y-md">
+                  <div class="col-sm-12 q-pa-xs" v-if="professionalData.regional">
+                    <span class="text-grey">Ambito:</span> {{professionalData.regional}}
+                  </div>
+                  <div class="col-sm-12 q-pa-xs" v-if="user.secretaria">
+                    <span class="text-grey">Secretária/Munícipio:</span> {{ user.secretaria }}
+                  </div>
+                </div>
                 <div class="col-12 row q-col-gutter-y-md" v-if="professionalData.regional === 'Estadual'">
                   <div class="col-12">
                     <span class="text-grey">Lotação:</span> {{professionalData.lotacao}}
@@ -2073,6 +2089,18 @@ export default {
           this.getUserContact();
           this.getUserAddress();
           this.getUserProfessionals();
+
+          if (this.user.social_name) {
+            this.checkSocialName = true;
+          }
+
+          if (this.user.deficiency) {
+            this.isDeficiency = true;
+          }
+
+          if (this.user.deficiency_structure) {
+            this.isDeficiencyStructure = true;
+          }
 
           this.updateChipProperties(this.user.status_id);
           this.$q.loading.hide();
