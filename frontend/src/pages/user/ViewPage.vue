@@ -26,14 +26,14 @@
               </div>
               <div>
                 <q-chip size="sm" 
-                  :text-color="user.is_active ? 'white' : 'dark'"
-                  :label="user.is_active ? 'Ativado' : 'Desativado'"
-                  :color="user.is_active ? 'green' : 'gray'"
+                  :text-color="chipTextColor"
+                  :label="chipLabel"
+                  :color="chipColor"
                 />
                 <q-chip v-if="user.type_admin == 1" size="sm"
-                    :text-color="'white'"
-                    :label="'Super Admin / Equipe DEP'"
-                    :color="'primary'"
+                  :text-color="'white'"
+                  :label="'Super Admin / Equipe DEP'"
+                  :color="'primary'"
                 />
                 <q-chip v-if="user.type_admin == 2" size="sm"
                     :text-color="'white'"
@@ -61,11 +61,8 @@
                 <div class="col-sm-12 q-pa-xs" v-if="personal.gender_identity">
                   <span class="text-grey">Identidade de Gênero</span> {{ personal.gender_identity }}
                 </div>
-                <div class="col-sm-12 q-pa-xs" v-if="personal.social_name">
-                  <span class="text-grey">Nome Social</span> {{ personal.social_name }}
-                </div>
                 <div class="col-sm-12 q-pa-xs" v-if="user.birthday">
-                  <span class="text-grey">Data de nascimento</span> {{ user.birthday_txt }}
+                  <span class="text-grey">Data de nascimento</span> {{ user.birthday }}
                 </div>
                 <div class="col-sm-12 q-pa-xs" v-if="user.cpf">
                   <span class="text-grey">CPF</span> {{ user.cpf }}
@@ -88,8 +85,10 @@
                 <div class="col-sm-12 q-pa-xs" v-if="personal.profission === 'Outros'">
                   <span class="text-grey">Profissão</span> {{ personal.profission_others }}
                 </div>
-                <div class="col-sm-12 q-pa-xs" v-if="personal.is_deficiency">
-                  <span class="text-grey">Deficiência</span> <span v-if="personal.deficiency !== 'Outros'"> {{ personal.deficiency }}</span><span v-if="personal.deficiency === 'Outros'"> {{ personal.deficiency_others }}</span>
+                <div class="col-sm-12 q-pa-xs" v-if="personal.deficiency">
+                  <span class="text-grey">Deficiência:</span>  
+                  <span v-if="personal.deficiency !== 'Outros'"> {{ personal.deficiency }} </span> 
+                  <span v-if="personal.deficiency === 'Outros'"> {{ personal.deficiency_others }}</span>
                 </div>
                 <div class="col-sm-12 q-pa-xs" v-if="personal.deficiency_structure">
                   <span class="text-grey">Necessita de estrutura para participar da ação?</span> {{ personal.deficiency_structure }}
@@ -157,17 +156,15 @@
                   />
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-12">
-                  <q-input
-                    v-model="user.birthday"
-                    hint="Data de Nascimento"
-                    name="dataNascimento"
-                    for="dataNascimento"
-                    type="date"
-                    outlined
-                    clear-icon="close"
-                    clearable
-                    :rules="[isRequired]"
-                  />
+                  <q-input outlined v-model="user.birthday" label="Data de Nascimento">
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy>
+                          <q-date v-model="user.birthday" mask="DD/MM/YYYY"></q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
                 </div>
                 <div class="col-12">
                   <q-toggle v-model="checkSocialName"
@@ -583,83 +580,81 @@
           <q-dialog v-model="modalDadosContato">
             <q-card style="width: 80%; max-width: 80vw;">
               <q-card-section>
-                <h6 style="margin:0px; padding: 0px;">Editar Dados Residenciais</h6>
+                <h6 style="margin:0px; padding: 0px;">Editar Dados de Contato</h6>
               </q-card-section>
               <q-card-section>
-                <div class="col-12">
+                <div class="col-12" style="margin:10px 0px; margin-bottom: 20px;">
                   <q-input
                     v-model="user.email"
-                    label="Email*"
+                    label="Telefone Residencial"
                     outlined
-                    clear-icon="close"
-                    name="email"
-                    for="email"
-                    disable
-                    clearable
-                    type="email"
-                    :rules="[isRequired]"
+                    type="tel"
                   />
-                  </div>
-                  <div class="col-12">
-                    <q-input
+                </div>
+                <div class="col-12">
+                  <q-input
                     v-model="contact.phone"
                     label="Telefone Residencial"
                     outlined
                     clear-icon="close"
                     mask="(##) ####-####"
-                    :rules="[isPhoneNumber, notLessThanNormal, notMoreThanNormal]"
+                    min="11"
+                    max="14"
+                    :rules="[isPhoneNumber]"
                     clearable
                     type="tel"
                   />
-                  </div>
-                  <div class="col-6">
-                    <q-input
-                      v-model="contact.cell_phone"
-                      label="Nº Celular*"
-                      name="cell_phone"
-                      for="cell_phone"
-                      outlined
-                      clear-icon="close"
-                      mask="(##) # ####-####"
-                      :rules="[isRequired, isCellPhoneNumber, notLessThan, notMoreThan]"
-                      clearable
-                      type="tel"
-                    />
-                  </div>
-                  <div class="col-6">
-                    <q-select
-                      v-model="contact.cell_phone_whatsapp"
-                      name="cell_phone_whatsapp"
-                      for="cell_phone_whatsapp"
-                      label="Este número possui WhatsApp?"
-                      :options="['Sim', 'Não']"
-                      :rules="[isRequired]"
-                      outlined
-                    />
-                  </div>
-                  <div class="col-12">
-                    <q-input
-                      v-model="contact.institutional_phone"
-                      label="Telefone Institucional"
-                      outlined
-                      clear-icon="close"
-                      clearable
-                      type="tel"
-                      mask="(##) ####-####"
-                      :rules="[isPhoneNumber, notLessThanNormal, notMoreThanNormal]"
-                    />
-                  </div>
-                  <div class="col-12">
-                    <q-input
-                      v-model="contact.institutional_email"
-                      label="Email Institucional"
-                      outlined
-                      clear-icon="close"
-                      clearable
-                      type="email"
-                      :rules="[isEmail]"
-                    />
-                  </div>
+                </div>
+                <div class="col-6">
+                  <q-input
+                    v-model="contact.cell_phone"
+                    label="Nº Celular*"
+                    name="cell_phone"
+                    for="cell_phone"
+                    outlined
+                    clear-icon="close"
+                    mask="(##) # ####-####"
+                    :rules="[isRequired, isCellPhoneNumber]"
+                    clearable
+                    type="tel"
+                  />
+                </div>
+                <div class="col-6">
+                  <q-select
+                    v-model="contact.cell_phone_whatsapp"
+                    name="cell_phone_whatsapp"
+                    for="cell_phone_whatsapp"
+                    label="Este número possui WhatsApp?"
+                    :options="['Sim', 'Não']"
+                    :rules="[isRequired]"
+                    outlined
+                  />
+                </div>
+                <div class="col-12">
+                  <q-input
+                    v-model="contact.institutional_phone"
+                    label="Telefone Institucional"
+                    outlined
+                    clear-icon="close"
+                    clearable
+                    type="tel"
+                    mask="(##) ####-####"
+                    min="11"
+                    max="14"
+                    :rules="[isPhoneNumber,]"
+                  />
+                </div>
+                <div class="col-12">
+                  <q-input
+                    v-model="contact.institutional_email"
+                    label="Email Institucional"
+                    outlined
+                    clear-icon="close"
+                    clearable
+                    type="email"
+                    :rules="[isEmail]"
+                  />
+                </div>
               </q-card-section>
               <q-card-actions>
                 <q-btn outlined label="Cancelar" color="red" v-close-popup style="float: left !important; margin-left:10px;" />
@@ -685,94 +680,215 @@
                 </div>
               </q-card-section>
               <q-card-section>
-                <div class="row" v-if="professional.id">
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.lotacao">
-                    <span class="text-grey">Lotação</span> {{ professional.lotacao }}
+                <!-- ESTADUAL -->
+                <div class="col-12 row q-col-gutter-y-md">
+                  <div class="col-sm-12 q-pa-xs" v-if="professionalData.regional">
+                    <span class="text-grey">Ambito:</span> {{professionalData.regional}}
                   </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.superintendencia">
-                    <span class="text-grey">Superintendência</span> {{ professional.superintendencia }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.protecao_social_basica">
-                    <span class="text-grey">Diretorias</span> {{ professional.protecao_social_basica }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.protecao_social_especial">
-                    <span class="text-grey">Diretoria</span> {{ professional.protecao_social_especial }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.vigilancia_capacitacao">
-                    <span class="text-grey">Diretorias</span> {{ professional.vigilancia_capacitacao }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.vinculo_empregaticio">
-                    <span class="text-grey">Vínculo Empregatício</span> {{ professional.vinculo_empregaticio }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.funcao">
-                    <span class="text-grey">Função</span> {{ professional.funcao }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.diretoria_regional_des_social">
-                    <span class="text-grey">Diretoria Regional DES Social</span> {{ professional.diretoria_regional_des_social }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.creas_regional">
-                    <span class="text-grey">CREAS Regional</span> {{ professional.creas_regional }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.exe_creas_funcao">
-                    <span class="text-grey">Exe CREAS - Função</span> {{ professional.exe_creas_funcao }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.exe_creas_vinc_empreg">
-                    <span class="text-grey">Exe CREAS - Vinculo Empregaticio</span> {{ professional.exe_creas_vinc_empreg }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.outros_publicos">
-                    <span class="text-grey">Outros públicos</span> {{ professional.outros_publicos }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.outros_publicos_others">
-                    <span class="text-grey">Outros públicos</span> {{ professional.outros_publicos_others }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.parceiros">
-                    <span class="text-grey">Parceiros</span> {{ professional.parceiros }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.orgao">
-                    <span class="text-grey">Orgão</span> {{ professional.orgao }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.area_de_atuacao">
-                    <span class="text-grey">Área de Atuação</span> {{ professional.area_de_atuacao }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.protecao_social_basica_municipal">
-                    <span class="text-grey">Proteção Social Básica Municipal</span> {{ professional.protecao_social_basica_municipal }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.beneficios_socioassistenciais">
-                    <span class="text-grey">Beneficios Socio Assistenciais</span> {{ professional.beneficios_socioassistenciais }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.protecao_social_especial_municipal">
-                    <span class="text-grey">Diretoria Municipal</span> {{ professional.protecao_social_especial_municipal }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.social_especial_municipal_media_complexidade">
-                    <span class="text-grey">Social Especial Municipal Média Complexidade</span> {{ professional.social_especial_municipal_media_complexidade }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.social_especial_municipal_alta_complexidade">
-                    <span class="text-grey">Social Especial Municipal Alta Complexidade</span> {{ professional.social_especial_municipal_alta_complexidade }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.representacao == '1'">
-                    <span class="text-grey">Representação</span> Sim
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.area_representada">
-                    <span class="text-grey">Área Representada</span> {{ professional.area_representada }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.area_representada_outros">
-                    <span class="text-grey">Área Representada Outros</span> {{ professional.area_representada_outros }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.representante">
-                    <span class="text-grey">Representação</span> {{ professional.representante }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.representacao_titularidade">
-                    <span class="text-grey">Titularidade</span> {{ professional.representacao_titularidade }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.representacao_segmento">
-                    <span class="text-grey">Segmento</span> {{ professional.representacao_segmento }}
-                  </div>
-                  <div class="col-sm-6 q-pa-xs" v-if="professional.cargo">
-                    <span class="text-grey">Cargo</span> {{ professional.cargo }}
+                  <div class="col-sm-12 q-pa-xs" v-if="user.secretaria">
+                    <span class="text-grey">Secretária/Munícipio:</span> {{ user.secretaria }}
                   </div>
                 </div>
-                <div class="row" v-if="!professional.id">
-                  Não Cadastrado
+                <div class="col-12 row q-col-gutter-y-md" v-if="professionalData.regional === 'Estadual'">
+                  <div class="col-12">
+                    <span class="text-grey">Lotação:</span> {{professionalData.lotacao}}
+                    </div>
+                    <div class="col-12" v-if="professionalData.lotacao === 'Subsecretaria de Assistência Social'">
+                      <span class="text-grey">Superintendência/Assessoria:</span> {{professionalData.superintendencia}}
+                    </div>
+                    <div class="col-12" v-if="professionalData.lotacao === 'Diretoria Regional de Desenvolvimento Social'">
+                      <span class="text-grey">Diretorias:</span> {{professionalData.diretoria_regional_des_social}}
+                    </div>
+                    <div class="col-12" v-if="professionalData.lotacao === 'CREAS Regional'">
+                      <span class="text-grey">Unidade:</span> {{professionalData.creas_regional}}
+                    </div>
+                  <div class="col-12" v-if="professionalData.lotacao === 'Outros Públicos'">
+                    <span class="text-grey">Órgão de Atuação:</span> {{professionalData.outros_publicos}}
+                  </div>
+                  <div class="col-12" v-if="professionalData.outros_publicos === 'Outros'">
+                    <span class="text-grey">Outro órgão de atuação:</span> {{professionalData.outros_publicos_outro}}
+                  </div>
+                  <div class="col-12" v-if="professionalData.lotacao === 'Perceiros (Inscrição Interna)'">
+                    <span class="text-grey">Parceiros:</span> {{professionalData.parceiros_insc_interna}}
+                  </div>
+                  <div class="col-12" v-if="professionalData.superintendencia === 'Superintendência de Proteção Social Básica'">
+                    <span class="text-grey">Diretorias:</span> {{professionalData.protecao_social_basica}}
+                    
+                  </div>
+                  <div class="col-12" v-if="professionalData.superintendencia === 'Superintendência de Proteção Social Especial'">
+                    <span class="text-grey">Diretorias:</span> {{professionalData.protecao_social_especial_estadual}}
+                  </div>
+                  <div class="col-12" v-if="professionalData.superintendencia === 'Superintendência de Vigilância e Capacitação'">
+                    <span class="text-grey">Diretorias:</span> {{professionalData.vigilancia_capacitacao}}
+                  </div>
+                  <div class="col-12" v-if="professionalData.regional === 'Estadual'">
+                    <span class="text-grey">Função desempenhada:</span> {{professionalData.funcao}}
+                  </div>
+                  <div class="col-12" v-if="professionalData.funcao === 'Conselheiro'">
+                    <span class="text-grey">Segmento:</span> {{professionalData.ceas_representacao}}
+                  </div>
+                  <div class="col-12" v-if="professionalData.ceas_representacao === 'Governamental'">
+                    <div class="col-12">
+                      <span class="text-grey">Representação:</span> {{professionalData.seguimento_governo}}
+                    </div>
+                    <div class="col-12" v-if="professionalData.seguimento_governo === 'Representante Governamental'">
+                      <span class="text-grey">Área Representada:</span> {{professionalData.representacao_area_representada}}
+                    </div>
+                    <div class="col-12" v-if="professionalData.representacao_area_representada === 'Outros'">
+                      <span class="text-grey">Área Representada Outros:</span> {{professionalData.outros_representacao_area_representada}}
+                    </div>
+                  </div>    
+                  <div class="col-12" v-if="professionalData.seguimento_governo === 'Outro'">
+                    <span class="text-grey">Representação:</span> {{professionalData.ceas_segmento}}    
+                  </div>
+                  <div class="col-12" v-if="professionalData.ceas_representacao === 'Sociedade Civil'">
+                    <span class="text-grey">Representação:</span> {{professionalData.ceas_segmento}}
+                  </div>
+                  <div class="col-12" v-if="professionalData.funcao === 'Outro'">
+                    <span class="text-grey">Função Outro:</span> {{professionalData.funcao_outro}}
+                  </div>
+
+                  <div class="col-12" v-if="professionalData.funcao === 'Conselheiro'">
+                    <span class="text-grey">Titularidade:</span> {{ professionalData.ceas_titularidade }}
+                  </div>
+                </div>
+                <!-- FIM ESTADUAL -->
+                <!-- MUNICIPAL -->
+                <div class="col-12 row q-col-gutter-y-md" v-if="professionalData.regional === 'Municipal'">
+                  <div class="col-12">
+                    <span class="text-grey">Órgão:</span> {{professionalData.orgao}}
+                  </div>
+                  <!-- Opções de input dependendo do valor do campo Orgão -->
+                  <div class="col-12" v-if="professionalData.orgao === 'Conselho Municipal de Assistência Social'">
+                    <span class="text-grey">Função desempenhada:</span> {{professionalData.funcao}}
+                  </div>
+                  <div class="col-12" v-else-if="professionalData.orgao && professionalData.orgao !== 'Conselho Tutelar'">
+                    <span class="text-grey">Função desempenhada:</span> {{professionalData.funcao}}
+                  </div>
+                  <!-- Opções de input dependendo do valor do campo Orgão -->
+                  <div class="col-12" v-if="professionalData.funcao === 'Conselheiro'">
+                    <span class="text-grey">Segmento:</span> {{professionalData.representante}}
+                  </div>                    
+                  <div class="col-12" v-if="professionalData.orgao === 'Secretaria Municipal de Assistência Social'">
+                    <span class="text-grey">Área de atuação:</span> {{professionalData.area_de_atuacao}}
+                    <!-- Opções de input dependendo do valor do campo Área de atuação -->
+                    <div class="col-12" v-if="professionalData.area_de_atuacao === 'Proteção Social Básica'">
+                      <span class="text-grey">Serviço/Programa:</span> {{professionalData.servicos_programa}}
+                    </div>
+                  </div>
+                  <!-- Opções de input dependendo do valor do campo Serviço/Programa -->
+                  <div class="col-12" v-if="professionalData.servicos_programa === 4">
+                    <div class="col-12">
+                      <span class="text-grey">Benefício</span> {{professionalData.beneficios_municipal}}
+                    </div>
+                    <div class="col-12" v-if="professionalData.beneficios_municipal === 'Outro'">
+                      <span class="text-grey">Outro - Benefícios:</span> {{professionalData.beneficios_municipal_outro}}
+                    </div>
+                  </div>
+                  <!-- Opções de input dependendo do valor do campo Representante -->
+                  <div class="col-12" v-if="professionalData.representante === 'Governamental'">
+                    <div class="col-12">
+                      <span class="text-grey">Representação:</span> {{professionalData.area_representada}}
+                    </div>
+
+                    <div class="col-12" v-if="professionalData.area_representada === 'Outro'">
+                      <span class="text-grey">Outro - Área representada:</span> {{professionalData.area_representada_outro}}
+                    </div>
+                  </div>
+                  <div class="col-12" v-if="professionalData.representante === 'Sociedade Civil'">
+                    <span class="text-grey">Representação:</span> {{professionalData.area_representada}}
+                  </div>
+                  <div class="col-12" v-if="professionalData.orgao === 'Entidades e Organizações de Assistência Social'">
+                    <span class="text-grey">Área de Atuação:</span> {{professionalData.area_de_atuacao}}
+                  </div>
+                  <!-- Opções de input dependendo do valor do campo Área de Atuacao -->
+                  <div class="col-12" v-if="professionalData.area_de_atuacao === 'Proteção Social Básica'">
+                    <span class="text-grey">Área de Atuação:</span> {{professionalData.area_de_atuacao}}
+                  </div>
+
+                  <div class="col-12" v-if="professionalData.area_de_atuacao === 'Proteção Social Especial'">
+                    <span class="text-grey">Nível de Complexidade:</span> {{professionalData.protecao_social_especial_municipal}}      
+                  </div>
+                  <!-- Opções de input dependendo do valor do campo Proteção Social Especial -->
+                  <div class="col-12" v-if="professionalData.protecao_social_especial_municipal === 'Média Complexidade'">
+                    <div class="col-12">
+                      <span class="text-grey">Serviço/Programa:</span> {{professionalData.servicos_programa}}
+                    </div>
+                  </div>
+                  <div class="col-12" v-else>
+                    <div class="col-12" v-if="professionalData.area_de_atuacao === 'Proteção Social Especial'">
+                      <span class="text-grey">Serviço/Programa:</span> {{professionalData.servicos_programa}}
+                    </div>
+                  </div>
+                  <!-- Opções de input dependendo do valor do campo Área de atuação -->
+                  <div class="col-12" v-if="professionalData.area_de_atuacao === 'Gestão do SUAS'">
+                    <div class="col-12">
+                      <span class="text-grey">Serviço/Programa:</span> {{professionalData.servicos_programa}}
+                    </div>
+                    <div class="col-12" v-if="professionalData.servicos_programa === 'Outro'">
+                      <span class="text-grey">Outro - Serviço/Programa:</span> {{professionalData.servicos_programa_outro}}
+                    </div>
+                  </div>
+                  <!-- Opções de input dependendo do valor do campo Área de atuação -->
+                  <div class="col-12" v-if="professionalData.area_de_atuacao === 'Gestão do SUAS'">
+                    <div class="col-12" v-if="professionalData.servicos_programa === 'Outro'">
+                      <span class="text-grey">Outro - Serviço/Programa:</span> {{professionalData.servicos_programa_outro}}
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="col-12" v-if="professionalData.area_representada">
+                      <span class="text-grey">Área Representada:</span> {{professionalData.area_representada}}
+                    </div>
+                    <div class="col-12" v-if="professionalData.area_representada_outro">
+                      <span class="text-grey">Outro - Área Representada:</span> {{professionalData.area_representada_outro}}
+                    </div>
+                  </div>
+                  <div class="col-12" v-if="professionalData.area_representada !== ''">
+                    <span class="text-grey">Titularidade:</span> {{professionalData.cargo}}
+                  </div>
+                </div>
+                <!-- FIM MUNICIPAL -->
+
+                <div class="col-12" v-if="professionalData.funcao === 'Secretaria Executiva'">
+                  <span class="text-grey">Vínculo empregaticio:</span> {{professionalData.vinculo_empregaticio}}
+                </div>
+                <div class="col-12" v-if="professionalData.vinculo_empregaticio === 'Outro'">
+                  <span class="text-grey">Outro - Vínculo empregaticio:</span> {{professionalData.vinculo_empregaticio_outro}}
+                </div>
+                <div class="col-12" v-if="professionalData.possui_representacao">
+                  <div class="col-12">
+                    <span class="text-grey">Conselho:</span> {{professionalData.representacao_conselho}}
+                  </div>
+                  <div class="col-12">
+                    <span class="text-grey">Segmento:</span> {{professionalData.representacao_representacao}}
+                  </div>
+                  <div class="col-12" v-if="professionalData.representacao_conselho === 'Conselho Estadual de Assistência Social (CEAS)'">
+                    <div class="col-12" v-if="professionalData.representacao_representacao === 'Representante Governamental'">
+                      <span class="text-grey">Representação:</span> {{professionalData.representacao_segmento}}
+                    </div>
+
+                    <div class="col-12" v-if="professionalData.representacao_representacao === 'CMAS Governamental'">
+                      <span class="text-grey">Representação:</span> {{professionalData.representacao_segmento}}
+                    </div>
+                    <div class="col-12" v-if="professionalData.representacao_segmento === 'Usuários de Assistencia Social'">
+                      <span class="text-grey">Área Representada:</span> {{professionalData.representacao_area_representada}}
+                    </div>
+
+                    <div class="col-12" v-if="professionalData.representacao_area_representada === 'Outros'">
+                      <span class="text-grey">Outro - Área Representada</span> {{professionalData.outros_representacao_area_representada}}
+                    </div>
+                  </div>
+                  <div class="col-12" v-else>
+                    <div class="col-12" v-if="professionalData.representacao_representacao === 'Representante Governamental'">
+                      <span class="text-grey">Representação:</span> {{professionalData.representacao_segmento}}
+                    </div>
+                    <div class="col-12" v-if="professionalData.representacao_representacao === 'CMAS Governamental'">
+                      <span class="text-grey">Representação:</span> {{professionalData.representacao_segmento}}
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <span class="text-grey">Titularidade:</span> {{professionalData.representacao_titularidade}}
+                  </div>
                 </div>
               </q-card-section>
             </q-card>
@@ -780,7 +896,7 @@
             <q-dialog v-model="modalDadosProfissionais">
               <q-card style="width: 80%; max-width: 80vw;">
                 <q-card-section>
-                  <h6 style="margin:0px; padding: 0px;">Editar Dados Profissionai</h6>
+                  <h6 style="margin:0px; padding: 0px;">Editar Dados Profissionais</h6>
                 </q-card-section>
                 <q-card-section>
                   <div class="row">
@@ -819,20 +935,22 @@
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12">
                       <q-select
-                        v-show="user.service.label !== null"
+                        v-show="user.service !== null"
                         outlined
-                        v-model="user.secretary"
-                        :options="filterSecretaries"
-                        :label="user.service.value === 2 ? 'Município' : 'Lotação'"
+                        v-model="user.secretaria"
+                        :options="user.service=== '2' ? filterMunicipios : filterSecretaries"
+                        :label="user.service === '2' ? 'Município' : 'Lotação'"
                         @filter="filterFn"
                         :rules="[isRequired]"
                         lazy-rules
-                        use-input
-                        style="padding: 0 5px"
-                        input-debounce="0">
+                        emit-value
+                        map-options
+                        input-debounce="0"
+                      >
                         <template v-slot:prepend>
                           <q-icon name="mdi-domain" class="cursor-pointer" />
                         </template>
+
                         <template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
@@ -845,12 +963,12 @@
                   </div>
                 </q-card-section>
                 <q-card-section>
-                  <div class="row ">
+                  <div class="row">
                     <!-- ESTADUAL -->
                     <div class="col-12 row q-col-gutter-y-md" v-if="professional.regional === 'Estadual'">
                       <div class="col-12">
                         <q-select
-                            v-model="professional.lotacao"
+                            v-model="professionalData.lotacao"
                             :options="filterLotacao"
                             label="Lotação*"
                             name="lotacao"
@@ -861,7 +979,7 @@
                         </div>
                         <div class="col-12" v-if="professional.lotacao === 'Subsecretaria de Assistência Social'">
                           <q-select
-                            v-model="professional.superintendencia"
+                            v-model="professionalData.superintendencia"
                             :options="superintendenciaList"
                             label="Superintendência/Assessoria*"
                             name="superintendencia"
@@ -871,7 +989,7 @@
                         </div>
                         <div class="col-12" v-if="professional.lotacao === 'Diretoria Regional de Desenvolvimento Social'">
                           <q-select
-                            v-model="professional.diretoria_regional_des_social"
+                            v-model="professionalData.diretoria_regional_des_social"
                             :options="diretoriaRegionalDesSocialList"
                             label="Diretorias*"
                             name="diretoriaRegionalDesSocial"
@@ -991,7 +1109,7 @@
                             outlined
                             :rules="[isRequired]" />
                         </div>
-                        <div class="col-12" v-if="professional.seguimento_governo === 1">
+                        <div class="col-12" v-if="professional.seguimento_governo === 'Representante Governamental'">
                           <q-select
                             v-model="professional.representacao_area_representada"
                             :options="representacaoAreaRepresentadaList"
@@ -1002,7 +1120,7 @@
                             clearable
                             :rules="[isRequired]" />
                         </div>
-                        <div class="col-12" v-if="professional.representacaoAreaRepresentada === 'Outros'">
+                        <div class="col-12" v-if="professional.representacao_area_representada === 'Outros'">
                           <q-input
                             v-model="professional.outros_representacao_area_representada"
                             label="Informe qual é o sua área representada*"
@@ -1134,7 +1252,7 @@
                         </div>
 
                         <!-- Opções de input dependendo do valor do campo Serviço/Programa -->
-                        <div class="col-12" v-if="professional.servicos_programa === 4">
+                        <div class="col-12" v-if="professional.servicos_programa === 'Gestão de Benefícios Socioassistenciais/Cad. Único'">
                           <div class="col-12">
                             <q-select
                               v-model="professional.beneficios_municipal"
@@ -1172,7 +1290,7 @@
 
                           <div class="col-12" v-if="professional.area_representada === 'Outro'">
                             <q-input
-                              v-model="professional.area_representadaOutro"
+                              v-model="professional.area_representada_outro"
                               label="Outro - Área representada*"
                               name="areaRepresentadaOutro"
                               for="areaRepresentadaOutro"
@@ -1307,9 +1425,9 @@
                               outlined
                               :rules="[isRequired]" />
                           </div>
-                          <div class="col-12" v-if="areaRepresentadaOutro">
+                          <div class="col-12" v-if="professional.area_representada_outro">
                             <q-input
-                              v-model="areaRepresentadaOutro"
+                              v-model="professional.area_representada_outro"
                               label="Outro - Área Representada*"
                               name="areaRepresentadaOutro"
                               for="areaRepresentadaOutro"
@@ -1354,7 +1472,7 @@
                         label="Possui também alguma representação em conselho de assistência social (municipal ou estadual)?" />
                     </div>
                     <div class="col-12" v-if="professional.possui_representacao">
-                      <div class="col-12" v-if="professional.orgao === 2">
+                      <div class="col-12" v-if="professional.orgao === 'Conselho Municipal de Assistência Social'">
                         <q-select
                           v-model="professional.representacao_conselho"
                           :options="representacaoConselhoList"
@@ -1384,8 +1502,8 @@
                           outlined
                           :rules="[isRequired]" />
                       </div>
-                      <div class="col-12" v-if="professional.representacao_conselho === 1">
-                        <div class="col-12" v-if="professional.representacao_representacao === 1">
+                      <div class="col-12" v-if="professional.representacao_conselho === 'Conselho Estadual de Assistência Social (CEAS)'">
+                        <div class="col-12" v-if="professional.representacao_representacao === 'Representante Governamental'">
                           <q-select
                             v-model="professional.representacao_segmento"
                             :options="representacaoRepresentacaoList"
@@ -1397,7 +1515,7 @@
                             :rules="[isRequired]" />
                           </div>
 
-                          <div class="col-12" v-if="professional.representacao_representacao === 2">
+                          <div class="col-12" v-if="professional.representacao_representacao === 'CMAS Governamental'">
                             <q-select
                               v-model="professional.representacao_segmento"
                               :options="representacaoSegmentoList"
@@ -1408,7 +1526,7 @@
                               clearable
                               :rules="[isRequired]" />
                           </div>
-                          <div class="col-12" v-if="professional.representacao_segmento === 1">
+                          <div class="col-12" v-if="professional.representacao_segmento === 'Usuários de Assistencia Social'">
                             <q-select
                               v-model="professional.representacao_area_representada"
                               :options="representacaoAreaRepresentadaList"
@@ -1431,7 +1549,7 @@
                           </div>
                       </div>
                       <div class="col-12" v-else>
-                        <div class="col-12" v-if="professional.representacao_representacao === 1">
+                        <div class="col-12" v-if="professional.representacao_representacao === 'Representante Governamental'">
                           <q-select
                             v-model="professional.representacao_segmento"
                             :options="representacaoGovernamentalConselheiroList"
@@ -1442,7 +1560,7 @@
                             clearable
                             :rules="[isRequired]" />
                         </div>
-                        <div class="col-12" v-if="professional.representacao_representacao === 2">
+                        <div class="col-12" v-if="professional.representacao_representacao === 'CMAS Governamental'">
                           <q-select
                             v-model="professional.representacao_segmento"
                             :options="areaRepresentadaCivilList"
@@ -1619,10 +1737,10 @@ export default {
       ],
       baseUrlViaCep: "https://viacep.com.br/ws/",
       userPerfilStatus: [
-        {value: 1, label: 'ATIVO'},
-        {value: 2, label: 'INATIVO'},
-        {value: 3, label: 'PENDENTE'},
-        {value: 4, label: 'REJEITADO'},
+        {value: 1, label: 'ATIVO', color: 'green'},
+        {value: 2, label: 'INATIVO', color: 'gray'},
+        {value: 3, label: 'PENDENTE', color: 'orange'},
+        {value: 4, label: 'REJEITADO', color: 'red'},
       ],
       tipoPerfilOptions: [
         {value:1, label: 'Responsavel Técnico'},
@@ -1699,29 +1817,29 @@ export default {
       ],
       /* ESTADUAL */
       creasRegionalList: [
-        {value: 1, label: "CREAS Regional Alto Jequitinhonha"},
-        {value: 2, label: "CREAS Regional Médio/Baixo Jequitinhonha"},
-        {value: 3, label: "CREAS Regional Mucuri"},
-        {value: 4, label: "CREAS Regional Vale do Rio Doce"},
+        "CREAS Regional Alto Jequitinhonha",
+        "CREAS Regional Médio/Baixo Jequitinhonha",
+        "CREAS Regional Mucuri",
+        "CREAS Regional Vale do Rio Doce",
       ],
       outrosPublicosList: [
-        {value: 1, label: "Minitério Público"},
-        {value: 2, label: "Direitos Humanos"},
-        {value: 3, label: "Defesa Civil"},
-        {value: 4, label: "Saúde"},
-        {value: 5, label: "Educação"},
-        {value: 6, label: "Esportes"},
-        {value: 7, label: "Trabalho e Emprego"},
-        {value: 8, label: "Outros"},
+        "Minitério Público",
+        "Direitos Humanos",
+        "Defesa Civil",
+        "Saúde",
+        "Educação",
+        "Esportes",
+        "Trabalho e Emprego",
+        "Outros",
       ],
       filterMunicipios: [],
       filterLotacao: [],
       superintendenciaList: [
-        {value: 1, label: "Superintendência de Proteção Social Básica"},
-        {value: 2, label: "Superintendência de Proteção Social Especial"},
-        {value: 3, label: "Superintendência de Vigilância e Capacitação"},
-        {value: 4, label: "Assessoria de gestão do Fundo Estadual de Assistência Social",},
-        {value: 5, label: "Gabinete"},
+        "Superintendência de Proteção Social Básica",
+        "Superintendência de Proteção Social Especial",
+        "Superintendência de Vigilância e Capacitação",
+        "Assessoria de gestão do Fundo Estadual de Assistência Social",
+        "Gabinete",
       ],
       protecaoSocialBasicaList: [
         "Diretoria de Serviços e Benefícios Socioassistenciais",
@@ -1822,28 +1940,28 @@ export default {
       ],
       /* MUNICIPAL */
       orgaoList: [
-        {value: 1, label: "Secretaria Municipal de Assistência Social"},
-        {value: 2, label: "Conselho Municipal de Assistência Social"},
-        {value: 3, label: "Entidades e Organizações de Assistência Social"},
-        {value: 4, label: "Outras secretarias/orgãos da Prefeitura"},
-        {value: 5, label: "Conselho Tutelar"},
+        "Secretaria Municipal de Assistência Social",
+        "Conselho Municipal de Assistência Social",
+        "Entidades e Organizações de Assistência Social",
+        "Outras secretarias/orgãos da Prefeitura",
+        "Conselho Tutelar"
       ],
       areadeAtuacaoList1: [
-        {value: 1, label: "Proteção Social Básica"},
-        {value: 2, label: "Proteção Social Especial"},
-        {value: 3, label: "Gestão do SUAS"},
-        {value: 4, label: "Gestão Financeira e Orçamentária do SUAS"},
+        "Proteção Social Básica",
+        "Proteção Social Especial",
+        "Gestão do SUAS",
+        "Gestão Financeira e Orçamentária do SUAS",
       ],
       areadeAtuacaoList2: [
-        {value: 5, label: "Atendimento"},
-        {value: 6, label: "Assessoramento"},
-        {value: 7, label: "Defesa e garantia de direitos"},
+        "Atendimento",
+        "Assessoramento",
+        "Defesa e garantia de direitos",
       ],
       protecaoSocialList: [
-        {value: 1,label: "Serviço de Proteção e Atendimento Integral à Família (PAIF)",},
-        {value: 2,label: "Serviço de Convivência e Fortalecimento de Vínculos (SCFV)",},
-        {value: 3,label:"Serviço de Proteção Social Básica no Domicílio para pessoas com deficiência e idosas",},
-        {value: 4,label: "Gestão de Benefícios Socioassistenciais/Cad. Único",},
+        "Serviço de Proteção e Atendimento Integral à Família (PAIF)",
+        "Serviço de Convivência e Fortalecimento de Vínculos (SCFV)",
+        "Serviço de Proteção Social Básica no Domicílio para pessoas com deficiência e idosas",
+        "Gestão de Benefícios Socioassistenciais/Cad. Único",
       ],
       beneficioslList: [
         "Programa Bolsa Família e/ou outra ação de transferência de renda",
@@ -1852,8 +1970,8 @@ export default {
         "Outro",
       ],
       protecaoSocialEspecialMunicipalList: [
-        {value: 1, label: "Média Complexidade"},
-        {value: 2, label: "Alta Complexidade"},
+        "Média Complexidade",
+        "Alta Complexidade",
       ],
       socialEspecialMediaComplexidadeList: [
         "Serviço de Proteção e Atendimento Especializado a Famílias e Indivíduos (PAEFI)",
@@ -1879,13 +1997,13 @@ export default {
         "Outro",
       ],
       conselheiroList: [
-        {value: 1, label: "Representação"},
-        {value: 2, label: "Área Representada"},
-        {value: 3, label: "Cargo"},
+        "Representação",
+        "Área Representada",
+        "Cargo",
       ],
       representanteList: [
-        {value: 1, label: "Governamental"},
-        {value: 2, label: "Sociedade Civil"},
+        "Governamental",
+        "Sociedade Civil",
       ],
       representacaoGovernamentalConselheiroList: [
         "Representante Governamental",
@@ -1902,23 +2020,23 @@ export default {
         "Outro",
       ],
       areaRepresentadaCivilList: [
-        {value: 1, label: "Usuários de Assistencia Social"},
-        {value: 2, label: "Trabalhadores de Assistencia Social"},
-        {value: 3, label: "Entidades de Assistencia Social"},
+        "Usuários de Assistencia Social",
+        "Trabalhadores de Assistencia Social",
+        "Entidades de Assistencia Social",
       ],
       cargoList: [
-        {value: 1, label: "Titular"},
-        {value: 2, label: "Suplente"},
-        {value: 3, label: "Presidente"},
-        {value: 4, label: "Vice-Presidente"},
+        "Titular",
+        "Suplente",
+        "Presidente",
+        "Vice-Presidente",
         //{value: 5, label: "Membro"},
       ],
       representacaoConselhoCMASList: [
-        {value: 1, label: "Conselho Estadual de Assistência Social (CEAS)"},
-        {value: 2, label: "Conselho Municipal de Assistência Social (CMAS)"},                  
+        "Conselho Estadual de Assistência Social (CEAS)",
+        "Conselho Municipal de Assistência Social (CMAS)",
       ],
       representacaoConselhoList: [
-        {value: 1, label: "Conselho Estadual de Assistência Social (CEAS)"},
+      "Conselho Estadual de Assistência Social (CEAS)",
       ],
       representacaoTitularidadeList: [
         "Titular",
@@ -1927,14 +2045,14 @@ export default {
         "Vice-Presidente",
       ],
       representacaoRepresentacaoList: [
-        {value: 1, label: "Representante Governamental"},
-        {value: 2, label: "CMAS Governamental"},
+      "Representante Governamental",
+        "CMAS Governamental",
       ],
       representacaoSegmentoList: [
-        {value: 1, label: "Usuários de Assistencia Social"},
-        {value: 2, label: "Trabalhadores de Assistencia Social"},
-        {value: 3, label: "Entidades de Assistencia Social"},
-        {value: 4, label: "CMAS Sociedade Civil"},
+      "Usuários de Assistencia Social",
+        "Trabalhadores de Assistencia Social",
+        "Entidades de Assistencia Social",
+        "CMAS Sociedade Civil",
       ],
       representacaoAreaRepresentadaList: [
         "Assistência Social",
@@ -1946,10 +2064,18 @@ export default {
         "Planejamento",
         "Outros",
       ],
+      chipTextColor: null,
+      chipLabel: null,
+      chipColor: null,
+      professionalData: [],
     };
   },
   methods: {
     async getUserData() {
+      this.$q.loading.show({
+        message: 'Carregando informações do usuário',
+        backgroundColor: 'indigo',
+      });
       try {
         const { data, status } = await this.apiUser(this.UserId, 'users');
         if (data) {
@@ -1963,6 +2089,21 @@ export default {
           this.getUserContact();
           this.getUserAddress();
           this.getUserProfessionals();
+
+          if (this.user.social_name) {
+            this.checkSocialName = true;
+          }
+
+          if (this.user.deficiency) {
+            this.isDeficiency = true;
+          }
+
+          if (this.user.deficiency_structure) {
+            this.isDeficiencyStructure = true;
+          }
+
+          this.updateChipProperties(this.user.status_id);
+          this.$q.loading.hide();
         }
         if (status !== 200) {
           this.$q.notify({
@@ -1972,11 +2113,21 @@ export default {
           });
         }
       } catch (error) {
+        this.$q.loading.hide();
         this.$q.notify({
           message: error.message,
           color: "negative",
           position: "top",
         });
+      }
+      this.$q.loading.hide();
+    },
+    updateChipProperties(status) {
+      const perfilStatus = this.userPerfilStatus.find(item => item.value === status);
+      if (perfilStatus) {
+        this.chipTextColor = 'white';
+        this.chipLabel = perfilStatus.label;
+        this.chipColor = perfilStatus.color;
       }
     },
     async getUserPersonal() {
@@ -2021,7 +2172,10 @@ export default {
     async getUserProfessionals() {
       try {
         const { data, status } = await this.apiUser(this.UserId, 'professionals');
-        if (data) { this.professional = data; }
+        if (data) { 
+          this.professional = data;
+          this.professionalData = data;
+        }
         if (status !== 200) { console.warn('Error professional'); }
       } catch (error) {
         this.$q.notify({
@@ -2061,14 +2215,14 @@ export default {
           this.$q.loading.hide();
         }
       } catch (error) {
-        console.log(error);
         this.$q.loading.hide();
+        return error;
       }
     },
     async getSecretaries() {
       try {
         const { data, status } = await this.$http.get(
-          `ambitoatuacao/regiaoadm/${this.user?.service.value === 1 ? "1" : "2"}`
+          `ambitoatuacao/regiaoadm/${this.user?.service === 1 ? "1" : "2"}`
         );
         if (status === 200) {
           this.allSecretaries = data.map((ele) => {
@@ -2102,7 +2256,7 @@ export default {
           this.filterMunicipios = this.allMunicipios;
         }
       } catch (error) {
-        console.log(error);
+        return error;
       }
     },
     async getLotacao() {
@@ -2119,7 +2273,7 @@ export default {
           this.filterLotacao = this.allLotacao;
         }
       } catch (error) {
-        console.log(error);
+        return error;
       }
     },
     async salvarDadosEndereco() {
@@ -2159,8 +2313,14 @@ export default {
       }
     },
     async salvarDadosPessoais() {
+      let params = {
+        'name': this.user.name,
+        'birthday': this.user.birthday,
+        'personal': this.personal
+      };
+  
       try {
-        const result =  await this.$http.post('personal/updatebyuser', this.personal);
+        const result =  await this.$http.post('personal/updatebyuser', params);
         if (result.status === 200) {
           this.$q.notify({
             message: 'Novo colaborador criado com sucesso!',
@@ -2177,8 +2337,12 @@ export default {
       }
     },
     async salvarDadosProfissionais() {
+      let params = {
+        'user_id': this.UserId,
+        'profession': this.professionalData
+      }
       try {
-        const result =  await this.$http.post('professionals/updatebyuser', this.profission)
+        const result =  await this.$http.post('professionals/updatebyuser', params);
         if (result.status === 200) {
           this.$q.notify({
             message: 'Novo colaborador criado com sucesso!',
@@ -2198,7 +2362,7 @@ export default {
       try {
         const swalResult = await Swal.fire({
           title: "Aviso",
-          html:`Uma nova senha aleatória será gerada e enviada ao email do usuário. Deseja prosseguir com o <b>reset?</b>`,
+          html:`Uma nova senha aleatória será gerada e enviada ao email do usuário. Deseja prosseguir com o <span class="text-grey">reset?</span>`,
           // text: `Uma nova senha aleatória será gerada e enviada ao email do usuário. Deseja prosseguir com o reset?`,
           icon: "warning",
           showDenyButton: true,
@@ -2209,7 +2373,7 @@ export default {
         });
 
         if (swalResult.isConfirmed) {
-          const result = await this.$http.post(`users/reset-password/${this.userId}`);
+          const result = await this.$http.get(`users/reset-password/${this.UserId}`);
           if (result.status === 200) {
             this.$q.notify({
               message: 'Sucesso ao resetar a senha do usuário',
@@ -2235,10 +2399,10 @@ export default {
           backgroundColor: 'indigo',
         });
         let params = {
-          'user_id': this.userId,
-          'status': target.status
+          'user_id': this.UserId,
+          'status': target.value
         }
-        const result = await this.$http.post('users/change-status', this.params);
+        const result = await this.$http.post('users/change-status', params);
         if (result.status === 200) {
           this.$q.notify({
             message: 'Usuário Atualizado com sucesso',
@@ -2246,7 +2410,7 @@ export default {
             position: "top",
           });
         }
-
+        this.$q.loading.hide();
         // atualizando a página
         this.$router.go();
       } catch (error) {
@@ -2255,6 +2419,7 @@ export default {
           color: "negative",
           position: "top",
         });
+        this.$q.loading.hide();
         // atualizando a página
         this.$router.go();
       }
@@ -2266,10 +2431,10 @@ export default {
           backgroundColor: 'indigo',
         });
         let params = {
-          'user_id': this.userId,
-          'perfil': target.status
+          'user_id': this.UserId,
+          'perfil': target.value
         }
-        const result = await this.$http.post('users/change-perfil', this.params);
+        const result = await this.$http.post('users/change-perfil', params);
         if (result.status === 200) {
           this.$q.notify({
             message: 'Usuário Atualizado com sucesso',
@@ -2277,6 +2442,7 @@ export default {
             position: "top",
           });
         }
+        this.$q.loading.hide();
         // atualizando a página
         this.$router.go();
       } catch (error) {
@@ -2285,6 +2451,7 @@ export default {
           color: "negative",
           position: "top",
         });
+        this.$q.loading.hide();
         // atualizando a página
         this.$router.go();
       }
@@ -2363,11 +2530,16 @@ export default {
   },  
   created() {
     this.getUserData();
-    this.getSecretaries();
     this.getMunicipios();
     this.getLotacao();
   },
   watch: {
+    "professional": {
+      handler() {
+        this.getSecretaries()
+      },
+      deep: true,
+    },
     form: {
       handler() {
         this.$emit("address", this.address);

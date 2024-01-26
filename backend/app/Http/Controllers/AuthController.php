@@ -56,14 +56,13 @@ class AuthController extends Controller
                 ], self::HTTP_METHOD_NOT_ALLOWED);
             }
         }
-        if ($user->second_stage === false) {
-            if ($userPerfilStatus->status === UserPerfilStatus::STATUS_PENDENTE || $userPerfilStatus->status === UserPerfilStatus::STATUS_INATIVO) {
-                return response()->json([
-                    'status' => 'error',
-                    'type' => 'negative',
-                    'message' => 'Seu cadastro está pendente de confirmação. Quando for aprovado, você receberá um e-mail, caso tenha dúvidas, entre em contato, através do e-mail “dgtep@social.mg.gov.br“'
-                ], self::HTTP_METHOD_NOT_ALLOWED);
-            }
+        
+        if ($userPerfilStatus->status !== UserPerfilStatus::STATUS_ATIVO) {
+            return response()->json([
+                'status' => 'error',
+                'type' => 'negative',
+                'message' => 'Seu cadastro está pendente de confirmação. Quando for aprovado, você receberá um e-mail, caso tenha dúvidas, entre em contato, através do e-mail “dgtep@social.mg.gov.br“'
+            ], self::HTTP_METHOD_NOT_ALLOWED);
         }
 
         $token = Auth::attempt($credentials);
@@ -122,7 +121,7 @@ class AuthController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function register(Request $request): JsonResponse
+    public function register(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -164,8 +163,6 @@ class AuthController extends Controller
         $perfil = ($ambitoAtuacao === 'estado' && in_array($lotacaoTipo, $respTecnico)) ? TipoPerfil::RESPONSAVEL_TECNICO : (in_array($lotacaoTipo, $participanteList) ? TipoPerfil::PARTICIPANTE : TipoPerfil::PARTICIPANTE);
         $statusPerfil = ($perfil === TipoPerfil::PARTICIPANTE) ? UserPerfilStatus::STATUS_ATIVO : UserPerfilStatus::STATUS_PENDENTE;
         $user = User::create($userData);
-        
-
         // criando o tipo de usuário por perfil deixando ele ativo
         UserPerfilStatus::create([
             'user_id' => $user->id,

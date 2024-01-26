@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Personal;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -90,21 +91,20 @@ class PersonalController extends Controller
     {
         // Dados pessoais recebidos na requisição
         $personalData = [
-            'user_id' => $request['user_id'],
-            'name' => $request['name'],
-            'social_name' => $request['socialName'],
-            'gender_identity' => $request['genderIdentity'],
-            'gender_identity_others' => $request['genderIdentityOthers'],
-            'rg' => $request['rg'] ?? '',
-            'issuing_body' => $request['issuingBody'] ?? '',
-            'uf' => $request['uf'] ?? '',
-            'education' => $request['education'],
-            'profession' => $request['profession'],
-            'profession_others' => $request['professionOthers'],
-            'is_deficiency' => $request['isDeficiency'],
-            'deficiency' => $request['deficiency'],
-            'deficiency_others' => $request['deficiencyOthers'],
-            'deficiency_structure' => $request['deficiencyStructure'],
+            'user_id' => $request['personal']['user_id'],
+            'social_name' => $request['personal']['social_name'],
+            'gender_identity' => $request['personal']['gender_identity'],
+            'gender_identity_others' => $request['personal']['gender_identity_others'],
+            'rg' => $request['personal']['rg'] ?? '',
+            'issuing_body' => $request['personal']['issuing_body'] ?? '',
+            'uf' => $request['personal']['uf'] ?? '',
+            'education' => $request['personal']['education'],
+            'profission' => $request['personal']['profission'],
+            'profission_others' => $request['personal']['profission_others'],
+            'is_deficiency' => $request['personal']['is_deficiency'],
+            'deficiency' => $request['personal']['deficiency'],
+            'deficiency_others' => $request['personal']['deficiency_others'],
+            'deficiency_structure' => $request['personal']['deficiency_structure'],
         ];
 
         // Verifica se o registro já existe na tabela Personal
@@ -113,6 +113,11 @@ class PersonalController extends Controller
         // Se o registro existir, atualiza os dados; caso contrário, cria um novo registro
         if ($personal) {
             $personal->update($personalData);
+            // alterando a data de nascimento
+            User::find($personalData['user_id'])->update([
+                'birthday' => date('Y-m-d', strtotime($request['birthday'])),
+                'name' => $request['name']
+            ]);
         } else {
             Personal::create($personalData);
         }

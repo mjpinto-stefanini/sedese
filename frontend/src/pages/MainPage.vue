@@ -141,24 +141,34 @@ export default {
             };
 
             try {
-                const user_id = JSON.parse(localStorage.getItem("user")).id;
-                const { status } = await this.$http.patch(
-                    `users/${user_id}/secondstage`,
+                const user = JSON.parse(localStorage.getItem("user"));
+                console.log(user);
+                const result = await this.$http.patch(
+                    `users/${user.id}/secondstage`,
                     values
                 );
-
-                if (status === 201 || status === 200) {
-                    this.$q.notify({
-                        message: "Dados salvos com sucesso!",
-                        color: "positive",
-                        position: "top",
-                    });
-                    this.$router.push({ name: "SignIn" });
-
+                if (result.status === 201 || result.status === 200) {
+                    // vai fazer o login
+                    if (user.service === '2' || user.service === 2)  {
+                        this.$q.notify({
+                            message: "Usuario registrado, em instantes você receberá um email com as instruções para ativar sua conta",
+                            type: "positive",
+                            position: "top",
+                        }, 3000);
+                        this.$router.push("/dashboard");
+                    }
+                    if (user.service === '1' || user.service === 1) {
+                        this.$q.notify({
+                            message: "Usuario registrado, em instantes você receberá um email com as instruções para ativar sua conta",
+                            color: "positive",
+                            position: "top",
+                        }, 3000);
+                        this.$router.push({ name: "SignIn" });
+                    }
                 }
             } catch (error) {
                  this.$q.notify({
-                    message: error.response.data.message,
+                    message: "Falha ao registrar",
                     color: "negative",
                     position: "top",
                 });

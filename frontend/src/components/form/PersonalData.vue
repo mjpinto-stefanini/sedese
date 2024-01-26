@@ -15,17 +15,15 @@
 					/>
 				</div>
 				<div class="col-4">
-					<q-input
-						v-model="form.dataNascimento"
-						hint="Data de Nascimento"
-						name="dataNascimento"
-						for="dataNascimento"
-						type="date"
-						outlined
-						clear-icon="close"
-						clearable
-						:rules="[isRequired]"
-					/>
+					<q-input outlined v-model="form.birthday" label="Data de Nascimento" mask="##/##/####" :rules="[isRequired]" :autofocus="true">
+						<template v-slot:append>
+							<q-icon name="event" class="cursor-pointer">
+								<q-popup-proxy>
+									<q-date v-model="form.birthday" mask="DD/MM/YYYY" :rules="[isRequired]"></q-date>
+								</q-popup-proxy>
+							</q-icon>
+						</template>
+					</q-input>
 				</div>
 				<div class="col-12">
 					<q-toggle v-model="checkSocialName"
@@ -33,7 +31,6 @@
 						<q-icon name="sym_o_info" size="1.2rem" color="primary">
 							<q-tooltip
 								class="bg-primary text-caption"
-								:offset="[10, 10]"
 								style="max-width: 600px"
 							>
 								Nome Social: designação pela qual a pessoa travesti ou
@@ -252,7 +249,7 @@ export default {
 			deficiency: "",
 			form: {
 				name: "",
-				dataNascimento:"",
+				birthday:"",
 				socialName: "",
 				genderIdentity: "",
 				genderIdentityOthers: "",
@@ -313,7 +310,7 @@ export default {
 			],
 			professionFiltered: [],
 			isDeficiency: false,
-				isDeficiencyStructure: false,
+			isDeficiencyStructure: false,
 			deficiencyList: [
 				"Auditiva",
 				"Física",
