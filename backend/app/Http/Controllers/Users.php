@@ -67,7 +67,7 @@ class Users extends Controller
             $userIds = UserPerfilStatus::where('status', $queryParams['status'])->pluck('user_id')->toArray();
             $query->whereIn('id', $userIds);
         } else {
-            $query->orderByRaw("FIELD((SELECT status FROM users_perfil_status WHERE users_perfil_status.user_id = users.id), 3, 1)");
+            $query->orderByRaw("FIELD((SELECT status FROM users_perfil_status WHERE users_perfil_status.user_id = users.id), 3, 1, 2, 4)");
         }
         return $query->get();
     }
