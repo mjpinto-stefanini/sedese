@@ -153,15 +153,16 @@ export default {
                         this.$q.notify({
                         	message: "Usuario registrado, em instantes você receberá um email com as instruções para ativar sua conta",
                         	type: "positive",
-                        });
+                            position: "top",
+                        }, 3000);
                         this.$router.push("/dashboard");
                     }
                     if (user.service === '1' || user.service === 1) {
                         this.$q.notify({
-                            message: "Dados salvos com sucesso!",
+                            message: "Usuario registrado, em instantes você receberá um email com as instruções para ativar sua conta",
                             color: "positive",
                             position: "top",
-                        });
+                        }, 3000);
                         this.$router.push({ name: "SignIn" });
                     }
                 }
