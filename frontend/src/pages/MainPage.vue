@@ -151,8 +151,8 @@ export default {
                     // vai fazer o login
                     if (user.service === '2' || user.service === 2)  {
                         this.$q.notify({
-                        	message: "Usuario registrado, em instantes você receberá um email com as instruções para ativar sua conta",
-                        	type: "positive",
+                            message: "Usuario registrado, em instantes você receberá um email com as instruções para ativar sua conta",
+                            type: "positive",
                             position: "top",
                         }, 3000);
                         this.$router.push("/dashboard");
