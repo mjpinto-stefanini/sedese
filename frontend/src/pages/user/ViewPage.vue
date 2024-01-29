@@ -380,7 +380,7 @@
               </div>
             </q-card-section>
             <q-card-actions>
-              <q-btn outlined label="Cancelar" color="red" v-close-popup style="float: left !important; margin-left:10px;" />
+              <q-btn outlined label="Cancelar" color="red" @click="limparFiltrosPagina" v-close-popup style="float: left !important; margin-left:10px;" />
               <q-btn outlined label="Salvar" color="green" @click="salvarDadosPessoais" v-close-popup />
             </q-card-actions>
           </q-card>
@@ -533,7 +533,7 @@
                 </div>
               </q-card-section>
               <q-card-actions>
-                <q-btn outlined label="Cancelar" color="red" v-close-popup style="float: left !important; margin-left:10px;" />
+                <q-btn outlined label="Cancelar" color="red" @click="limparFiltrosPagina" v-close-popup style="float: left !important; margin-left:10px;" />
                 <q-btn outlined label="Salvar" color="green" @click="salvarDadosEndereco" v-close-popup />
               </q-card-actions>
             </q-card>
@@ -657,7 +657,7 @@
                 </div>
               </q-card-section>
               <q-card-actions>
-                <q-btn outlined label="Cancelar" color="red" v-close-popup style="float: left !important; margin-left:10px;" />
+                <q-btn outlined label="Cancelar" color="red" @click="limparFiltrosPagina" v-close-popup style="float: left !important; margin-left:10px;" />
                 <q-btn outlined label="Salvar" color="green" @click="salvarDadosContato" v-close-popup style="float: right !important;" />
               </q-card-actions>
             </q-card>
@@ -1586,7 +1586,7 @@
                   </div>
                 </q-card-section>
                 <q-card-actions>
-                  <q-btn outlined label="Cancelar" color="red" v-close-popup style="float: left !important; margin-left:10px;" />
+                  <q-btn outlined label="Cancelar" color="red" @click="limparFiltrosPagina" v-close-popup style="float: left !important; margin-left:10px;" />
                   <q-btn outlined label="Salvar" color="green" @click="salvarDadosProfissionais" v-close-popup style="float: right !important;" />
                 </q-card-actions>
               </q-card>
@@ -2462,6 +2462,9 @@ export default {
       this.user = [];
       // voltando a pagina de parceiros
       this.$router.push({ name: "Users" });
+    },
+    limparFiltrosPagina() {
+      this.$router.go();
     },
     isRequired(value) {
       return !!value || "Campo obrigatório";
