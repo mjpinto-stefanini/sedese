@@ -18,7 +18,7 @@ class ColaboradoresController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api');
+        // $this->middleware('auth:api');
     }
 
     public function index(Request $request)
@@ -137,6 +137,9 @@ class ColaboradoresController extends Controller
             'email' => $request->input('email')
         ];
         $user = User::firstWhere('cpf', $dados['cpf']);
+        if (!$user) {
+            return null;
+        }
         return $this->verificaInstituicoesColaborador($user->id);
     }
 

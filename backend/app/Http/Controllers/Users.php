@@ -109,12 +109,19 @@ class Users extends Controller
             default => null,
         };
 
+        $admin = match ($user->type_admin) {
+            User::USER_ADMINISTRADOR => 'Administrador',
+            User::USER_OPERADOR => 'Operador',
+            User::USER_USUARIO => 'Usuário',
+            default => 'Usuário'
+        };
+
         return response()->json([
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
             'birthday' => $user->birthday,
-            'type_admin' => $user->type_admin,
+            'type_admin' => $admin,
             'cpf' => $user->cpf,
             'email_verified_at' => $user->email_verified_at,
             'created_at' => $user->created_at,
@@ -390,21 +397,21 @@ class Users extends Controller
                     'status' => 'error',
                     'type' => 'negative',
                     'message' => 'Erro ao enviar e-mail de bem vindo. '.$e->getMessage(),
-                ], self::HTTP_INTERNAL_SERVER_ERROR);
+                ], Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
 
             return response()->json([
                 'status' => 'success',
                 'type' => 'positive',
                 'message' => 'E-mail confirmado com sucesso. Pode fechar esta janela',
-            ], self::HTTP_OK);
+            ], Controller::HTTP_OK);
 
         }
         return response()->json([
             'status' => 'error',
             'type' => 'negative',
             'message' => 'Token inválido.',
-        ], self::HTTP_UNAUTHORIZED);
+        ], Controller::HTTP_UNAUTHORIZED);
     }
 
     public function generateRandomPassword()
@@ -427,9 +434,9 @@ class Users extends Controller
         $user->save();
 
         // Se estiver no ambiente local ou de desenvolvimento, não envie o e-mail
-        if (App::environment('local', 'development')) {
-            return;
-        }
+        // if (App::environment('local', 'development')) {
+        //     return;
+        // }
     
         Mail::send('emails.new_password', ['password' => $newPassword], function ($message) use ($user) {
             $message->to($user->email);
@@ -454,6 +461,21 @@ class Users extends Controller
         $userId = $request->input('user_id');
         $perfil = intval($request->input('perfil'));
         UserPerfilStatus::where('user_id', $userId)->update(['tipo_perfil_id' => $perfil]);
+        return response()->json([
+            'status' => 'success',
+            'type' => 'positive',
+            'message' => 'Perfil atualizado com sucesso.',
+        ], self::HTTP_OK);
+    }
+
+    public function changeAdmin(Request $request)
+    {
+        $userId = $request->input('user_id');
+        $admin = intval($request->input('admin'));
+        User::where('id', $userId)->update(['type_admin' => $admin]);
+        if ($admin === User::USER_ADMINISTRADOR) {
+            User::where('id', $userId)->update(['is_admin' => 1]);
+        }
         return response()->json([
             'status' => 'success',
             'type' => 'positive',
