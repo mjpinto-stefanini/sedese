@@ -291,7 +291,7 @@ class AuthController extends Controller
                 'status' => 'error',
                 'type' => 'negative',
                 'message' => 'Informe o token.',
-            ], self::HTTP_NOT_ACCEPTABLE);
+            ], Controller::HTTP_NOT_ACCEPTABLE);
         }
 
         if (!$request['password']) {
@@ -299,7 +299,7 @@ class AuthController extends Controller
                 'status' => 'error',
                 'type' => 'negative',
                 'message' => 'Informe a senha.',
-            ], self::HTTP_NOT_ACCEPTABLE);
+            ], Controller::HTTP_NOT_ACCEPTABLE);
         }
 
         if (!$request['confirmPassword']) {
@@ -307,7 +307,7 @@ class AuthController extends Controller
                 'status' => 'error',
                 'type' => 'negative',
                 'message' => 'Informe a confirmação da senha.',
-            ], self::HTTP_NOT_ACCEPTABLE);
+            ], Controller::HTTP_NOT_ACCEPTABLE);
         }
 
         if ($request['password'] != $request['confirmPassword']) {
@@ -315,7 +315,7 @@ class AuthController extends Controller
                 'status' => 'error',
                 'type' => 'negative',
                 'message' => 'As senhas não conferem.',
-            ], self::HTTP_NOT_ACCEPTABLE);
+            ], Controller::HTTP_NOT_ACCEPTABLE);
         }
 
         $user = User::query()->where('remember_token', $request['token'])->first();
@@ -325,7 +325,7 @@ class AuthController extends Controller
                 'status' => 'error',
                 'type' => 'negative',
                 'message' => 'Token inválido.',
-            ], self::HTTP_NOT_FOUND);
+            ], Controller::HTTP_NOT_FOUND);
         }
 
         $user->password = bcrypt($request['password']);
@@ -333,7 +333,6 @@ class AuthController extends Controller
         $user->save();
 
         try {
-
             $mailData = [
                 'name' => $user['name'],
                 'email' => $user['email'],
@@ -346,7 +345,7 @@ class AuthController extends Controller
                 'status' => 'error',
                 'type' => 'negative',
                 'message' => 'Erro ao enviar e-mail de confirmação de senha. ' . $e->getMessage(),
-            ], self::HTTP_REQUEST_TIMEOUT);
+            ], Controller::HTTP_REQUEST_TIMEOUT);
         }
 
         return response()->json([

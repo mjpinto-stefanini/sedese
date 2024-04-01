@@ -172,7 +172,7 @@
               </template>
               <template v-slot:body-cell-id="props">
                 <q-td :props="props">
-                  <q-btn outline>
+                  <q-btn outline @click="resetarSenhaColaborador(props.row.id)">
                     <font-awesome-icon :icon="['fas', 'unlock-keyhole']" />
                     <q-tooltip
                       class="bg-cyan text-caption outline"
@@ -421,10 +421,9 @@ export default {
         };
 
         const cadastroExistente = await this.verificaCadastroColaborador();
-        const instituicoes = cadastroExistente.map(cadastro => cadastro.instituicao).join(', ');
 
         if (cadastroExistente.length > 0) {
-
+          const instituicoes = cadastroExistente.map(cadastro => cadastro.instituicao).join(', ');
           const swalResult = await Swal.fire({
             title: "Aviso",
             html: `Este colaborador está cadastrado em <b>${instituicoes}</b>. Deseja confirmar o cadastro?`,
@@ -444,6 +443,7 @@ export default {
           }
         } else {
           await this.enviarDadosColaborador();
+          this.$router.go();
         }
       } catch (error) {
         this.$q.notify({
@@ -455,7 +455,7 @@ export default {
     },
     async enviarDadosColaborador() {
       let result = await this.$http.post("colaboradores/store", this.novoCadastro);
-      if (result.status === 200 || status === 201) {
+      if (result.status === 200 || result.status === 201) {
         // mensagem de sucesso
         this.$q.notify({
           message: 'Novo colaborador criado com sucesso!',
@@ -463,6 +463,7 @@ export default {
           position: "top",
         });
         // adicionando na tabela
+        console.log(result);
         this.colabRows = result.data.map((colab) => ({
           status: colab.status,
           name: colab.nome,
@@ -471,7 +472,7 @@ export default {
           uuid: colab.uuid
         }));
       }
-      this.$router.go();
+      // this.$router.go();
     },
     async verificaCadastroColaborador() {
       const result = await this.$http.get("/colaboradores/checkar?name=" + this.dadoColaborador.nome + "&cpf=" + this.dadoColaborador.cpf + "&email=" + this.dadoColaborador.email);
@@ -495,7 +496,6 @@ export default {
             }
           });
         }
-
         this.$q.notify({
           message: 'Dados do Parceiro alterados com sucesso!',
           color: "positive",
@@ -611,6 +611,30 @@ export default {
           position: "top",
         });
       }
+    },
+    async resetarSenhaColaborador(id) {
+      Swal.fire({
+        title: "Mudar Senha do Colaborador!",
+        text: "Deseja alterar a senha do colaborador?.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#5cb768",
+        cancelButtonColor: "#f34d45",
+        confirmButtonText: "Confirmar",
+        cancelButtonText: 'Cancelar'
+      }).then(async (result) => {
+        if(result.isConfirmed) {
+          await this.$http.get('/users/reset-password/' + id);
+          this.$q.notify({
+            message: 'Senha do Colaborador alterada com sucesso.',
+            color: "positive",
+            position: "top",
+          });
+          // atualizando os dados
+          // this.getPartnerData();
+        }
+        this.$router.go();
+      })
     },
     isRequired(value) {
       return !!value || "Campo obrigatório";

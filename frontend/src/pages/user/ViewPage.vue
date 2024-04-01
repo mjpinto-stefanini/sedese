@@ -49,9 +49,6 @@
             </q-card-section>
             <q-card-section>
               <div class="row">
-                <div class="col-sm-12 q-pa-xs" v-if="user.secretaria">
-                  <span class="text-grey">Secretaria</span> {{ user.secretaria }}
-                </div>
                 <div class="col-sm-12 q-pa-xs" v-if="user.name">
                   <span class="text-grey">Nome</span> {{ user.name }}
                 </div>
@@ -107,7 +104,7 @@
             </q-card-section>
           </q-card>
 
-          <q-card class="my-card" style="margin-top: 15px;">
+          <q-card class="my-card" style="margin-top: 15px; margin-bottom: 10px;">
             <q-card-section>
               <h6 style="margin: 0; padding: 0;">Atribuíção de Perfil</h6>
             </q-card-section>
@@ -119,6 +116,15 @@
             <q-card-actions>
               <strong style="margin: 0px 5px;">Tipo de perfil:</strong>
               <q-select outlined :options="tipoPerfilOptions" v-model="user.tipo_perfil" @update:model-value="changeTipoPerfilUsuario($event)" style="width: 98%; margin: 0px 5px;"/>
+            </q-card-actions>
+            <q-card-actions>
+              <strong style="margin: 0px 5px;">Tipo de perfil Administrativo:</strong>
+              <q-select 
+                outlined 
+                :options="tipoPerfilAdminOptions"
+                v-model="user.type_admin" 
+                @update:model-value="changeTipoPerfilAdminUsuario($event)" 
+                style="width: 98%; margin: 0px 5px;"/>
             </q-card-actions>
           </q-card>
         </div>
@@ -380,7 +386,7 @@
               </div>
             </q-card-section>
             <q-card-actions>
-              <q-btn outlined label="Cancelar" color="red" v-close-popup style="float: left !important; margin-left:10px;" />
+              <q-btn outlined label="Cancelar" color="red" @click="limparFiltrosPagina" v-close-popup style="float: left !important; margin-left:10px;" />
               <q-btn outlined label="Salvar" color="green" @click="salvarDadosPessoais" v-close-popup />
             </q-card-actions>
           </q-card>
@@ -533,7 +539,7 @@
                 </div>
               </q-card-section>
               <q-card-actions>
-                <q-btn outlined label="Cancelar" color="red" v-close-popup style="float: left !important; margin-left:10px;" />
+                <q-btn outlined label="Cancelar" color="red" @click="limparFiltrosPagina" v-close-popup style="float: left !important; margin-left:10px;" />
                 <q-btn outlined label="Salvar" color="green" @click="salvarDadosEndereco" v-close-popup />
               </q-card-actions>
             </q-card>
@@ -657,7 +663,7 @@
                 </div>
               </q-card-section>
               <q-card-actions>
-                <q-btn outlined label="Cancelar" color="red" v-close-popup style="float: left !important; margin-left:10px;" />
+                <q-btn outlined label="Cancelar" color="red" @click="limparFiltrosPagina" v-close-popup style="float: left !important; margin-left:10px;" />
                 <q-btn outlined label="Salvar" color="green" @click="salvarDadosContato" v-close-popup style="float: right !important;" />
               </q-card-actions>
             </q-card>
@@ -686,7 +692,9 @@
                     <span class="text-grey">Ambito:</span> {{professionalData.regional}}
                   </div>
                   <div class="col-sm-12 q-pa-xs" v-if="user.secretaria">
-                    <span class="text-grey">Secretária/Munícipio:</span> {{ user.secretaria }}
+                    <span v-if="professionalData.regional === 'Estadual'" class="text-grey">Secretária:</span>
+                    <span v-else class="text-grey">Secretária/Munícipio:</span>
+                    {{ user.secretaria }}
                   </div>
                 </div>
                 <div class="col-12 row q-col-gutter-y-md" v-if="professionalData.regional === 'Estadual'">
@@ -1586,7 +1594,7 @@
                   </div>
                 </q-card-section>
                 <q-card-actions>
-                  <q-btn outlined label="Cancelar" color="red" v-close-popup style="float: left !important; margin-left:10px;" />
+                  <q-btn outlined label="Cancelar" color="red" @click="limparFiltrosPagina" v-close-popup style="float: left !important; margin-left:10px;" />
                   <q-btn outlined label="Salvar" color="green" @click="salvarDadosProfissionais" v-close-popup style="float: right !important;" />
                 </q-card-actions>
               </q-card>
@@ -1746,6 +1754,11 @@ export default {
         {value:1, label: 'Responsavel Técnico'},
         {value:2, label: 'Participante'},
         {value:3, label: 'Colaborador'},
+      ],
+      tipoPerfilAdminOptions : [
+        {value:1, label: 'Administrador'},
+        {value:2, label: 'Operador'},
+        {value:3, label: 'Usuário'},
       ],
       genderIdentityList: [
         "Homem (cis ou trans)",
@@ -2456,12 +2469,47 @@ export default {
         this.$router.go();
       }
     },
+    async changeTipoPerfilAdminUsuario(target) {
+      try {
+        this.$q.loading.show({
+          message: 'Atualizando Usuário',
+          backgroundColor: 'indigo',
+        });
+        let params = {
+          'user_id': this.UserId,
+          'admin': target.value
+        }
+        const result = await this.$http.post('users/change-admin', params);
+        if (result.status === 200) {
+          this.$q.notify({
+            message: 'Usuário Atualizado com sucesso',
+            color: "positive",
+            position: "top",
+          });
+        }
+        this.$q.loading.hide();
+        // atualizando a página
+        this.$router.go();
+      } catch (error) {
+        this.$q.notify({
+          message: error.message || 'Falha ao cadastrar novo colaborador',
+          color: "negative",
+          position: "top",
+        });
+        this.$q.loading.hide();
+        // atualizando a página
+        this.$router.go();
+      }
+    },
     voltarPagina() {
       // limpando os dados do usuario
       // para garantir que não haja cache
       this.user = [];
       // voltando a pagina de parceiros
       this.$router.push({ name: "Users" });
+    },
+    limparFiltrosPagina() {
+      this.$router.go();
     },
     isRequired(value) {
       return !!value || "Campo obrigatório";

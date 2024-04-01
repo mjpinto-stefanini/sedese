@@ -243,12 +243,12 @@
         <q-td :props="props">
           <q-chip
             size="sm"
-            :text-color="props.row.type_admin === 'Outros parceiros / Participantes' ? 'black' : 'white'"
+            :text-color="props.row.type_admin === 'Usuário' ? 'black' : 'white'"
             :label="props.row.type_admin"
             :color="
-              props.row.type_admin === 'Super Admin / Equipe DEP'
+              props.row.type_admin === 'Administrador'
                 ? 'red'
-                : props.row.type_admin === 'SUBAS / Diretorias Regionais'
+                : props.row.type_admin === 'Operador'
                 ? 'orange'
                 : 'gray'
             "
@@ -290,10 +290,16 @@
 import { ref } from 'vue';
 import accountMixin from "../mixins/accountMixin";
 
+// const tipoPerfilOptions = [
+//   {value: 1, label: "Super Admin / Equipe DEP"},
+//   {value: 2, label: "SUBAS / Diretorias Regionais"},
+//   {value: 3, label: "Outros parceiros / Participantes"},
+// ];
+
 const tipoPerfilOptions = [
-  {value: 1, label: "Super Admin / Equipe DEP"},
-  {value: 2, label: "SUBAS / Diretorias Regionais"},
-  {value: 3, label: "Outros parceiros / Participantes"},
+  {value:1, label: 'Responsavel Técnico'},
+  {value:2, label: 'Participante'},
+  {value:3, label: 'Colaborador'},
 ];
 
 export default {
@@ -309,9 +315,9 @@ export default {
         is_active: false,
       },
       optionsUser: [
-        { label: "Super Admin / Equipe DEP", value: "1" }, //Diretor
-        { label: "SUBAS / Diretorias Regionais", value: "2" }, //Operador
-        { label: "Outros parceiros / Participantes", value: "3" }, //Usuário
+        { label: "Diretor", value: "1" }, //Diretor
+        { label: "Operador", value: "2" }, //Operador
+        { label: "Usuários", value: "3" }, //Usuário
       ],
       columns: [
         {
@@ -455,10 +461,10 @@ export default {
               is_active: !!user.is_active,
               type_admin:
                 user.type_admin === "1"
-                  ? "Super Admin / Equipe DEP"
+                  ? "Administrador"
                   : user.type_admin === "2"
-                  ? "SUBAS / Diretorias Regionais"
-                  : "Outros parceiros / Participantes",
+                  ? "Operador"
+                  : "Usuário",
               created: new Date(user.created_at).toLocaleString("pt-BR"),
               status: user.status
             });
@@ -513,10 +519,10 @@ export default {
               is_active: !!user.is_active,
               type_admin:
                 user.type_admin === "1"
-                  ? "Super Admin / Equipe DEP"
+                  ? "Administrador"
                   : user.type_admin === "2"
-                  ? "SUBAS / Diretorias Regionais"
-                  : "Outros parceiros / Participantes",
+                  ? "Operador"
+                  : "Usuário",
               created: new Date(user.created_at).toLocaleString("pt-BR"),
               status: user.status
             });
