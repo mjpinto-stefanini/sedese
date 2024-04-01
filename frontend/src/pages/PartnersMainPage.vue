@@ -21,12 +21,13 @@
               <q-input v-model="consulta.cpf_cnpj" label="CPF / CNPJ" outlined clear-icon="close" clearable v-mask="['###.###.###-##', '##.###.###/####-##']"  maxlength="20" />
             </div>
             <div class="col-12" style="margin: 5px 0;">
-              <q-input v-model="consulta.email" label="E-mail" outlined clear-icon="close" clearable :rules="[isEmail]" />
+              <q-input v-model="consulta.email" label="E-mail" outlined clear-icon="close" clearable />
             </div>
-            <div class="col-4">
+            <div class="col-5">
               <q-btn outline @click="consultaPorCampo">Pesquisar</q-btn>
+              <q-btn outline @click="limparFiltrosPagina" style="margin-left: 5px;">Limpar Campos</q-btn>
             </div>
-            <div class="col-4 offset-4">
+            <div class="col-3 offset-4">
               <q-btn outline style="float: right;" @click="modalNovoParceiro = true">Novo Parceiro</q-btn>
             </div>
           </q-form>
@@ -103,6 +104,9 @@
               </div>
               <div class="col-12">
                 <q-input outlined style="margin: 25px 0px 5px 0px;" v-model="novoParceiro.email" label="E-mail" :rules="[isRequired, isEmail]"/>
+              </div>
+              <div class="col-12" style="margin: 5px 0;">
+                <q-input v-model="novoParceiro.confirmarEmail" label="Repetir E-mail" outlined clear-icon="close" clearable :rules="[emailMatch]" />
               </div>
               <div class="col-12">
                 <q-input outlined v-model="novoParceiro.observacao" label="Observações" type="textarea" maxlength="250" />
@@ -280,6 +284,9 @@ export default {
         this.$q.loading.hide();
       }
     },
+    limparFiltrosPagina() {
+      this.$router.go();
+    },
     isRequired(value) {
       return !!value || "Campo obrigatório";
     },
@@ -294,8 +301,15 @@ export default {
       this.novoParceiro.nomeResponsavel = null;
       this.novoParceiro.cpf = null;
       this.novoParceiro.email = null;
+      this.novoParceiro.confirmarEmail = null;
       this.novoParceiro.telefone = null;
       this.novoParceiro.observacao = null;
+    },
+    emailMatch(value) {
+      if (value !== this.novoParceiro.email) {
+        return "Os emails informados não conferem, favor, preencher o campo novamente.";
+      }
+      return true;
     },
   },
   mounted() {

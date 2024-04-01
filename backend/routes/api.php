@@ -55,6 +55,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/reset-password/{id}', [Users::class, 'sendPasswordByEmail']);
         Route::post('/change-status', [Users::class, 'changeStatus']);
         Route::post('/change-perfil', [Users::class, 'changePerfil']);
+        Route::post('/change-admin', [Users::class, 'changeAdmin']);
     });
 
     Route::prefix('auth')->group(function () {

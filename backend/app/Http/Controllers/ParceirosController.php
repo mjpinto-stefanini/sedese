@@ -74,9 +74,14 @@ class ParceirosController extends Controller
                 $parceiroQuery->where('nome_instituicao', $dados['nomeInstituicao']);
             }
 
-            if ($dados['cpf_cnpj']) {
+            if (strlen($dados['cpf_cnpj']) == 18) {
                 $cpf_cnpj = $dados['cpf_cnpj'];
-                $parceiroQuery->where('cnpj', $cpf_cnpj)->orWhereHas('user', function ($query) use ($cpf_cnpj) {
+                $parceiroQuery->where('cnpj', $dados['cpf_cnpj'])->orWhereHas('user', function ($query) use ($cpf_cnpj) {
+                    $query->where('cnpj', $cpf_cnpj);
+                });
+            } else {
+                $cpf_cnpj = $dados['cpf_cnpj'];
+                $parceiroQuery->where('cnpj', $dados['cpf_cnpj'])->orWhereHas('user', function ($query) use ($cpf_cnpj) {
                     $query->where('cpf', $cpf_cnpj);
                 });
             }
