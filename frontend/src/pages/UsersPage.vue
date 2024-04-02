@@ -397,7 +397,7 @@ export default {
         { value: 1, label: 'ATIVO', color: 'green' },
         { value: 2, label: 'INATIVO', color: 'gray' },
         { value: 3, label: 'PENDENTE', color: 'orange' },
-        { value: 4, label: 'REJEITADO', color: 'red' },
+        { value: 4, label: 'RECUSADO', color: 'red' },
       ];
     },
   },

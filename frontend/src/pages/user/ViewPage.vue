@@ -32,17 +32,17 @@
                 />
                 <q-chip v-if="user.type_admin == 1" size="sm"
                   :text-color="'white'"
-                  :label="'Super Admin / Equipe DEP'"
+                  :label="'Administrador'"
                   :color="'primary'"
                 />
                 <q-chip v-if="user.type_admin == 2" size="sm"
                     :text-color="'white'"
-                    :label="'SUBAS / Diretorias Regionais'"
+                    :label="'Responsavel Tecnico'"
                     :color="'primary'"
                 />
                 <q-chip v-if="user.type_admin == 3" size="sm"
                     :text-color="'white'"
-                    :label="'Outros parceiros / Participantes'"
+                    :label="'Usuário'"
                     :color="'primary'"
                 />
               </div>
@@ -145,7 +145,8 @@
                     outlined
                     clear-icon="close"
                     clearable
-                    :rules="[isRequired,isLetter]"
+                    :rules="[isRequired]"
+                    v-on:keypress="onlyLetter($event)"
                   />
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-12">
@@ -197,7 +198,8 @@
                     outlined
                     clear-icon="close"
                     clearable
-                    :rules="[isRequired, isLetter]"
+                    :rules="[isRequired]"
+                    v-on:keypress="onlyLetter($event)"
                   />
                 </div>
                 <div class="col-12 row">
@@ -264,20 +266,19 @@
                     outlined
                     clear-icon="close"
                     clearable
-                    :rules="[isLetter]"
+                    v-on:keypress="onlyLetter($event)"
                   />
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-12">
                   <q-select
                     v-model="user.uf"
-                    :options="ufFiltered"
+                    :options="ufList"
                     label="UF"
                     name="uf"
                     outlined
-                    use-input
                     input-debounce="0"
                     @filter="onUfFilter"
-                    :rules="[isLetter]"
+                    v-on:keypress="onlyLetter($event)"
                   />
                 </div>
                 <div class="col-12">
@@ -335,11 +336,9 @@
                       v-model="user.deficiency"
                       name="deficiency"
                       for="deficiency"
-                      :options="deficiencyFiltered"
+                      :options="deficiencyList"
                       label="Tipo de deficiência"
                       outlined
-                      use-input
-                      input-debounce="0"
                       @filter="onDeficiencyFilter"
                       clear-icon="close"
                       clearable
@@ -592,14 +591,14 @@
                 <div class="col-12" style="margin:10px 0px; margin-bottom: 20px;">
                   <q-input
                     v-model="user.email"
-                    label="Telefone Residencial"
+                    label="Email Principal"
                     outlined
                     type="tel"
                   />
                 </div>
                 <div class="col-12">
                   <q-input
-                    v-model="contact.phone"
+                    v-model="contactData.phone"
                     label="Telefone Residencial"
                     outlined
                     clear-icon="close"
@@ -613,7 +612,7 @@
                 </div>
                 <div class="col-6">
                   <q-input
-                    v-model="contact.cell_phone"
+                    v-model="contactData.cell_phone"
                     label="Nº Celular*"
                     name="cell_phone"
                     for="cell_phone"
@@ -627,7 +626,7 @@
                 </div>
                 <div class="col-6">
                   <q-select
-                    v-model="contact.cell_phone_whatsapp"
+                    v-model="contactData.cell_phone_whatsapp"
                     name="cell_phone_whatsapp"
                     for="cell_phone_whatsapp"
                     label="Este número possui WhatsApp?"
@@ -638,7 +637,7 @@
                 </div>
                 <div class="col-12">
                   <q-input
-                    v-model="contact.institutional_phone"
+                    v-model="contactData.institutional_phone"
                     label="Telefone Institucional"
                     outlined
                     clear-icon="close"
@@ -652,7 +651,7 @@
                 </div>
                 <div class="col-12">
                   <q-input
-                    v-model="contact.institutional_email"
+                    v-model="contactData.institutional_email"
                     label="Email Institucional"
                     outlined
                     clear-icon="close"
@@ -688,13 +687,15 @@
               <q-card-section>
                 <!-- ESTADUAL -->
                 <div class="col-12 row q-col-gutter-y-md">
-                  <div class="col-sm-12 q-pa-xs" v-if="professionalData.regional">
-                    <span class="text-grey">Ambito:</span> {{professionalData.regional}}
+                  <div class="col-sm-12 q-pa-xs" v-if="user.service === '1'">
+                    <span class="text-grey">Ambito:</span> Estadual
+                  </div>
+                  <div class="col-sm-12 q-pa-xs" v-if="user.service === '2'">
+                    <span class="text-grey">Ambito:</span> Municipal
                   </div>
                   <div class="col-sm-12 q-pa-xs" v-if="user.secretaria">
                     <span v-if="professionalData.regional === 'Estadual'" class="text-grey">Secretária:</span>
-                    <span v-else class="text-grey">Secretária/Munícipio:</span>
-                    {{ user.secretaria }}
+                    <span v-else class="text-grey">Secretária:</span> {{ user.secretaria }}
                   </div>
                 </div>
                 <div class="col-12 row q-col-gutter-y-md" v-if="professionalData.regional === 'Estadual'">
@@ -940,15 +941,38 @@
                           </q-item>
                         </template>
                       </q-select>
+                      
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12" v-if="user.service === '2'">
                       <q-select
-                        v-show="user.service !== null"
                         outlined
                         v-model="user.secretaria"
-                        :options="user.service=== '2' ? filterMunicipios : filterSecretaries"
-                        :label="user.service === '2' ? 'Município' : 'Lotação'"
-                        @filter="filterFn"
+                        :options="filterMunicipios"
+                        label="Município"
+                        :rules="[isRequired]"
+                        lazy-rules
+                        emit-value
+                        map-options
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="mdi-domain" class="cursor-pointer" />
+                        </template>
+
+                        <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">
+                              Sem resultados!
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                      </q-select>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12" v-else>
+                      <q-select
+                        outlined
+                        v-model="user.secretaria"
+                        :options="filterSecretaries"
+                        label="Lotação"
                         :rules="[isRequired]"
                         lazy-rules
                         emit-value
@@ -1817,6 +1841,35 @@ export default {
       deficiencyFiltered: [],
       checkSocialName: false,
       ufFiltered: [],
+      ufList: [
+        "AC",
+        "AL",
+        "AP",
+        "AM",
+        "BA",
+        "CE",
+        "DF",
+        "ES",
+        "GO",
+        "MA",
+        "MT",
+        "MS",
+        "MG",
+        "PA",
+        "PB",
+        "PR",
+        "PE",
+        "PI",
+        "RJ",
+        "RN",
+        "RS",
+        "RO",
+        "RR",
+        "SC",
+        "SP",
+        "SE",
+        "TO",
+      ],
       allSecretaries: [],
       filterSecretaries: [],
       services: [
@@ -2081,6 +2134,8 @@ export default {
       chipLabel: null,
       chipColor: null,
       professionalData: [],
+      contactData: [],
+      addressData: [],
     };
   },
   methods: {
@@ -2159,7 +2214,10 @@ export default {
     async getUserContact() {
       try {
         const { data, status } = await this.apiUser(this.UserId, 'contact');
-        if (data) { this.contact = data; }
+        if (data) { 
+          this.contact = data; 
+          this.contactData = data;
+        }
         if (status !== 200) { console.warn('Error contact'); }
       } catch (error) {
         this.$q.notify({
@@ -2172,7 +2230,10 @@ export default {
     async getUserAddress() {
       try {
         const { data, status } = await this.apiUser(this.UserId, 'address');
-        if (data) { this.address = data; }
+        if (data) { 
+          this.address = data; 
+          this.addressData = data;
+        }
         if (status !== 200) { console.warn('Error address'); }
       } catch (error) {
         this.$q.notify({
@@ -2234,9 +2295,7 @@ export default {
     },
     async getSecretaries() {
       try {
-        const { data, status } = await this.$http.get(
-          `ambitoatuacao/regiaoadm/${this.user?.service === 1 ? "1" : "2"}`
-        );
+        const { data, status } = await this.$http.get('ambitoatuacao/regiaoadm/1');
         if (status === 200) {
           this.allSecretaries = data.map((ele) => {
             return {
@@ -2308,8 +2367,14 @@ export default {
       }
     },
     async salvarDadosContato() {
+      let params = {
+        'user_id': this.UserId,
+        'contact': this.contactData
+      }
+      console.log(params);
+
       try {
-        const result = await this.$http.post('contact/updatebyuser', this.contact);
+        const result = await this.$http.post('contact/updatebyuser', params);
         if (result.status === 200) {
           this.$q.notify({
             message: 'Novo colaborador criado com sucesso!',
@@ -2352,7 +2417,9 @@ export default {
     async salvarDadosProfissionais() {
       let params = {
         'user_id': this.UserId,
-        'profession': this.professionalData
+        'profession': this.professionalData,
+        'secretary': this.user.secretaria,
+        'service': this.user.service
       }
       try {
         const result =  await this.$http.post('professionals/updatebyuser', params);
@@ -2363,12 +2430,14 @@ export default {
             position: "top",
           });
         }
+        this.$router.go();
       } catch (error) {
         this.$q.notify({
           message: error.message,
           color: "negative",
           position: "top",
         });
+        
       }
     },
     async resetarSenhaUsuario() {
@@ -2513,6 +2582,11 @@ export default {
     },
     isRequired(value) {
       return !!value || "Campo obrigatório";
+    },
+    onlyLetter(e) {
+      let char = String.fromCharCode(e.keyCode); // Get the character
+      if(/^[A-Za-z]+$/.test(char)) return true; // Match with regex 
+      else e.preventDefault(); // If not match, don't add to input text
     },
     isNumber(value) {
       return ( (value && /^\d+$/.test(value)) || "Somente números" );

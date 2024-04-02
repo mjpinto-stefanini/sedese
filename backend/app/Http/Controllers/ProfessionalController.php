@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Professional;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -158,6 +159,12 @@ class ProfessionalController extends Controller
         } else {
             Professional::create($professionalData);
         }
+
+        // atualizando o usuário
+        User::find($request['user_id'])->update([
+            'secretary' => $request['secretary'],
+            'service' => $request['service']
+        ]);
 
         // Retorno de sucesso ou outra lógica necessária
         return response()->json(['message' => 'Dados profissionais atualizados com sucesso']);
