@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Address;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AddressController extends Controller
 {
@@ -32,14 +33,14 @@ class AddressController extends Controller
 
     public function update(Request $request, address $address)
     {
-        $request -> validate([
-            'zip_code' => 'required|string|max:255',
-            'street' => 'required|string|max:255',
-            'number' => 'required|string|max:255',
-            'complement' => 'required|string|max:255',
-            'neighborhood' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
+        Validator::make($request->all(), [
+            'user_id' => 'required',
+            'zip_code' => 'required',
+            'street' => 'required',
+            'number' => 'required',
+            'neighborhood' => 'required',
+            'city' => 'required',
+            'state' => 'required',
         ]);
 
         foreach ($request->all() as $key => $value) {
@@ -65,6 +66,22 @@ class AddressController extends Controller
 
     public function updateAddressDataByUser(Request $request)
     {
+        // Validar os campos obrigatórios
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+            'zip_code' => 'required',
+            'street' => 'required',
+            'number' => 'required',
+            'neighborhood' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+        ]);
+
+        // Se a validação falhar, retornar mensagem de erro
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+
         // Dados de endereço recebidos na requisição
         $addressData = [
             'user_id' => $request['user_id'],
