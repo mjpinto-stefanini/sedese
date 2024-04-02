@@ -11,7 +11,7 @@ class ContactController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api');
+        // $this->middleware('auth:api');
     }
 
     public function index()
@@ -89,13 +89,13 @@ class ContactController extends Controller
             $contactData['cell_phone_whatsapp'] = 'Não';
         }
         $contactData = [
-            'user_id' => $request['id'],
-            'phone' => $request['phone'],
-            'cell_phone' => $request['cell_phone'],
-            'cell_phone_whatsapp' => $request['cell_phone_whatsapp'],
-            'institutional_phone' => $request['institutional_phone'],
-            'institutional_email' => $request['institutional_email'],
-            'isWhatsapp' => $isWhatsapp,
+            'user_id' => $request['user_id'],
+            'phone' => $request['contact']['phone'] ?? null,
+            'cell_phone' => $request['contact']['cell_phone'] ?? null,
+            'cell_phone_whatsapp' => $request['contact']['cell_phone_whatsapp'] ?? null,
+            'institutional_phone' => $request['contact']['institutional_phone'] ?? null,
+            'institutional_email' => $request['contact']['institutional_email'] ?? null,
+            'isWhatsapp' => $isWhatsapp ?? null,
         ];
         // Verifica se o registro já existe na tabela Personal
         $contact = Contact::query()->where('user_id', $request['user_id'])->first();
