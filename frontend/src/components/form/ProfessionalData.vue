@@ -177,6 +177,7 @@
                                 for="representação"
                                 outlined
                                 :rules="[isRequired]"
+                                @update:model-value="limparCamposCeasRepresentacao()"
                             />
                         </div>
                         <div class="col-12" v-if="form.seguimento_governo.value === 1">
@@ -1058,6 +1059,15 @@ export default {
             this.form.seguimento_governo = '';
             this.form.representacaoAreaRepresentada = '';
             this.form.ceas_titularidade = '';
+            this.form.representacaoTitularidade = '';
+            this.form.representacaoSegmento = '';
+            if (this.form.representacaoAreaRepresentada !== 'Outros') {
+                this.form.outrosRepresentacaoAreaRepresentada === '';
+            }
+        },
+        limparCamposCeasRepresentacao() {
+            // this.form.seguimento_governo.value
+            this.form.representacaoAreaRepresentada = '';
         },
         async getMunicipios() {
             try {
@@ -1158,6 +1168,11 @@ export default {
                 this.$emit("professional", this.form);
             },
             deep: true,
+        },
+        'form.representacaoAreaRepresentada'(newValue, oldValue) {
+            if (oldValue === 'Outros') {
+                this.form.outrosRepresentacaoAreaRepresentada = null;
+            }
         },
     },
     created() {

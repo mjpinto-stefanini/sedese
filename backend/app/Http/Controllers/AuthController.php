@@ -57,13 +57,21 @@ class AuthController extends Controller
             }
         }
         
-        if ($userPerfilStatus->status !== UserPerfilStatus::STATUS_ATIVO) {
+        $statusMessages = [
+            UserPerfilStatus::STATUS_PENDENTE => 'Seu cadastro está pendente de confirmação. Quando for aprovado, você receberá um e-mail, caso tenha dúvidas, entre em contato, através do e-mail “dgtep@social.mg.gov.br“',
+            UserPerfilStatus::STATUS_INATIVO => 'Seu cadastro está Inativo. Entre em contato conosco, através do e-mail “dgtep@social.mg.gov.br“.',
+            UserPerfilStatus::STATUS_REJEITADO => 'Seu cadastro está Rejeitado. Entre em contato conosco, através do e-mail “dgtep@social.mg.gov.br“.'
+        ];
+        
+        $status = $userPerfilStatus->status;
+        
+        if (array_key_exists($status, $statusMessages)) {
             return response()->json([
                 'status' => 'error',
                 'type' => 'negative',
-                'message' => 'Seu cadastro está pendente de confirmação. Quando for aprovado, você receberá um e-mail, caso tenha dúvidas, entre em contato, através do e-mail “dgtep@social.mg.gov.br“'
+                'message' => $statusMessages[$status]
             ], self::HTTP_METHOD_NOT_ALLOWED);
-        }
+        }        
 
         $token = Auth::attempt($credentials);
         if (!$token) {
