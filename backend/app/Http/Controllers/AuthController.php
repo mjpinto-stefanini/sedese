@@ -361,6 +361,5 @@ class AuthController extends Controller
             'message' => 'Senha alterada com sucesso.',
             'temp' => $user->password
         ]);
-
     }
 }

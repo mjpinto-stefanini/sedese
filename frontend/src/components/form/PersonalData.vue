@@ -374,9 +374,12 @@ export default {
 
         },
         onlyLetter(e) {
-              let char = String.fromCharCode(e.keyCode); // Get the character
-              if(/^[A-Za-z]+$/.test(char)) return true; // Match with regex 
-              else e.preventDefault(); // If not match, don't add to input text
+            let char = String.fromCharCode(e.keyCode);
+            if (/^[A-Za-z\s]+$/.test(char)) {
+                return true;
+            } else {
+                e.preventDefault();
+            }
         },
         isLetter(value) {
             if(value){

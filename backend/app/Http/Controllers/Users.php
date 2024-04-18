@@ -354,7 +354,7 @@ class Users extends Controller
             $mailData = [
                 'name' => $user['name'],
                 'email' => $user['email'],
-                'token' => $user['rememberToken'],
+                'token' => $user['remember_token'],
             ];
             Mail::to($user['email'])->send(new Confirmation($mailData));
         } catch (\Exception $e) {
