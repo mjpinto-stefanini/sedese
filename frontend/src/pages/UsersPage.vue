@@ -192,7 +192,6 @@
     <q-table :rows="rows" :columns="columns" row-key="name" flat bordered>
       <template v-slot:header-cell-is_active="props">
         <q-th :props="props">
-          {{ props.col.label }}
           <q-icon name="sym_o_info" size="1.2rem" color="primary">
             <q-tooltip
               class="bg-primary text-caption"
@@ -239,16 +238,16 @@
           </span>
         </q-td>
       </template>
-      <template v-slot:body-cell-type_admin="props">
+      <template v-slot:body-cell-perfil="props">
         <q-td :props="props">
           <q-chip
             size="sm"
-            :text-color="props.row.type_admin === 'Usuário' ? 'black' : 'white'"
-            :label="props.row.type_admin"
+            :text-color="props.row.perfil === 3 ? 'black' : 'white'"
+            :label="props.row.perfil_label"
             :color="
-              props.row.type_admin === 'Administrador'
+              props.row.perfil === 1
                 ? 'red'
-                : props.row.type_admin === 'Operador'
+                : props.row.perfil === 2
                 ? 'orange'
                 : 'gray'
             "
@@ -313,6 +312,7 @@ export default {
         type_admin: "",
         is_admin: false,
         is_active: false,
+        perfil: "",
       },
       optionsUser: [
         { label: "Diretor", value: "1" }, //Diretor
@@ -335,9 +335,9 @@ export default {
           sortable: true,
         },
         {
-          name: "type_admin",
+          name: "perfil",
           label: "Perfil",
-          field: "type_admin",
+          field: "perfil",
           align: "left",
           sortable: true,
         },
@@ -383,8 +383,8 @@ export default {
       allSecretaries: [],
       filterSecretaries: [],
       ambitoAtuacaoOptions: [
-        { label: "Estado", value: 1 },
-        { label: "Municipio", value: 2 },
+        { label: "Estadual", value: 1 },
+        { label: "Municipal", value: 2 },
       ],
       chipTextColor: null,
       chipLabel: null,
@@ -459,12 +459,13 @@ export default {
               is_admin: !!user.is_admin,
               id: user.id,
               is_active: !!user.is_active,
-              type_admin:
-                user.type_admin === "1"
-                  ? "Administrador"
-                  : user.type_admin === "2"
-                  ? "Operador"
-                  : "Usuário",
+              perfil: parseInt(user.perfil),
+              perfil_label:
+                parseInt(user.perfil) === 1
+                  ? "Responsavel Técnico"
+                  : parseInt(user.perfil) === 2
+                  ? "Participante"
+                  : "Colaborador",
               created: new Date(user.created_at).toLocaleString("pt-BR"),
               status: user.status
             });
@@ -492,13 +493,14 @@ export default {
     async ConsultarUsuario() {
       const queryParams = {
         status: this.consulta.status ? this.consulta.status.value : null,
-        type_admin: this.consulta.tipoPerfil ? this.consulta.tipoPerfil.value : null,
+        perfil: this.consulta.tipoPerfil ? this.consulta.tipoPerfil.value : null,
         service: this.consulta.ambitoAtuacao ? this.consulta.ambitoAtuacao.value : null,
         secretary: this.consulta.lotacao ? this.consulta.lotacao.value : null,
         name: this.consulta.name,
         cpf: this.consulta.cpf,
         email: this.consulta.email,
       };
+      console.log(queryParams);
       try {
         const { data, status } = await this.$http.get("users", { params: queryParams });
         if (status === 200) {
@@ -517,12 +519,13 @@ export default {
               is_admin: !!user.is_admin,
               id: user.id,
               is_active: !!user.is_active,
-              type_admin:
-                user.type_admin === "1"
-                  ? "Administrador"
-                  : user.type_admin === "2"
-                  ? "Operador"
-                  : "Usuário",
+              perfil: parseInt(user.perfil),
+              perfil_label:
+                parseInt(user.perfil) === 1
+                  ? "Responsavel Técnico"
+                  : parseInt(user.perfil) === 2
+                  ? "Participante"
+                  : "Colaborador",
               created: new Date(user.created_at).toLocaleString("pt-BR"),
               status: user.status
             });
