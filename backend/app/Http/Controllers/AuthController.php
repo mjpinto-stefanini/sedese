@@ -31,6 +31,14 @@ class AuthController extends Controller
         ]);
         $credentials = $request->only('email', 'password');
         $user = User::where('email', $credentials['email'])->first();
+
+        // criando um token caso o usuário não tenha um
+        if (!$user->remember_token){
+            $user->update([
+                'remember_token' => Str::uuid(),
+            ]);
+        }
+
         if (!$user) {
             return response()->json([
                 'status' => 'error',
@@ -154,7 +162,7 @@ class AuthController extends Controller
             'service' => $request->input('service.value'),
             'secretary' => $request->input('secretary.value'),
             'type_admin' => User::USER_USUARIO,
-            'is_active' => 1,
+            'is_active' => 0, // deixando os dados desativados para confirmação
             'remember_token' => Str::uuid(),
             'second_stage' => false,
         ];

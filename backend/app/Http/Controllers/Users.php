@@ -31,7 +31,7 @@ class Users extends Controller
     {
         try {
             $queryParams = $request->only([
-                'status', 'type_admin', 'secretary', 'service', 'name', 'cpf', 'email'
+                'status', 'perfil', 'secretary', 'service', 'name', 'cpf', 'email'
             ]);
 
             $users = $this->filterUsers($queryParams);
@@ -45,9 +45,6 @@ class Users extends Controller
     private function filterUsers(array $queryParams)
     {
         $query = User::query();
-        if (isset($queryParams['type_admin'])) {
-            $query->where('type_admin', $queryParams['type_admin']);
-        }
         if (isset($queryParams['secretary'])) {
             $query->where('secretary', $queryParams['secretary']);
         }
@@ -69,6 +66,10 @@ class Users extends Controller
         } else {
             $query->orderByRaw("FIELD((SELECT status FROM users_perfil_status WHERE users_perfil_status.user_id = users.id), 3, 1, 2, 4)");
         }
+        if (isset($queryParams['perfil'])) {
+            $userIds = UserPerfilStatus::where('tipo_perfil_id', $queryParams['perfil'])->pluck('user_id')->toArray();
+            $query->whereIn('id', $userIds);
+        }
         return $query->get();
     }
 
@@ -79,6 +80,7 @@ class Users extends Controller
                 $user->secretary = AmbitoAtuacao::query()->find($user->secretary)['nome'];
             }
             $user->status = UserPerfilStatus::firstWhere('user_id', $user->id)['status'];
+            $user->perfil = UserPerfilStatus::firstWhere('user_id', $user->id)['tipo_perfil_id'];
         });
     }
 

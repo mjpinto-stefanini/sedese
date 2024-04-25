@@ -2618,6 +2618,27 @@ export default {
         );
       });
     },
+    parseStringFilter(text) {
+      const er = /[^a-z0-9]/gi;
+      return text
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(er, "")
+          .toLowerCase();
+    },
+    onEducationFilter(val, update) {
+        if (val === "") {
+            update(() => {
+                this.educationFiltered = this.educationList;
+            });
+        }
+        update(() => {
+            const needle = this.parseStringFilter(val);
+            this.educationFiltered = this.educationList.filter((v) =>
+                this.parseStringFilter(v).includes(needle)
+            );
+        });
+    },
     onProfessionFilter(val, update) {
       if (val === "") {
         update(() => {this.professionFiltered = this.professionList;});
