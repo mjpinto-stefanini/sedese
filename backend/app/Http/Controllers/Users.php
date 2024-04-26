@@ -401,7 +401,6 @@ class Users extends Controller
                 ], Controller::HTTP_OK);
 
             } catch (\Exception $e) {
-                Log::info('email', [$e]);
                 return response()->json([
                     'status' => 'error',
                     'type' => 'negative',
@@ -435,11 +434,6 @@ class Users extends Controller
         $newPassword = $this->generateRandomPassword();
         $user->password = bcrypt($newPassword);
         $user->save();
-
-        // Se estiver no ambiente local ou de desenvolvimento, não envie o e-mail
-        // if (App::environment('local', 'development')) {
-        //     return;
-        // }
 
         Mail::send('emails.new_password', ['password' => $newPassword], function ($message) use ($user) {
             $message->to($user->email);
