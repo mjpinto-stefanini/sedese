@@ -16,11 +16,11 @@
                     />
                 </div>
                 <div class="col-4">
-                    <q-input outlined v-model="form.birthday" label="Data de Nascimento" mask="##/##/####" :rules="[isRequired]" :autofocus="true">
+                    <q-input outlined v-model="form.birthday" for="birthday" name="birthday" label="Data de Nascimento" mask="##/##/####" :rules="[isRequired]" :autofocus="true">
                         <template v-slot:append>
                             <q-icon name="event" class="cursor-pointer">
                                 <q-popup-proxy>
-                                    <q-date v-model="form.birthday" mask="DD/MM/YYYY" :rules="[isRequired]"></q-date>
+                                    <q-date v-model="form.birthday" mask="DD/MM/YYYY"></q-date>
                                 </q-popup-proxy>
                             </q-icon>
                         </template>
