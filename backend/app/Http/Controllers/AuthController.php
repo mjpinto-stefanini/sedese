@@ -46,7 +46,7 @@ class AuthController extends Controller
                 'message' => 'Usuário não encontrado. Por favor, verifique o e-email se está correto.'
             ], self::HTTP_METHOD_NOT_ALLOWED);
         }
-        if ($user->is_active === 0) {
+        if ($user->is_active === 0 && !isset($request->from)) {
             return response()->json([
                 'status' => 'error',
                 'type' => 'negative',
@@ -64,22 +64,22 @@ class AuthController extends Controller
                 ], self::HTTP_METHOD_NOT_ALLOWED);
             }
         }
-        
+
         $statusMessages = [
             UserPerfilStatus::STATUS_PENDENTE => 'Seu cadastro está pendente de confirmação. Quando for aprovado, você receberá um e-mail, caso tenha dúvidas, entre em contato, através do e-mail “dgtep@social.mg.gov.br“',
             UserPerfilStatus::STATUS_INATIVO => 'Seu cadastro está Inativo. Entre em contato conosco, através do e-mail “dgtep@social.mg.gov.br“.',
             UserPerfilStatus::STATUS_REJEITADO => 'Seu cadastro está Rejeitado. Entre em contato conosco, através do e-mail “dgtep@social.mg.gov.br“.'
         ];
-        
+
         $status = $userPerfilStatus->status;
-        
+
         if (array_key_exists($status, $statusMessages)) {
             return response()->json([
                 'status' => 'error',
                 'type' => 'negative',
                 'message' => $statusMessages[$status]
             ], self::HTTP_METHOD_NOT_ALLOWED);
-        }        
+        }
 
         $token = Auth::attempt($credentials);
         if (!$token) {
@@ -179,6 +179,25 @@ class AuthController extends Controller
         $perfil = ($ambitoAtuacao === 'estado' && in_array($lotacaoTipo, $respTecnico)) ? TipoPerfil::RESPONSAVEL_TECNICO : (in_array($lotacaoTipo, $participanteList) ? TipoPerfil::PARTICIPANTE : TipoPerfil::PARTICIPANTE);
         $statusPerfil = ($perfil === TipoPerfil::PARTICIPANTE) ? UserPerfilStatus::STATUS_ATIVO : UserPerfilStatus::STATUS_PENDENTE;
         $user = User::create($userData);
+
+        if (!$user) {
+            return response()->json(
+                [
+                    'status' => 'unsuccess',
+                    'message' => 'Erro ao criar o usuário',
+                    'user' => false,
+                    'authorization' => false
+                ],
+                422
+            );
+        }
+
+        $mailData = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'token' => $user->remember_token,
+        ];
+        Mail::to($user->email)->send(new Confirmation($mailData));
         // criando o tipo de usuário por perfil deixando ele ativo
         UserPerfilStatus::create([
             'user_id' => $user->id,

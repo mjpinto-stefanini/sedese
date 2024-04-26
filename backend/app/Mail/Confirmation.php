@@ -11,6 +11,7 @@ class Confirmation extends Mailable
 {
     use Queueable, SerializesModels;
 
+    private array $mailData;
     /**
      * Create a new message instance.
      *

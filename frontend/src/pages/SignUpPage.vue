@@ -179,6 +179,7 @@ export default {
     data() {
         return {
             form: {
+                from: 'cadastro',
                 secretary: null,
                 service: {
                     value: null,
@@ -267,22 +268,31 @@ export default {
 
         async onRegister() {
             try {
-                const {status} = await this.$http.post("auth/register",this.form);
+                const { status, message } = await this.$http.post("auth/register", this.form);
+                if (status === 422) {
+                    this.$q.notify({
+                        message: message,
+                        color: "negative",
+                        position: "top",
+                    });
+                }
+
                 if (status === 200 || status === 201) {
-                    // this.$q.notify({
-                    // 	message: "Usuario registrado, em instantes você receberá um email com as instruções para ativar sua conta",
-                    // 	type: "positive",
-                    // }, 5000);
+                    this.$q.notify({
+                        progress: true,
+                        message: "Usuario registrado, em instantes você receberá um email com as instruções para ativar sua conta",
+                        type: "positive",
+                    }, 5000);
                     const { data, status } = await this.$http.post("auth/login", this.form);
-                    console.log(data, status);
                     if (status === 200 || status === 201) {
                         // antes de continuar com os dados cadastrais, é setado o usuárioe sua autenticação
                         localStorage.setItem("token", data.authorization.token);
                         localStorage.setItem("user", JSON.stringify(data.user));
-                        this.$router.push({ name: "Main" });
+                        //this.$router.push({ name: "Main" });
+                        setTimeout(() => this.$router.push({ path: 'Main' }), 5000);
                     }
                 }
-            } catch(error) {
+            } catch (error) {
                 this.$q.notify({
                     message: error.response.data.message,
                     color: "negative",
