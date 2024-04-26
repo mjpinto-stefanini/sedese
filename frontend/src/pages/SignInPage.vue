@@ -123,7 +123,6 @@ export default {
 				}
 		},
 	},
-
 	mounted() {
         if (this.$route.query.message && this.$route.query.type) {
             this.$q.notify({
@@ -131,8 +130,7 @@ export default {
                 message: this.$route.query.message,
             })
         }
-    },
-
+	}
 };
 </script>
 

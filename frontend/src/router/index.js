@@ -25,12 +25,12 @@ const routes = [
     path: "",
     component: AuthLayout,
     children: [
-      { path: "", redirect: "signin" },
+      { path: "", redirect: "signin", title: 'AASearch' },
       { path: "404", name: "404", component: Page404 },
-      { path: "signin", name: "SignIn", component: SignInPage },
-      { path: "signup", name: "SignUp", component: SignUpPage },
-      { path: "forgotpassword", name: "ForgotPassword", component: ForgotPasswordPage },
-      { path: "recoverpassword/:token", name: "RecoverPassword", component: RecoverPasswordPage },
+      { path: "signin", name: "SignIn", component: SignInPage, meta: { title: 'Entrar' } },
+      { path: "signup", name: "SignUp", component: SignUpPage, meta: { title: 'Cadastrar' } },
+      { path: "forgotpassword", name: "ForgotPassword", component: ForgotPasswordPage, meta: { title: 'Esqueci Minha Senha' } },
+      { path: "recoverpassword/:token", name: "RecoverPassword", component: RecoverPasswordPage, meta: { title: 'Recuperar Senha' } },
       { path: "confirmar-email/:token", name: "ConfirmarEmail", component: ConfirmarEmail, props: (route) => {
         const token = route.params.token;
         return { token }
@@ -70,6 +70,12 @@ const router = createRouter({
 let isAuthenticated = false;
 
 router.beforeEach((to, from, next) => {
+  document.title = process.env.VUE_APP_TITLE;
+
+  if (to.meta.title) {
+    document.title += ` | ${to.meta.title}`;
+  }
+
   if (to.meta.requiresAuth && !isAuthenticated) {
     next({ name: 'SignIn' });
   } else {
