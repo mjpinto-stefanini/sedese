@@ -28,8 +28,8 @@ const routes = [
       { path: "", redirect: "signin", title: 'AASearch' },
       { path: "404", name: "404", component: Page404 },
       { path: "signin", name: "SignIn", component: SignInPage, meta: { title: 'Entrar' } },
-      { path: "signup", name: "SignUp", component: SignUpPage, meta: { title: 'Cadastrar' } },
-      { path: "forgotpassword", name: "ForgotPassword", component: ForgotPasswordPage, meta: { title: 'Esqueci Minha Senha' } },
+      { path: "signup", name: "SignUp", component: SignUpPage, meta: { title: 'Criar conta' } },
+      { path: "forgotpassword", name: "ForgotPassword", component: ForgotPasswordPage, meta: { title: 'Recupera Senha' } },
       { path: "recoverpassword/:token", name: "RecoverPassword", component: RecoverPasswordPage, meta: { title: 'Recuperar Senha' } },
       { path: "confirmar-email/:token", name: "ConfirmarEmail", component: ConfirmarEmail, props: (route) => {
         const token = route.params.token;
