@@ -539,7 +539,15 @@
               </q-card-section>
               <q-card-actions>
                 <q-btn outlined label="Cancelar" color="red" @click="limparFiltrosPagina" v-close-popup style="float: left !important; margin-left:10px;" />
-                <q-btn outlined label="Salvar" color="green" @click="salvarDadosEndereco" v-close-popup />
+                <q-btn
+                  outlined
+                  label="Salvar"
+                  color="green"
+                  @click="salvarDadosEndereco"
+                  v-close-popup
+                  style="float: right !important;"
+                  :disabled="!camposObrigatoriosDeEnderecosPreenchidos()"
+                />
               </q-card-actions>
             </q-card>
           </q-dialog>
@@ -594,6 +602,8 @@
                     label="Email Principal"
                     outlined
                     type="tel"
+                    :dense="dense" 
+                    disable
                   />
                 </div>
                 <div class="col-12">
@@ -663,7 +673,13 @@
               </q-card-section>
               <q-card-actions>
                 <q-btn outlined label="Cancelar" color="red" @click="limparFiltrosPagina" v-close-popup style="float: left !important; margin-left:10px;" />
-                <q-btn outlined label="Salvar" color="green" @click="salvarDadosContato" v-close-popup style="float: right !important;" />
+                <q-btn 
+                  outlined 
+                  label="Salvar" 
+                  color="green" 
+                  @click="salvarDadosContato" 
+                  v-close-popup style="float: right !important;" 
+                  :disabled="!camposObrigatoriosDeContatoPreenchidos()" />
               </q-card-actions>
             </q-card>
           </q-dialog>
@@ -1683,7 +1699,7 @@ export default {
       contact: {
         email: "",
         phone: "",
-        cell_phone: "",
+        cell_phone: "", // cellphone
         institutional_phone: "",
         institutional_email: "",
         cell_phone_whatsapp: [],
@@ -2348,30 +2364,78 @@ export default {
         return error;
       }
     },
+    camposObrigatoriosDeEnderecosPreenchidos() {
+      return this.address.zip_code &&
+             this.address.street &&
+             this.address.number &&
+             this.address.neighborhood &&
+             this.address.city &&
+             this.address.state;
+    },
     async salvarDadosEndereco() {
       try {
+        if (!this.camposObrigatoriosDeEnderecosPreenchidos()) {
+          this.$q.notify({
+            message: 'É necessário preencher todos os dados obrigatórios para salvar.',
+            color: 'negative',
+            position: 'top',
+          });
+        }
         const result = await this.$http.post('address/updatebyuser', this.address);
         if (result.status === 200) {
           this.$q.notify({
-            message: 'Novo colaborador criado com sucesso!',
-            color: "positive",
-            position: "top",
+            message: 'Endereço salvo com sucesso!',
+            color: 'positive',
+            position: 'top',
+          });
+        } else {
+          this.$q.notify({
+            message: `Erro ao salvar endereço: ${result.status} - ${result.statusText}`,
+            color: 'negative',
+            position: 'top',
           });
         }
       } catch (error) {
-        this.$q.notify({
-          message: error.message,
-          color: "negative",
-          position: "top",
-        });
+        if (error.response && error.response.status) {
+          const statusCode = error.response.status;
+          let errorMessage = 'Erro ao salvar endereço.';
+
+          if (statusCode === 400) {
+            errorMessage = 'Requisição inválida. Verifique os dados enviados.';
+          } else if (statusCode === 500) {
+            errorMessage = 'Erro interno no servidor. Tente novamente mais tarde.';
+          }
+
+          this.$q.notify({
+            message: errorMessage,
+            color: 'negative',
+            position: 'top',
+          });
+        } else {
+          this.$q.notify({
+            message: `Erro: ${error.message}`,
+            color: 'negative',
+            position: 'top',
+          });
+        }
       }
+    },
+    camposObrigatoriosDeContatoPreenchidos() {
+      return this.contactData.cell_phone
+             this.contactData.cell_phone_whatsapp;
     },
     async salvarDadosContato() {
       let params = {
         'user_id': this.UserId,
         'contact': this.contactData
       }
-      console.log(params);
+      if (!this.camposObrigatoriosDeContatoPreenchidos()) {
+        this.$q.notify({
+          message: 'É necessário preencher todos os dados obrigatórios para salvar.',
+          color: 'negative',
+          position: 'top',
+        });
+      }
 
       try {
         const result = await this.$http.post('contact/updatebyuser', params);
