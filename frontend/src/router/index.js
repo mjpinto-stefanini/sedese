@@ -25,7 +25,7 @@ const routes = [
     path: "",
     component: AuthLayout,
     children: [
-      { path: "", redirect: "signin", title: 'AASearch' },
+      { path: "", redirect: "signin", title: 'Entrar' },
       { path: "404", name: "404", component: Page404 },
       { path: "signin", name: "SignIn", component: SignInPage, meta: { title: 'Entrar' } },
       { path: "signup", name: "SignUp", component: SignUpPage, meta: { title: 'Criar conta' } },
