@@ -16,6 +16,8 @@ const SignInPage = () => import("@/pages/SignInPage.vue");
 const SignUpPage = () => import("@/pages/SignUpPage.vue");
 const ForgotPasswordPage = () => import("@/pages/ForgotPasswordPage.vue");
 const RecoverPasswordPage = () => import("@/pages/RecoverPasswordPage.vue");
+const ConfirmarEmail = () => import("@/pages/ConfirmarEmail.vue");
+
 const Page404 = () => import("@/pages/404Page.vue");
 
 const routes = [
@@ -29,6 +31,10 @@ const routes = [
       { path: "signup", name: "SignUp", component: SignUpPage },
       { path: "forgotpassword", name: "ForgotPassword", component: ForgotPasswordPage },
       { path: "recoverpassword/:token", name: "RecoverPassword", component: RecoverPasswordPage },
+      { path: "confirmar-email/:token", name: "ConfirmarEmail", component: ConfirmarEmail, props: (route) => {
+        const token = route.params.token;
+        return { token }
+      } },
     ],
   },
   {

@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Confirmation;
+use Illuminate\Support\Facades\Log;
 
 class Users extends Controller
 {
@@ -24,7 +25,7 @@ class Users extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['secondStage']]);
+        $this->middleware('auth:api', ['except' => ['secondStage', 'confirmEmail']]);
     }
 
     public function list(Request $request): JsonResponse
@@ -272,7 +273,7 @@ class Users extends Controller
         if (isset($request['professional']['representante']['label'])) {
             $representante = $request['professional']['representante']['label'];
         }
-        
+
         $representacaoTitularidade = '';
         if (isset($request['professional']['representacaoTitularidade'])) {
             $representacaoTitularidade = $request['professional']['representacaoTitularidade'];
@@ -386,7 +387,6 @@ class Users extends Controller
             $user->save();
 
             try {
-
                 $mailData = [
                     'name' => $user['name'],
                     'email' => $user['email'],
@@ -394,19 +394,20 @@ class Users extends Controller
 
                 Mail::to($user['email'])->send(new Bemvindo($mailData));
 
+                return response()->json([
+                    'status' => 'success',
+                    'type' => 'positive',
+                    'message' => 'E-mail confirmado com sucesso. Pode fechar esta janela',
+                ], Controller::HTTP_OK);
+
             } catch (\Exception $e) {
+                Log::info('email', [$e]);
                 return response()->json([
                     'status' => 'error',
                     'type' => 'negative',
                     'message' => 'Erro ao enviar e-mail de bem vindo. '.$e->getMessage(),
                 ], Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
-
-            return response()->json([
-                'status' => 'success',
-                'type' => 'positive',
-                'message' => 'E-mail confirmado com sucesso. Pode fechar esta janela',
-            ], Controller::HTTP_OK);
 
         }
         return response()->json([
@@ -420,11 +421,11 @@ class Users extends Controller
     {
         $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         $password = '';
-    
+
         for ($i = 0; $i < self::MAX_LENGHT_PASSWORD; $i++) {
             $password .= $characters[rand(0, strlen($characters) - 1)];
         }
-    
+
         return $password;
     }
 
@@ -439,13 +440,13 @@ class Users extends Controller
         // if (App::environment('local', 'development')) {
         //     return;
         // }
-    
+
         Mail::send('emails.new_password', ['password' => $newPassword], function ($message) use ($user) {
             $message->to($user->email);
             $message->subject('Nova Senha Gerada');
         });
     }
-    
+
     public function changeStatus(Request $request)
     {
         $userId = $request->input('user_id');

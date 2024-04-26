@@ -5,10 +5,9 @@
 
 <p>Olá {{$name}}, clique no link abaixo para concluir seu cadastro.</p>
 
-<a href="{{ config('app.asset_url') }}" class="btn btn-primary">Cadastro</a>
+<a href="{{ config('app.client_url') }}" class="btn btn-primary">Cadastro</a>
 
 <p>Obrigado,<br>
 {{ config('app.name') }}</p>
 
 @endcomponent
-
