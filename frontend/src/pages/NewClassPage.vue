@@ -159,7 +159,7 @@ export default {
 
 			try {
 				const user_id = JSON.parse(localStorage.getItem("user")).id;
-				const { status, data } = await this.$http.patch(
+				const { status } = await this.$http.patch(
 					`users/${user_id}/secondstage`,
 					values
 				);
@@ -169,7 +169,6 @@ export default {
 						color: "positive",
 						position: "top",
 					});
-					console.log(data);
 				}
 			}   catch (error) {
                 this.$q.notify({
@@ -184,7 +183,7 @@ export default {
 		personalData: {
 			handler() {
 				// this.setData();
-				console.log("personalData");
+				//console.log("personalData");
 			},
 			deep: true,
 		},

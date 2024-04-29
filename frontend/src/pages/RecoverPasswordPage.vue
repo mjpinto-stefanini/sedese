@@ -104,7 +104,6 @@ export default {
     },
     created() {
         this.form.token = this.$route.params.token;
-        console.log(this.form.token);
     }
 };
 </script>

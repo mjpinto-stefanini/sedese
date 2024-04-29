@@ -201,7 +201,7 @@ class Users extends Controller
             'deficiency' => $request['personal']['deficiency'],
             'deficiency_others' => $request['personal']['deficiencyOthers'],
             'deficiency_structure' => $request['personal']['deficiencyStructure'],
-            'birthday' => date('Y-m-d', strtotime($request['personal']['birthday'])),
+            //'birthday' => date('Y-m-d', strtotime($request['personal']['birthday'])),
         ];
 
         $personalResult = Personal::query()->create($personalData);
@@ -335,6 +335,10 @@ class Users extends Controller
             'beneficios_municipal' => $request['professional']['beneficiosMunicipal'] ?? '',
         ];
 
+        User::find($user['id'])->update([
+            'birthday' => date('Y-m-d', strtotime(date('Y-m-d', strtotime($request['personal']['birthday']))))
+        ]);
+
         $professionalResult = Professional::query()->create($professionalData);
         if (!$professionalResult) {
             $errormsg = [
@@ -457,7 +461,12 @@ class Users extends Controller
     {
         $userId = $request->input('user_id');
         $perfil = intval($request->input('perfil'));
-        UserPerfilStatus::where('user_id', $userId)->update(['tipo_perfil_id' => $perfil]);
+
+        $updateDataUser['tipo_perfil_id'] = $perfil;
+        if ($perfil === 1) {
+            $updateDataUser['status'] = 3;
+        }
+        UserPerfilStatus::where('user_id', $userId)->update($updateDataUser);
         return response()->json([
             'status' => 'success',
             'type' => 'positive',

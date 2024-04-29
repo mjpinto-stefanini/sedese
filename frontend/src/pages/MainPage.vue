@@ -141,37 +141,40 @@ export default {
             };
 
             try {
+				this.$q.loading.show({
+					message: 'Enviando...',
+					backgroundColor: 'indigo',
+                });
+
                 const user = JSON.parse(localStorage.getItem("user"));
-                console.log(user);
                 const result = await this.$http.patch(
                     `users/${user.id}/secondstage`,
                     values
                 );
                 if (result.status === 201 || result.status === 200) {
                     // vai fazer o login
+                    this.$q.notify({
+                        message: "Usuario registrado, em instantes você receberá um email com as instruções para ativar sua conta",
+                        type: "positive",
+                        position: "top",
+                    }, 3000);
+
                     if (user.service === '2' || user.service === 2)  {
-                        this.$q.notify({
-                            message: "Usuario registrado, em instantes você receberá um email com as instruções para ativar sua conta",
-                            type: "positive",
-                            position: "top",
-                        }, 3000);
                         this.$router.push("/dashboard");
                     }
                     if (user.service === '1' || user.service === 1) {
-                        this.$q.notify({
-                            message: "Usuario registrado, em instantes você receberá um email com as instruções para ativar sua conta",
-                            color: "positive",
-                            position: "top",
-                        }, 3000);
                         this.$router.push({ name: "SignIn" });
                     }
+
+					this.$q.loading.hide();
                 }
             } catch (error) {
-                 this.$q.notify({
+                this.$q.notify({
                     message: "Falha ao registrar",
                     color: "negative",
                     position: "top",
                 });
+				this.$q.loading.hide();
             }
         },
         async checkAllInputs(formFields) {

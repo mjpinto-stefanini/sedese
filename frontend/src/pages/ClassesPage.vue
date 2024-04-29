@@ -264,7 +264,6 @@ export default {
 	methods: {
 		async onSave() {
 			// COLOCAR AQUI O METODO DE SALVAR
-			console.log("salvar");
 			const data = {
 				is_active: this.form.is_active,
 				is_admin: this.form.is_admin,
@@ -289,7 +288,7 @@ export default {
 					this.dialog = false;
 				}
 			} catch (error) {
-				console.log(error);
+				//console.log(error);
 			}
 		},
 		openModal(props) {
@@ -299,8 +298,8 @@ export default {
 			this.form.type_admin = this.selectedUser.type_admin;
 			this.user = JSON.parse(localStorage.getItem("user"));
 			this.dialog = true;
-			console.log(this.user);
-			console.log(this.selectedUser);
+			//console.log(this.user);
+			//console.log(this.selectedUser);
 		},
 		async getUsers() {
 			try {
@@ -330,7 +329,7 @@ export default {
 					// this.rows = data;
 				}
 			} catch (error) {
-				console.log(error);
+				//console.log(error);
 			}
 		},
 	},
