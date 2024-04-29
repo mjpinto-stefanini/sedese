@@ -196,7 +196,6 @@ export default {
 					this.$q.loading.hide();
 				}
 			} catch (error) {
-				console.log(error);
 				this.$q.loading.hide();
 			}
 		},
