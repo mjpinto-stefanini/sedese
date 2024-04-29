@@ -500,7 +500,7 @@ export default {
         cpf: this.consulta.cpf,
         email: this.consulta.email,
       };
-      console.log(queryParams);
+
       try {
         const { data, status } = await this.$http.get("users", { params: queryParams });
         if (status === 200) {

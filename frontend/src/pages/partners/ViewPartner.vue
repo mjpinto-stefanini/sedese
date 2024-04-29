@@ -25,7 +25,7 @@
                         <font-awesome-icon :icon="['far', 'user']" />
                       </template>
                     </q-input>
-                    
+
                   </span>
                 </div>
                 <div class="col-12" style="margin-left: 35px; margin-right: 25px;">
@@ -105,7 +105,7 @@
                 <div v-else>
                   <div class="text-subtitle2">Dados do Responsavel Legal:</div>
                   <q-btn class="bg-red text-white btn-sm" @click="MudarResponsavel">Mudar Responsavel Legal</q-btn>
-                  
+
                   <q-input outlined v-model="dadosParceiro.nomeResponsavel" label="Nome do Responsavel Legal" style="margin-top: 10px; margin-left: 35px; margin-right: 25px;"/>
                   <q-input outlined v-model="dadosParceiro.cpf" label="CPF do Responsavel" style="margin-top: 10px; margin-left: 35px; margin-right: 25px;"/>
                   <q-input outlined v-model="dadosParceiro.email" label="E-mail do responsavel" style="margin-top: 10px; margin-left: 35px; margin-right: 25px;" />
@@ -114,10 +114,10 @@
                 </div>
                 <hr class="border-grey" style="margin: 25px 0;"/>
                 <h6 style="margin: 15px;">Ações</h6>
-                <q-toggle 
-                  color="green" 
-                  v-model="parceiroStatus" 
-                  :label="parceiroStatusLabel" 
+                <q-toggle
+                  color="green"
+                  v-model="parceiroStatus"
+                  :label="parceiroStatusLabel"
                   @click="atualizarStatus" />
                 <div v-if="editarDadosParceiro === false">
                   <q-btn outline style="margin-top:-55px; margin-left: 200px;" @click="novoColaborador = true">Novo Colaborador</q-btn>
@@ -151,13 +151,13 @@
           <div class="col-auto">
             <q-table flat bordered
               virtual-scroll
-              :columns="columns" 
+              :columns="columns"
               :rows="colabRows"
               v-model:pagination="pagination"
               :rows-per-page-options="[0]"
             >
               <template v-slot:body-cell-status="props">
-                <q-td :props="props">                                    
+                <q-td :props="props">
                   <div v-if="props.row.status === '1'" style="float: left;">
                     <a href="#" @click="mudarStatusColaborador(props.row.uuid)">
                       <q-badge color="green" label="Ativo" style="margin: 0 5px;" />
@@ -182,7 +182,7 @@
                     </q-tooltip>
                   </q-btn>
                   <!-- <q-btn outline class="bg-blue text-white"
-                    @click="alterarDadosColab = true" 
+                    @click="alterarDadosColab = true"
                     style="margin: 0 5px;">
                     <font-awesome-icon :icon="['far', 'user']" />
                     <q-tooltip
@@ -201,7 +201,7 @@
                         {{ props.row }}
                       </q-card-section>
                       <q-separator />
-                      <q-card-section>  
+                      <q-card-section>
                         <div class="row" style="margin: 5px 0;">
                           <div class="col-md-12">
                             <q-input outlined v-model="dadoColaborador.nome" label="Nome do Colaborador" :rules="[isRequired]"/>
@@ -283,9 +283,9 @@ import Swal from 'sweetalert2'
 
 const columns = [
   { name: 'status', label: 'Status', field: 'status', sortable: true },
-  { 
+  {
     name: 'name', required: true, label: 'Nome do Colaborador', align: 'left',
-    field: row => row.name, format: val => `${val}`, sortable: true 
+    field: row => row.name, format: val => `${val}`, sortable: true
   },
   { name: 'email', align: 'center', label: 'email', field: 'email', sortable: true },
   { name: 'id', label: 'ações', field: 'id' },
@@ -463,7 +463,6 @@ export default {
           position: "top",
         });
         // adicionando na tabela
-        console.log(result);
         this.colabRows = result.data.map((colab) => ({
           status: colab.status,
           name: colab.nome,
@@ -578,7 +577,7 @@ export default {
         }
       });
     },
-    async mudarStatusColaborador(id) {      
+    async mudarStatusColaborador(id) {
       try {
         Swal.fire({
           title: "Mudar Status do Colaborador!",
@@ -651,7 +650,7 @@ export default {
       return true;
     },
     voltarPagina() {
-      // limpando os dados dos colaboradores 
+      // limpando os dados dos colaboradores
       // para garantir que não haja cache
       this.colabRows = [];
       // voltando a pagina de parceiros
@@ -663,7 +662,7 @@ export default {
     this.getPartnerData();
   },
   computed: {
-    
+
   },
 };
 </script>

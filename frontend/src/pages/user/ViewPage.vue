@@ -25,7 +25,7 @@
                 </q-btn>
               </div>
               <div>
-                <q-chip size="sm" 
+                <q-chip size="sm"
                   :text-color="chipTextColor"
                   :label="chipLabel"
                   :color="chipColor"
@@ -83,8 +83,8 @@
                   <span class="text-grey">Profissão</span> {{ personal.profission_others }}
                 </div>
                 <div class="col-sm-12 q-pa-xs" v-if="personal.deficiency">
-                  <span class="text-grey">Deficiência:</span>  
-                  <span v-if="personal.deficiency !== 'Outros'"> {{ personal.deficiency }} </span> 
+                  <span class="text-grey">Deficiência:</span>
+                  <span v-if="personal.deficiency !== 'Outros'"> {{ personal.deficiency }} </span>
                   <span v-if="personal.deficiency === 'Outros'"> {{ personal.deficiency_others }}</span>
                 </div>
                 <div class="col-sm-12 q-pa-xs" v-if="personal.deficiency_structure">
@@ -119,11 +119,11 @@
             </q-card-actions>
             <q-card-actions>
               <strong style="margin: 0px 5px;">Tipo de perfil Administrativo:</strong>
-              <q-select 
-                outlined 
+              <q-select
+                outlined
                 :options="tipoPerfilAdminOptions"
-                v-model="user.type_admin" 
-                @update:model-value="changeTipoPerfilAdminUsuario($event)" 
+                v-model="user.type_admin"
+                @update:model-value="changeTipoPerfilAdminUsuario($event)"
                 style="width: 98%; margin: 0px 5px;"/>
             </q-card-actions>
           </q-card>
@@ -722,7 +722,7 @@
                   </div>
                   <div class="col-12" v-if="professionalData.superintendencia === 'Superintendência de Proteção Social Básica'">
                     <span class="text-grey">Diretorias:</span> {{professionalData.protecao_social_basica}}
-                    
+
                   </div>
                   <div class="col-12" v-if="professionalData.superintendencia === 'Superintendência de Proteção Social Especial'">
                     <span class="text-grey">Diretorias:</span> {{professionalData.protecao_social_especial_estadual}}
@@ -746,9 +746,9 @@
                     <div class="col-12" v-if="professionalData.representacao_area_representada === 'Outros'">
                       <span class="text-grey">Área Representada Outros:</span> {{professionalData.outros_representacao_area_representada}}
                     </div>
-                  </div>    
+                  </div>
                   <div class="col-12" v-if="professionalData.seguimento_governo === 'Outro'">
-                    <span class="text-grey">Representação:</span> {{professionalData.ceas_segmento}}    
+                    <span class="text-grey">Representação:</span> {{professionalData.ceas_segmento}}
                   </div>
                   <div class="col-12" v-if="professionalData.ceas_representacao === 'Sociedade Civil'">
                     <span class="text-grey">Representação:</span> {{professionalData.ceas_segmento}}
@@ -777,7 +777,7 @@
                   <!-- Opções de input dependendo do valor do campo Orgão -->
                   <div class="col-12" v-if="professionalData.funcao === 'Conselheiro'">
                     <span class="text-grey">Segmento:</span> {{professionalData.representante}}
-                  </div>                    
+                  </div>
                   <div class="col-12" v-if="professionalData.orgao === 'Secretaria Municipal de Assistência Social'">
                     <span class="text-grey">Área de atuação:</span> {{professionalData.area_de_atuacao}}
                     <!-- Opções de input dependendo do valor do campo Área de atuação -->
@@ -816,7 +816,7 @@
                   </div>
 
                   <div class="col-12" v-if="professionalData.area_de_atuacao === 'Proteção Social Especial'">
-                    <span class="text-grey">Nível de Complexidade:</span> {{professionalData.protecao_social_especial_municipal}}      
+                    <span class="text-grey">Nível de Complexidade:</span> {{professionalData.protecao_social_especial_municipal}}
                   </div>
                   <!-- Opções de input dependendo do valor do campo Proteção Social Especial -->
                   <div class="col-12" v-if="professionalData.protecao_social_especial_municipal === 'Média Complexidade'">
@@ -910,7 +910,7 @@
                 <q-card-section>
                   <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12">
-                      <q-select 
+                      <q-select
                         outlined
                         v-model="user.service"
                         :options="services"
@@ -941,7 +941,7 @@
                           </q-item>
                         </template>
                       </q-select>
-                      
+
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12" v-if="user.service === '2'">
                       <q-select
@@ -1125,14 +1125,14 @@
                           v-model="professional.ceas_representacao"
                           :options="funcaoDesempenhadaSecratariaList"
                           label="Segmento*"
-                          name="segmento"    
+                          name="segmento"
                           for="segmento"
                           outlined
                           :rules="[isRequired]" />
                       </div>
                       <div class="col-12" v-if="professional.ceas_representacao === 'Governamental'">
                         <div class="col-12">
-                          <q-select 
+                          <q-select
                             v-model="professional.seguimento_governo"
                             :options="representacaoRepresentacaoList"
                             label="Representação*"
@@ -1161,7 +1161,7 @@
                             outlined
                             :rules="[isRequired]" />
                         </div>
-                      </div>    
+                      </div>
                       <div class="col-12" v-if="professional.seguimento_governo === 'Outro'">
                         <q-input
                           v-model="professional.ceas_segmento"
@@ -1257,10 +1257,10 @@
                           for="representante"
                           outlined
                           :rules="[isRequired]" />
-                      </div>                    
+                      </div>
 
                       <div class="col-12" v-if="professional.orgao === 'Secretaria Municipal de Assistência Social'">
-                        <q-select 
+                        <q-select
                           v-model="professional.area_de_atuacao"
                           :options="areadeAtuacaoList1"
                           label="Área de atuação*"
@@ -2200,9 +2200,8 @@ export default {
     },
     async getUserPersonal() {
       try {
-        const { data, status } = await this.apiUser(this.UserId, 'personal');
+        const { data } = await this.apiUser(this.UserId, 'personal');
         if (data) { this.personal = data; }
-        if (status !== 200) { console.warn('Error personal'); }
       } catch (error) {
         this.$q.notify({
           message: error.message,
@@ -2213,12 +2212,11 @@ export default {
     },
     async getUserContact() {
       try {
-        const { data, status } = await this.apiUser(this.UserId, 'contact');
-        if (data) { 
-          this.contact = data; 
+        const { data } = await this.apiUser(this.UserId, 'contact');
+        if (data) {
+          this.contact = data;
           this.contactData = data;
         }
-        if (status !== 200) { console.warn('Error contact'); }
       } catch (error) {
         this.$q.notify({
           message: error.message,
@@ -2229,12 +2227,11 @@ export default {
     },
     async getUserAddress() {
       try {
-        const { data, status } = await this.apiUser(this.UserId, 'address');
-        if (data) { 
-          this.address = data; 
+        const { data } = await this.apiUser(this.UserId, 'address');
+        if (data) {
+          this.address = data;
           this.addressData = data;
         }
-        if (status !== 200) { console.warn('Error address'); }
       } catch (error) {
         this.$q.notify({
           message: error.message,
@@ -2245,12 +2242,11 @@ export default {
     },
     async getUserProfessionals() {
       try {
-        const { data, status } = await this.apiUser(this.UserId, 'professionals');
-        if (data) { 
+        const { data } = await this.apiUser(this.UserId, 'professionals');
+        if (data) {
           this.professional = data;
           this.professionalData = data;
         }
-        if (status !== 200) { console.warn('Error professional'); }
       } catch (error) {
         this.$q.notify({
           message: error.message,
@@ -2261,9 +2257,9 @@ export default {
     },
     async getSecretary(id) {
       try {
-        const { data, status } = await this.apiGlobal(`ambitoatuacao/show/${id}`);
+        const { data } = await this.apiGlobal(`ambitoatuacao/show/${id}`);
         if (data) { this.user.secretaria = data.nome; }
-        if (status !== 200) { console.warn('Error secretaria'); }
+        //if (status !== 200) { console.warn('Error secretaria'); }
       } catch (error) {
         this.$q.notify({
           message: error.response.data.message,
@@ -2371,7 +2367,7 @@ export default {
         'user_id': this.UserId,
         'contact': this.contactData
       }
-      console.log(params);
+      //console.log(params);
 
       try {
         const result = await this.$http.post('contact/updatebyuser', params);
@@ -2396,7 +2392,7 @@ export default {
         'birthday': this.user.birthday,
         'personal': this.personal
       };
-  
+
       try {
         const result =  await this.$http.post('personal/updatebyuser', params);
         if (result.status === 200) {
@@ -2437,7 +2433,7 @@ export default {
           color: "negative",
           position: "top",
         });
-        
+
       }
     },
     async resetarSenhaUsuario() {
@@ -2585,7 +2581,7 @@ export default {
     },
     onlyLetter(e) {
       let char = String.fromCharCode(e.keyCode); // Get the character
-      if(/^[A-Za-z]+$/.test(char)) return true; // Match with regex 
+      if(/^[A-Za-z]+$/.test(char)) return true; // Match with regex
       else e.preventDefault(); // If not match, don't add to input text
     },
     isNumber(value) {
@@ -2593,7 +2589,7 @@ export default {
     },
     filterFn(val, update) {
       if (val === "") {
-        update(() => { 
+        update(() => {
           this.filterSecretaries = this.allSecretaries;
         });
         return;
@@ -2670,7 +2666,7 @@ export default {
     isEmail(value) {
       return ((value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido");
     },
-  },  
+  },
   created() {
     this.getUserData();
     this.getMunicipios();

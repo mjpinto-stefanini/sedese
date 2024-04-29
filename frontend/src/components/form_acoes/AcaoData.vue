@@ -249,7 +249,6 @@ export default {
                   `tipologias`
                 );
                 if (status === 200) {
-                    console.log('>>>', data, status);
                     this.allTipologia = data.map(ele => {
                         return {
                             ...ele,
@@ -260,7 +259,7 @@ export default {
                     this.tipologiaFiltered = this.allTipologia;
                 }
             } catch (error) {
-                console.log(error);
+                //console.log(error);
             }
         },
     },

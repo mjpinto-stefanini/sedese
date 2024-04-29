@@ -268,6 +268,11 @@ export default {
 
         async onRegister() {
             try {
+				this.$q.loading.show({
+					message: 'Enviando...',
+					backgroundColor: 'indigo',
+                });
+
                 const { status, message } = await this.$http.post("auth/register", this.form);
                 if (status === 422) {
                     this.$q.notify({
@@ -280,7 +285,8 @@ export default {
                 if (status === 200 || status === 201) {
                     this.$q.notify({
                         progress: true,
-                        message: "Usuario registrado, em instantes você receberá um email com as instruções para ativar sua conta",
+                        //message: "Usuario registrado, em instantes você receberá um email com as instruções para ativar sua conta",
+                        message: "Usuario registrado!",
                         type: "positive",
                     }, 5000);
                     const { data, status } = await this.$http.post("auth/login", this.form);
@@ -288,10 +294,10 @@ export default {
                         // antes de continuar com os dados cadastrais, é setado o usuárioe sua autenticação
                         localStorage.setItem("token", data.authorization.token);
                         localStorage.setItem("user", JSON.stringify(data.user));
-                        //this.$router.push({ name: "Main" });
-                        setTimeout(() => this.$router.push({ path: 'Main' }), 5000);
+                        this.$router.push({ name: "Main" });
                     }
                 }
+                this.$q.loading.hide();
             } catch (error) {
                 this.$q.notify({
                     message: error.response.data.message,

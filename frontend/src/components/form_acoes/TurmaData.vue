@@ -322,7 +322,6 @@ export  default {
         return "CEP inválido";
       },
       isDate(value) {
-        console.log(value);
         return (
             (value && /^[0-9]{2}[/]{1}[0-9]{2}[/]{1}[0-9]{4}$/.test(value)) || "Somente números"
         );

@@ -79,11 +79,9 @@ export default {
         async getAmbitoAtuacao() {
             try {
                 const { data, status } = await this.$http.get(
-                  `ambitoatuacao/regiaoadm/${this.form_polo?.regiao_administrativa.value === 1 ? '1' : '2'}`
+                    `ambitoatuacao/regiaoadm/${this.form_polo?.regiao_administrativa.value === 1 ? '1' : '2'}`
                 );
                 if (status === 200) {
-                    console.log('>>>', data, status);
-
                     this.allAmbitoAtuacao = data.map(ele => {
                         return {
                             ...ele,
@@ -94,7 +92,7 @@ export default {
                     this.AmbitoAtuacaoFiltered = this.allAmbitoAtuacao;
                 }
             } catch (error) {
-                console.log(error);
+                //console.log(error);
             }
         },
     },

@@ -29,7 +29,7 @@ export default {
         {
             try {
                 const { status } = await this.$http.get(`users/confirm-email/${token}`);
-                console.log('status', status)
+
                 if (status === 200 || status === 204) {
                     this.resultado = 'E-mail confirmado com sucesso!'
                     return;
