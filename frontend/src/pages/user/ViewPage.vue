@@ -2225,7 +2225,6 @@ export default {
       try {
         const { data, status } = await this.apiUser(this.UserId, 'personal');
         if (data) { this.personal = data; }
-        if (status !== 200) { console.warn('Error personal'); }
       } catch (error) {
         this.$q.notify({
           message: error.message,
@@ -2241,7 +2240,6 @@ export default {
           this.contact = data; 
           this.contactData = data;
         }
-        if (status !== 200) { console.warn('Error contact'); }
       } catch (error) {
         this.$q.notify({
           message: error.message,
@@ -2257,7 +2255,6 @@ export default {
           this.address = data; 
           this.addressData = data;
         }
-        if (status !== 200) { console.warn('Error address'); }
       } catch (error) {
         this.$q.notify({
           message: error.message,
@@ -2273,7 +2270,6 @@ export default {
           this.professional = data;
           this.professionalData = data;
         }
-        if (status !== 200) { console.warn('Error professional'); }
       } catch (error) {
         this.$q.notify({
           message: error.message,
@@ -2286,7 +2282,6 @@ export default {
       try {
         const { data, status } = await this.apiGlobal(`ambitoatuacao/show/${id}`);
         if (data) { this.user.secretaria = data.nome; }
-        if (status !== 200) { console.warn('Error secretaria'); }
       } catch (error) {
         this.$q.notify({
           message: error.response.data.message,
@@ -2471,7 +2466,6 @@ export default {
       return socialNameFilled && deficiencyFilled && genderIdentityOthersFilled && profissionFilled && personalFieldsFilled;
     },
     async salvarDadosPessoais() {
-      console.log(this.user.social_name);
       if (!this.camposObrigatoriosDePessoalPreenchidos()) {
         this.$q.notify({
           message: 'É necessário preencher todos os dados obrigatórios para salvar.',
