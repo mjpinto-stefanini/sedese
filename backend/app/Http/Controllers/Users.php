@@ -457,7 +457,6 @@ class Users extends Controller
     {
         $userId = $request->input('user_id');
         $perfil = intval($request->input('perfil'));
-        //$userProfile = UserPerfilStatus::where('user_id', $userId);
 
         $updateDataUser['tipo_perfil_id'] = $perfil;
         if ($perfil === 1) {
