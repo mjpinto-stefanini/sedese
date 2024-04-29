@@ -197,7 +197,7 @@ class AuthController extends Controller
             'email' => $user->email,
             'token' => $user->remember_token,
         ];
-        Mail::to($user->email)->send(new Confirmation($mailData));
+        //Mail::to($user->email)->send(new Confirmation($mailData));
         // criando o tipo de usuário por perfil deixando ele ativo
         UserPerfilStatus::create([
             'user_id' => $user->id,
