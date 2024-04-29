@@ -233,7 +233,7 @@
                       </template>
                     </q-select>
                   </div>
-                  <div class="col-lg-4 col-md-8 col-sm-12 q-pl-sm" v-if="activeGenderIdentityOthers">
+                  <div class="col-12" v-if="user.gender_identity === 'Outros'">
                     <q-input
                       v-model="user.gender_identity_others"
                       name="genderIdentityOthers"
@@ -313,7 +313,7 @@
                     :rules="[isRequired]"
                   />
                 </div>
-                <div class="col-12" v-if="user.profession === 'Outros'">
+                <div class="col-12" v-if="user.profission === 'Outros'">
                   <q-input
                     v-model="user.profission_others"
                     placeholder="Informe a outra profissão"
@@ -386,7 +386,14 @@
             </q-card-section>
             <q-card-actions>
               <q-btn outlined label="Cancelar" color="red" @click="limparFiltrosPagina" v-close-popup style="float: left !important; margin-left:10px;" />
-              <q-btn outlined label="Salvar" color="green" @click="salvarDadosPessoais" v-close-popup />
+              <q-btn 
+                outlined 
+                label="Salvar" 
+                color="green" 
+                @click="salvarDadosPessoais" 
+                v-close-popup
+                :disabled="!camposObrigatoriosDePessoalPreenchidos()"
+                />
             </q-card-actions>
           </q-card>
         </q-dialog>
@@ -1669,8 +1676,8 @@ export default {
       UserId: this.$route.params.id,
       user: {
         name: "",
-        dataNascimento:"",
-        socialName: "",
+        birthday:"",
+        social_name: "",
         genderIdentity: "",
         genderIdentityOthers: "",
         rg: "",
@@ -2454,7 +2461,24 @@ export default {
         });
       }
     },
+    camposObrigatoriosDePessoalPreenchidos() {
+      const socialNameFilled = this.checkSocialName ? Boolean(this.user.social_name) : true;      
+      const deficiencyFilled = this.isDeficiency ? (Boolean(this.user.deficiency) && (!this.isDeficiencyStructure || Boolean(this.user.deficiency_structure))) : true;
+      const genderIdentityOthersFilled = this.user.gender_identity === 'Outros' ? Boolean(this.user.gender_identity_others) : true;
+      const profissionFilled = this.user.profission === 'Outros' ? Boolean(this.user.profission_others) : true;
+      const personalFieldsFilled = Boolean(this.user.name) && Boolean(this.user.birthday) && Boolean(this.user.cpf) && Boolean(this.user.education);
+
+      return socialNameFilled && deficiencyFilled && genderIdentityOthersFilled && profissionFilled && personalFieldsFilled;
+    },
     async salvarDadosPessoais() {
+      console.log(this.user.social_name);
+      if (!this.camposObrigatoriosDePessoalPreenchidos()) {
+        this.$q.notify({
+          message: 'É necessário preencher todos os dados obrigatórios para salvar.',
+          color: 'negative',
+          position: 'top',
+        });
+      }
       let params = {
         'name': this.user.name,
         'birthday': this.user.birthday,
