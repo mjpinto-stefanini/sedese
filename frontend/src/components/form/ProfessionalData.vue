@@ -160,7 +160,7 @@
                             v-model="form.ceas_representacao"
                             :options="funcaoDesempenhadaSecratariaList"
                             label="Segmento*"
-                            name="segmento"    
+                            name="segmento"
                             for="segmento"
                             outlined
                             :rules="[isRequired]"
@@ -169,7 +169,7 @@
                     </div>
                     <div class="col-12" v-if="form.ceas_representacao === 'Governamental'">
                         <div class="col-12">
-                            <q-select 
+                            <q-select
                                 v-model="form.seguimento_governo"
                                 :options="representacaoRepresentacaoList"
                                 label="Representação*"
@@ -204,7 +204,7 @@
                             />
                         </div>
                     </div>
-                        
+
                     <div class="col-12" v-if="form.seguimento_governo === 'Outro'">
                         <q-input
                             v-model="form.ceas_segmento"
@@ -245,7 +245,7 @@
                             :rules="[isRequired]"
                         />
                     </div>
-                    
+
                     <div class="col-12" v-if="form.funcao === 'Conselheiro'">
                         <q-select
                             v-model="form.ceas_titularidade"
@@ -320,7 +320,7 @@
                             outlined
                             :rules="[isRequired]"
                         />
-                    </div>                    
+                    </div>
 
                     <div class="col-12" v-if="form.orgao.value === 1">
                         <q-select
@@ -333,7 +333,7 @@
                             clearable
                             :rules="[isRequired]"
                         />
-                        
+
                         <!-- Opções de input dependendo do valor do campo Área de atuação -->
                         <div class="col-12" v-if="form.areadeAtuacao.value === 1">
                             <q-select
@@ -578,7 +578,7 @@
                     />
                 </div>
 
-                <div class="col-12" v-if="form.vinculoEmpregaticio === 'Outro'">
+                <div class="col-12" v-if="form.vinculoEmpregaticio === 'Outro' && form.funcao === 'Secretaria Executiva'">
                     <q-input
                         v-model="form.vinculoEmpregaticioOutro"
                         label="Informe qual é o seu vínculo empregatício*"
@@ -608,7 +608,7 @@
                             outlined
                             :rules="[isRequired]"
                         />
-                    
+
                     </div>
                     <div class="col-12" v-else>
                         <q-select
@@ -620,7 +620,7 @@
                             outlined
                             :rules="[isRequired]"
                         />
-                    
+
                     </div>
                     <div class="col-12">
                         <q-select
@@ -998,7 +998,7 @@ export default {
             representacaoConselhoCMASList: [
                 {value: 1, label: "Conselho Estadual de Assistência Social (CEAS)"},
                 {value: 2, label: "Conselho Municipal de Assistência Social (CMAS)"},
-                                
+
             ],
             representacaoConselhoList: [
                 {value: 1, label: "Conselho Estadual de Assistência Social (CEAS)"},
