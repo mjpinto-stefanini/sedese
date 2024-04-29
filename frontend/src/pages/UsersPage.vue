@@ -127,41 +127,45 @@
               </q-select>
             </div>
 
-            <div class="q-pa-md">
-              <q-select
-                v-model="consulta.ambitoAtuacao"
-                :options="ambitoAtuacaoOptions"
-                outlined
-                lazy-rules
-                label="Ambito Atuação">
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      &nbsp;
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
+            <div>
+              <div class="q-pa-md">
+                <q-select
+                  v-model="consulta.ambitoAtuacao"
+                  :options="ambitoAtuacaoOptions"
+                  outlined
+                  lazy-rules
+                  label="Ambito Atuação">
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        &nbsp;
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
+              </div>
 
-            <div class="q-pa-md">
-              <q-select
-                outlined
-                v-model="consulta.lotacao"
-                :options="filterSecretaries"
-                label="Lotação"
-                @filter="filterFn"
-                lazy-rules
-                use-input
-                input-debounce="0">
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      Sem resultados!
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
+              <div class="q-pa-md">
+                <div v-if="consulta.ambitoAtuacao">
+                  <q-select
+                    outlined
+                    v-model="consulta.lotacao"
+                    :options="filterSecretaries"
+                    :label="ambitoLabel"
+                    @filter="filterFn"
+                    lazy-rules
+                    use-input
+                    input-debounce="0">
+                    <template v-slot:no-option>
+                      <q-item>
+                        <q-item-section class="text-grey">
+                          Sem resultados!
+                        </q-item-section>
+                      </q-item>
+                    </template>
+                  </q-select>
+                </div>
+              </div>
             </div>
 
           </q-card-section>
@@ -400,6 +404,16 @@ export default {
         { value: 4, label: 'RECUSADO', color: 'red' },
       ];
     },
+    ambitoLabel() {
+      switch (parseInt(this.consulta.ambitoAtuacao.value)) {
+        case 1:
+          return 'Estadual';
+        case 2:
+          return 'Municipal';
+        default:
+          return 'Selecione o âmbito de atuação';
+      }
+    },
   },
   methods: {
     async onSave() {
@@ -541,6 +555,9 @@ export default {
     },
     async getSecretaries() {
       try {
+        if (!this.consulta.ambitoAtuacao.value) {
+          return null;
+        }
         const { data, status } = await this.$http.get(
           `ambitoatuacao/regiaoadm/${
               this.consulta?.ambitoAtuacao.value === 1 ? "1" : "2"
@@ -593,12 +610,10 @@ export default {
     }
   },
   watch: {
-    "consulta.ambitoAtuacao": {
-      handler() {
-        this.getSecretaries();
-      },
-      deep: true,
-    },
+    'consulta.ambitoAtuacao'(newValue) {
+      this.consulta.lotacao = null;
+      this.getSecretaries();
+    }
   },
 };
 </script>
