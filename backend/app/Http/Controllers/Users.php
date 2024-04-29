@@ -457,7 +457,13 @@ class Users extends Controller
     {
         $userId = $request->input('user_id');
         $perfil = intval($request->input('perfil'));
-        UserPerfilStatus::where('user_id', $userId)->update(['tipo_perfil_id' => $perfil]);
+        //$userProfile = UserPerfilStatus::where('user_id', $userId);
+
+        $updateDataUser['tipo_perfil_id'] = $perfil;
+        if ($perfil === 1) {
+            $updateDataUser['status'] = 3;
+        }
+        UserPerfilStatus::where('user_id', $userId)->update($updateDataUser);
         return response()->json([
             'status' => 'success',
             'type' => 'positive',
