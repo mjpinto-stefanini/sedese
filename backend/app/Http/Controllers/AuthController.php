@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Mail\NewPasswordConfirmation;
 use App\Mail\RecoverPassword;
+use App\Models\Professional;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +13,7 @@ use App\Models\User;
 use App\Models\TipoPerfil;
 use App\Models\UserPerfilStatus;
 use App\Mail\Confirmation;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Password;
@@ -32,6 +34,14 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
         $user = User::where('email', $credentials['email'])->first();
 
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'type' => 'negative',
+                'message' => 'Usuário não encontrado. Por favor, verifique o e-email se está correto.'
+            ], self::HTTP_NOT_FOUND);
+        }
+
         // criando um token caso o usuário não tenha um
         if (!$user->remember_token){
             $user->update([
@@ -39,19 +49,12 @@ class AuthController extends Controller
             ]);
         }
 
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'type' => 'negative',
-                'message' => 'Usuário não encontrado. Por favor, verifique o e-email se está correto.'
-            ], self::HTTP_METHOD_NOT_ALLOWED);
-        }
         if ($user->is_active === 0 && !isset($request->from)) {
             return response()->json([
                 'status' => 'error',
                 'type' => 'negative',
                 'message' => 'Seu e-mail não foi confirmado. Verifique a caixa de entrada ou spam, do e-mail cadastrado. Caso não tenha recebido, entre em contato conosco, através do e-mail “dgtep@social.mg.gov.br“.'
-            ], self::HTTP_METHOD_NOT_ALLOWED);
+            ], self::HTTP_UNAUTHORIZED);
         }
 
         $userPerfilStatus = UserPerfilStatus::where('user_id', $user->id)->first();
@@ -61,7 +64,19 @@ class AuthController extends Controller
                     'status' => 'error',
                     'type' => 'negative',
                     'message' => 'Falha ao verificar seu Perfil. Entre em contato conosco, através do e-mail “dgtep@social.mg.gov.br“.'
-                ], self::HTTP_METHOD_NOT_ALLOWED);
+                ], self::HTTP_NOT_FOUND);
+            }
+        }
+
+        $userProfessional = Professional::where('user_id', $user->id)->first();
+
+        if (!is_null($userProfessional) && isset($userProfessional->lotacao) && $userPerfilStatus->tipo_perfil_id === 3 && $userPerfilStatus->status === 2 || $userPerfilStatus->status === 3) {
+            if ($userProfessional->lotacao == 'Subsecretaria de Assistência Social' || $userProfessional->lotacao == 'Diretoria Regional de Desenvolvimento Social') {
+                return response()->json([
+                    'status' => 'info',
+                    'type' => 'info',
+                    'message' => 'Seu cadastro está pendente de confirmação. Quando for aprovado, você receberá um e-mail'
+                ], self::HTTP_UNAUTHORIZED);
             }
         }
 
@@ -78,7 +93,7 @@ class AuthController extends Controller
                 'status' => 'error',
                 'type' => 'negative',
                 'message' => $statusMessages[$status]
-            ], self::HTTP_METHOD_NOT_ALLOWED);
+            ], self::HTTP_UNAUTHORIZED);
         }
 
         $token = Auth::attempt($credentials);

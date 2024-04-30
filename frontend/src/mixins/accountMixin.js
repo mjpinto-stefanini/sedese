@@ -13,6 +13,7 @@ export default {
       try {
         this.$q.loading.show();
         const { data, status } = await this.$http.post("auth/login", this.form);
+
         if (status === 200 || status === 201) {
           localStorage.setItem("token", data.authorization.token);
           localStorage.setItem("user", JSON.stringify(data.user));
@@ -21,6 +22,15 @@ export default {
           else this.$router.push({ name: "Main" });
         }
       } catch (error) {
+        if (error.response.status === 401 || error.response.status === 404) {
+          this.$q.notify({
+            message: error.response.data.message,
+            color: error.response.data.type,
+            position: "top",
+          });
+          return;
+        }
+
         this.$q.notify({
           message: error.response.data.message,
           color: "negative",
@@ -181,7 +191,7 @@ export default {
       }
     },
     async checkAuthenticationAndCallApi() {
-      try {        
+      try {
         if (!this.isAuthenticated() && this.$route.name !== "SignUp" && this.$route.name !== 'SignIn') {
           // Verifica se a rota atual é SignUp antes de redirecionar para SignIn
           this.$router.push({ name: 'SignIn' });
