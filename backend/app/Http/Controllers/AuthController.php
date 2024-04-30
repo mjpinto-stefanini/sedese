@@ -5,18 +5,14 @@ use App\Mail\NewPasswordConfirmation;
 use App\Mail\RecoverPassword;
 use App\Models\Professional;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use \Illuminate\Http\JsonResponse;
 use App\Models\User;
 use App\Models\TipoPerfil;
 use App\Models\UserPerfilStatus;
 use App\Mail\Confirmation;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
