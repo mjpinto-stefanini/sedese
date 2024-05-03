@@ -97,30 +97,25 @@ export default {
 	},
 	methods: {
         isEmail(value) {
-            return (
-              (value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido"
-            );
+            return ((value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido");
         },
         isCPf(value) {
-            return (
-              (value && /^[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}$/.test(value)) || "CPF deve ser válido"
-            );
+            return ((value && /^[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}$/.test(value)) || "CPF deve ser válido");
         },
         async onLogin() {
-				let response = await this.logIn();
-				if (response?.response?.status === 401) {
-						this.$q.notify({
-								type: response.response.data.type,
-								message: response.response.data.message,
-
-						})
-				}
-				if (response?.response?.is_active === 0) {
-						this.$q.notify({
-								type: 'positive',
-								message: "Usuário inativo, entre em contato com o administrador do sistema",
-						})
-				}
+			let response = await this.logIn();
+			if (response?.response?.status === 401) {
+				this.$q.notify({
+					type: response.response.data.type,
+					message: response.response.data.message,
+				})
+			}
+			if (response?.response?.is_active === 0) {
+				this.$q.notify({
+					type: 'positive',
+					message: "Usuário inativo, entre em contato com o administrador do sistema",
+				})
+			}
 		},
 	},
 	mounted() {

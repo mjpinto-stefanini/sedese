@@ -1043,7 +1043,6 @@ export default {
         },
         limparCamposCeasFuncaoDesempenhada() {
             if (this.form.funcao === 'Secretaria Executiva') {
-                // console.log('secretaria executiva');
                 this.form.ceas_representacao = '';
                 // this.form.representacaoTitularidade = '';
                 this.form.ceas_titularidade = '';
@@ -1051,7 +1050,6 @@ export default {
                 this.form.outrosRepresentacaoAreaRepresentada = '';
             }
             if (this.form.funcao === 'Conselheiro') {
-                // console.log('conselheiro');
                 this.form.ceas_representacao = '';
             }
         },
