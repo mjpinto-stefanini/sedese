@@ -457,13 +457,13 @@ export default {
     },
     computed: {
         activeProfissionOthers() {
-            return this.profession === "Outros";
+            return this.form.profession === "Outros";
         },
         activeDeficiencyOthers() {
-            return this.deficiency === "Outros";
+            return this.form.deficiency === "Outros";
         },
         activeGenderIdentityOthers() {
-            return this.genderIdentity === "Outros";
+            return this.form.genderIdentity === "Outros";
         },
     },
     watch: {

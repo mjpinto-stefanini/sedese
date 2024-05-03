@@ -757,7 +757,7 @@
                     <span class="text-grey">Função desempenhada:</span> {{professionalData.funcao}}
                   </div>
                   <div class="col-12" v-if="professionalData.funcao === 'Conselheiro'">
-                    <span class="text-grey">Segmento:</span> {{professionalData.ceas_representacao}}
+                    <span class="text-grey">Segmento:</span> {{professionalData.ceas_representacao}} {{ professionalData.representacao_segmento }}
                   </div>
                   <div class="col-12" v-if="professionalData.ceas_representacao === 'Governamental'">
                     <div class="col-12">
@@ -781,7 +781,7 @@
                   </div>
 
                   <div class="col-12" v-if="professionalData.funcao === 'Conselheiro'">
-                    <span class="text-grey">Titularidade:</span> {{ professionalData.ceas_titularidade }}
+                    <span class="text-grey">Titularidade:</span> {{ professionalData.ceas_titularidade }} {{ professionalData.representacao_titularidade }}
                   </div>
                 </div>
                 <!-- FIM ESTADUAL -->

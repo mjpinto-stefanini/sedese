@@ -93,8 +93,19 @@ class ProfessionalController extends Controller
 
     public function professionalsUser($user_id)
     {
-        $personal = Professional::query()->where('user_id', $user_id)->first();
-        return response()->json($personal, self::HTTP_OK);
+        try {
+            $professional = Professional::where('user_id', $user_id)->firstOrFail();
+            return response()->json($professional, self::HTTP_OK);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'error' => 'Dados profissionais não encontrados.',
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erro aconteceu!',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function updateProfessionalDataByUser(Request $request)
