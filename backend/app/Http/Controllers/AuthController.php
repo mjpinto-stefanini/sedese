@@ -174,9 +174,8 @@ class AuthController extends Controller
         // Defina os perfis com base nas regras
         $perfil = null;
         $participanteList = ['ceas', 'creas regional', 'outros públicos'];
-        $respTecnico = ['subsecretaria de assistência social', 'diretoria regional de desenvolvimento social'];
-
-        $perfil = ($ambitoAtuacao === 'estado' && in_array($lotacaoTipo, $respTecnico)) ? TipoPerfil::RESPONSAVEL_TECNICO : (in_array($lotacaoTipo, $participanteList) ? TipoPerfil::PARTICIPANTE : TipoPerfil::PARTICIPANTE);
+        $respTecnico = ['subsecretaria de assistÃªncia social', 'diretoria regional de desenvolvimento social'];
+        $perfil = ($ambitoAtuacao === 'estadual' && in_array($lotacaoTipo, $respTecnico)) ? TipoPerfil::RESPONSAVEL_TECNICO : (in_array($lotacaoTipo, $participanteList) ? TipoPerfil::PARTICIPANTE : TipoPerfil::PARTICIPANTE);
         $statusPerfil = ($perfil === TipoPerfil::PARTICIPANTE) ? UserPerfilStatus::STATUS_ATIVO : UserPerfilStatus::STATUS_PENDENTE;
         $user = User::create($userData);
 
