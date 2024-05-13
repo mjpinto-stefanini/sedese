@@ -343,7 +343,7 @@ export default {
     computed: {
     },
     watch: {
-        'form.service'(newValue) {
+        'form.service'() {
             this.form.secretary = null;
             this.getSecretaries();
         }

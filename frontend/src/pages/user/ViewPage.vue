@@ -2423,7 +2423,7 @@ export default {
       }
     },
     camposObrigatoriosDeContatoPreenchidos() {
-      return this.contactData.cell_phone
+      return this.contactData.cell_phone,
              this.contactData.cell_phone_whatsapp;
     },
     async salvarDadosContato() {

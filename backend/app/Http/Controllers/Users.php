@@ -36,6 +36,7 @@ class Users extends Controller
             ]);
 
             $users = $this->filterUsers($queryParams);
+
             $this->modifyUsers($users);
             return response()->json($users, 200);
         } catch (\Exception $e) {
@@ -49,37 +50,45 @@ class Users extends Controller
         if (isset($queryParams['secretary'])) {
             $query->where('secretary', $queryParams['secretary']);
         }
+
         if (isset($queryParams['service'])) {
             $query->where('service', $queryParams['service']);
         }
+
         if (isset($queryParams['name'])) {
             $query->where('name', 'like', '%'. $queryParams['name'] . '%');
         }
+
         if (isset($queryParams['cpf'])) {
             $query->where('cpf', $queryParams['cpf']);
         }
+
         if (isset($queryParams['email'])) {
             $query->where('email', $queryParams['email']);
         }
+
         if (isset($queryParams['status'])) {
             $userIds = UserPerfilStatus::where('status', $queryParams['status'])->pluck('user_id')->toArray();
             $query->whereIn('id', $userIds);
         } else {
             $query->orderByRaw("FIELD((SELECT status FROM users_perfil_status WHERE users_perfil_status.user_id = users.id), 3, 1, 2, 4)");
         }
+
         if (isset($queryParams['perfil'])) {
             $userIds = UserPerfilStatus::where('tipo_perfil_id', $queryParams['perfil'])->pluck('user_id')->toArray();
             $query->whereIn('id', $userIds);
         }
+
         return $query->get();
     }
 
     private function modifyUsers($users)
     {
         $users->each(function ($user) {
-            if (isset($user->secretary)) {
-                $user->secretary = AmbitoAtuacao::query()->find($user->secretary)['nome'];
+            if (isset($user->secretary) && !is_null($ambito = AmbitoAtuacao::query()->find($user->secretary))) {
+                $user->secretary = $ambito['nome'];
             }
+            
             $user->status = UserPerfilStatus::firstWhere('user_id', $user->id)['status'];
             $user->perfil = UserPerfilStatus::firstWhere('user_id', $user->id)['tipo_perfil_id'];
         });

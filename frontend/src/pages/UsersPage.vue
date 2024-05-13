@@ -610,7 +610,7 @@ export default {
     }
   },
   watch: {
-    'consulta.ambitoAtuacao'(newValue) {
+    'consulta.ambitoAtuacao'() {
       this.consulta.lotacao = null;
       this.getSecretaries();
     }
