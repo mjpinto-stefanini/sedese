@@ -11,7 +11,7 @@ class ContactController extends Controller
 
     public function __construct()
     {
-        // $this->middleware('auth:api');
+        $this->middleware('auth:api');
     }
 
     public function index()
@@ -97,21 +97,12 @@ class ContactController extends Controller
             'institutional_email' => $request['contact']['institutional_email'] ?? null,
             'isWhatsapp' => $isWhatsapp ?? null,
         ];
-        // Verifica se o registro já existe na tabela Personal
         $contact = Contact::query()->where('user_id', $request['user_id'])->first();
-
-        // Se o registro existir, atualiza os dados; caso contrário, cria um novo registro
         if ($contact) {
             $contact->update($contactData);
-            // caso seja necessário fazer a função de enviar email
-            // para a pessoa desejada, caso tenha sido alterado
-            User::find($contactData['user_id'])->update([
-                'email' => $request['email'],
-            ]);
         } else {
             Contact::create($contactData);
         }
-        // Retorno de sucesso ou outra lógica necessária
         return response()->json(['message' => 'Dados de endereço atualizados com sucesso']);
     }
 }

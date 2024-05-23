@@ -233,7 +233,7 @@
                       </template>
                     </q-select>
                   </div>
-                  <div class="col-lg-4 col-md-8 col-sm-12 q-pl-sm" v-if="activeGenderIdentityOthers">
+                  <div class="col-12" v-if="user.gender_identity === 'Outros'">
                     <q-input
                       v-model="user.gender_identity_others"
                       name="genderIdentityOthers"
@@ -313,7 +313,7 @@
                     :rules="[isRequired]"
                   />
                 </div>
-                <div class="col-12" v-if="user.profession === 'Outros'">
+                <div class="col-12" v-if="user.profission === 'Outros'">
                   <q-input
                     v-model="user.profission_others"
                     placeholder="Informe a outra profissão"
@@ -386,7 +386,14 @@
             </q-card-section>
             <q-card-actions>
               <q-btn outlined label="Cancelar" color="red" @click="limparFiltrosPagina" v-close-popup style="float: left !important; margin-left:10px;" />
-              <q-btn outlined label="Salvar" color="green" @click="salvarDadosPessoais" v-close-popup />
+              <q-btn 
+                outlined 
+                label="Salvar" 
+                color="green" 
+                @click="salvarDadosPessoais" 
+                v-close-popup
+                :disabled="!camposObrigatoriosDePessoalPreenchidos()"
+                />
             </q-card-actions>
           </q-card>
         </q-dialog>
@@ -539,7 +546,15 @@
               </q-card-section>
               <q-card-actions>
                 <q-btn outlined label="Cancelar" color="red" @click="limparFiltrosPagina" v-close-popup style="float: left !important; margin-left:10px;" />
-                <q-btn outlined label="Salvar" color="green" @click="salvarDadosEndereco" v-close-popup />
+                <q-btn
+                  outlined
+                  label="Salvar"
+                  color="green"
+                  @click="salvarDadosEndereco"
+                  v-close-popup
+                  style="float: right !important;"
+                  :disabled="!camposObrigatoriosDeEnderecosPreenchidos()"
+                />
               </q-card-actions>
             </q-card>
           </q-dialog>
@@ -594,6 +609,8 @@
                     label="Email Principal"
                     outlined
                     type="tel"
+                    :dense="dense" 
+                    disable
                   />
                 </div>
                 <div class="col-12">
@@ -663,7 +680,13 @@
               </q-card-section>
               <q-card-actions>
                 <q-btn outlined label="Cancelar" color="red" @click="limparFiltrosPagina" v-close-popup style="float: left !important; margin-left:10px;" />
-                <q-btn outlined label="Salvar" color="green" @click="salvarDadosContato" v-close-popup style="float: right !important;" />
+                <q-btn 
+                  outlined 
+                  label="Salvar" 
+                  color="green" 
+                  @click="salvarDadosContato" 
+                  v-close-popup style="float: right !important;" 
+                  :disabled="!camposObrigatoriosDeContatoPreenchidos()" />
               </q-card-actions>
             </q-card>
           </q-dialog>
@@ -733,7 +756,7 @@
                     <span class="text-grey">Função desempenhada:</span> {{professionalData.funcao}}
                   </div>
                   <div class="col-12" v-if="professionalData.funcao === 'Conselheiro'">
-                    <span class="text-grey">Segmento:</span> {{professionalData.ceas_representacao}}
+                    <span class="text-grey">Segmento:</span> {{professionalData.ceas_representacao}} {{ professionalData.representacao_segmento }}
                   </div>
                   <div class="col-12" v-if="professionalData.ceas_representacao === 'Governamental'">
                     <div class="col-12">
@@ -756,7 +779,7 @@
                     <span class="text-grey">Função Outro:</span> {{professionalData.funcao_outro}}
                   </div>
                   <div class="col-12" v-if="professionalData.funcao === 'Conselheiro'">
-                    <span class="text-grey">Titularidade:</span> {{ professionalData.ceas_titularidade }}
+                    <span class="text-grey">Titularidade:</span> {{ professionalData.ceas_titularidade }} {{ professionalData.representacao_titularidade }}
                   </div>
                 </div>
                 <!-- FIM ESTADUAL -->
@@ -1635,8 +1658,8 @@ export default {
       UserId: this.$route.params.id,
       user: {
         name: "",
-        dataNascimento:"",
-        socialName: "",
+        birthday:"",
+        social_name: "",
         genderIdentity: "",
         genderIdentityOthers: "",
         rg: "",
@@ -1665,7 +1688,7 @@ export default {
       contact: {
         email: "",
         phone: "",
-        cell_phone: "",
+        cell_phone: "", // cellphone
         institutional_phone: "",
         institutional_email: "",
         cell_phone_whatsapp: [],
@@ -2239,7 +2262,6 @@ export default {
       try {
         const { data } = await this.apiGlobal(`ambitoatuacao/show/${id}`);
         if (data) { this.user.secretaria = data.nome; }
-        //if (status !== 200) { console.warn('Error secretaria'); }
       } catch (error) {
         this.validandoToken(error);
       }
@@ -2318,26 +2340,58 @@ export default {
         return error;
       }
     },
+    camposObrigatoriosDeEnderecosPreenchidos() {
+      return this.address.zip_code &&
+             this.address.street &&
+             this.address.number &&
+             this.address.neighborhood &&
+             this.address.city &&
+             this.address.state;
+    },
     async salvarDadosEndereco() {
       try {
+        if (!this.camposObrigatoriosDeEnderecosPreenchidos()) {
+          this.$q.notify({
+            message: 'É necessário preencher todos os dados obrigatórios para salvar.',
+            color: 'negative',
+            position: 'top',
+          });
+        }
         const result = await this.$http.post('address/updatebyuser', this.address);
         if (result.status === 200) {
           this.$q.notify({
-            message: 'Novo colaborador criado com sucesso!',
-            color: "positive",
-            position: "top",
+            message: 'Endereço salvo com sucesso!',
+            color: 'positive',
+            position: 'top',
+          });
+        } else {
+          this.$q.notify({
+            message: `Erro ao salvar endereço: ${result.status} - ${result.statusText}`,
+            color: 'negative',
+            position: 'top',
           });
         }
       } catch (error) {
         this.validandoToken(error);
       }
     },
+    camposObrigatoriosDeContatoPreenchidos() {
+      return this.contactData.cell_phone,
+             this.contactData.cell_phone_whatsapp;
+    },
     async salvarDadosContato() {
       let params = {
         'user_id': this.UserId,
         'contact': this.contactData
       }
-      //console.log(params);
+      if (!this.camposObrigatoriosDeContatoPreenchidos()) {
+        this.$q.notify({
+          message: 'É necessário preencher todos os dados obrigatórios para salvar.',
+          color: 'negative',
+          position: 'top',
+        });
+      }
+
 
       try {
         const result = await this.$http.post('contact/updatebyuser', params);
@@ -2352,7 +2406,23 @@ export default {
         this.validandoToken(error);
       }
     },
+    camposObrigatoriosDePessoalPreenchidos() {
+      const socialNameFilled = this.checkSocialName ? Boolean(this.user.social_name) : true;      
+      const deficiencyFilled = this.isDeficiency ? (Boolean(this.user.deficiency) && (!this.isDeficiencyStructure || Boolean(this.user.deficiency_structure))) : true;
+      const genderIdentityOthersFilled = this.user.gender_identity === 'Outros' ? Boolean(this.user.gender_identity_others) : true;
+      const profissionFilled = this.user.profission === 'Outros' ? Boolean(this.user.profission_others) : true;
+      const personalFieldsFilled = Boolean(this.user.name) && Boolean(this.user.birthday) && Boolean(this.user.cpf) && Boolean(this.user.education);
+
+      return socialNameFilled && deficiencyFilled && genderIdentityOthersFilled && profissionFilled && personalFieldsFilled;
+    },
     async salvarDadosPessoais() {
+      if (!this.camposObrigatoriosDePessoalPreenchidos()) {
+        this.$q.notify({
+          message: 'É necessário preencher todos os dados obrigatórios para salvar.',
+          color: 'negative',
+          position: 'top',
+        });
+      }
       let params = {
         'name': this.user.name,
         'birthday': this.user.birthday,

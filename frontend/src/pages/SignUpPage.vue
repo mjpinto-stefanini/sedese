@@ -340,16 +340,13 @@ export default {
             }
         },
     },
-
+    computed: {
+    },
     watch: {
-        "form.service": {
-            handler() {
-                this.getSecretaries();
-            },
-            deep: true,
-        },
+        'form.service'() {
+            this.form.secretary = null;
+            this.getSecretaries();
+        }
     },
 };
 </script>
-
-<style></style>
