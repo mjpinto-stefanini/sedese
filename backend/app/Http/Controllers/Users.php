@@ -78,7 +78,11 @@ class Users extends Controller
     {
         $users->each(function ($user) {
             if (isset($user->secretary)) {
-                $user->secretary = AmbitoAtuacao::query()->find($user->secretary)['nome'];
+                $userSecretary = AmbitoAtuacao::query()->find($user->secretary);
+
+                if ($userSecretary) {
+                    $user->secretary = $userSecretary['nome'];
+                }
             }
             $user->status = UserPerfilStatus::firstWhere('user_id', $user->id)['status'];
             $user->perfil = UserPerfilStatus::firstWhere('user_id', $user->id)['tipo_perfil_id'];
