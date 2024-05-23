@@ -73,7 +73,6 @@ export default {
             position: "top",
           }, 5000);
           this.$router.push({ name: "SignIn" });
-
         }
       }  catch (error) {
         this.$q.notify({
@@ -149,7 +148,13 @@ export default {
         if(method == 'post') {
           return await this.$http.post(`${this.baseURL}${route}/${UserId}/user`, parameters);
         }
-      }  catch (error) {
+      } catch (error) {
+        if (error.response.status === 401 || error.response.statusText == 'Unauthorized') {
+          localStorage.clear();
+          this.$router.push({ name: "SignIn" });
+          return;
+        }
+
         this.$q.notify({
           message: error.response.data.message,
           color: "negative",
@@ -179,6 +184,11 @@ export default {
         }
 
       }  catch (error) {
+        if (error.response.status === 401 || error.response.statusText == 'Unauthorized') {
+          localStorage.clear();
+          this.$router.push({ name: "SignIn" });
+          return;
+        }
         this.$q.notify({
           message: error.response.data.message,
           color: "negative",
@@ -192,13 +202,17 @@ export default {
     },
     async checkAuthenticationAndCallApi() {
       try {
-        if (!this.isAuthenticated() && this.$route.name !== "SignUp" && this.$route.name !== 'SignIn') {
+        const isAuthenticated = await this.isAuthenticated();
+
+        if (!isAuthenticated && this.$route.name !== "SignUp" && this.$route.name !== 'SignIn') {
           // Verifica se a rota atual é SignUp antes de redirecionar para SignIn
+          localStorage.clear();
           this.$router.push({ name: 'SignIn' });
           return;
         }
       } catch (error) {
         if (error.response.status === 401) {
+          localStorage.clear();
           this.$router.push({ name: "SignIn" });
           return;
         }
@@ -218,7 +232,7 @@ export default {
       // Por exemplo, verifique se há um token de autenticação válido ou se o usuário está logado de alguma outra forma
       // Retorne true se estiver autenticado, caso contrário, retorne false
       // Exemplo de implementação de verificação de autenticação:
-      return !!localStorage.getItem('token'); // Verifica se há um token de autenticação no localStorage
+      return !! localStorage.getItem('token'); // Verifica se há um token de autenticação no localStorage
     },
   },
   created() {},

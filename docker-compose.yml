@@ -11,7 +11,7 @@ services:
     environment:
       - PROJECT_WEBROOT=/src/public
     ports:
-      - '8080:8080'
+      - '8081:8080'
     networks:
       - default
   backend:
@@ -23,7 +23,7 @@ services:
     environment:
       - PROJECT_WEBROOT=/src/public
     ports:
-      - '80:80'
+      - '81:80'
     networks:
       - default
 

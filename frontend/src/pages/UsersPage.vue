@@ -439,11 +439,7 @@ export default {
           this.dialog = false;
         }
       } catch (error) {
-        this.$q.notify({
-          message: error.response.data.message,
-          color: "negative",
-          position: "top"
-        })
+        this.validandoToken(error);
       }
     },
     limparFiltrosPagina() {
@@ -488,11 +484,7 @@ export default {
           // this.rows = data;
         }
       } catch (error) {
-        this.$q.notify({
-          message: error.response.data.message,
-          color: "negative",
-          position: "top",
-        });
+        this.validandoToken(error);
       }
     },
     getRowChipProperties(row) {
@@ -546,11 +538,7 @@ export default {
           });
         }
       } catch (error) {
-        this.$q.notify({
-          message: error.response?.data.message,
-          color: "negative",
-          position: "top"
-        })
+        this.validandoToken(error);
       }
     },
     async getSecretaries() {
@@ -574,11 +562,7 @@ export default {
           this.filterSecretaries = this.allSecretaries;
         }
       } catch (error) {
-        this.$q.notify({
-          message: error.message,
-          color: "negative",
-          position: "top",
-        });
+        this.validandoToken(error);
       }
     },
     filterFn(val, update) {
@@ -597,7 +581,19 @@ export default {
     },
     isEmail(value) {
       return ((value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido");
-		}
+		},
+    async validandoToken(error) {
+      if (error.response.status && error.response.status === 401 || error.response.statusText == 'Unauthorized') {
+        localStorage.clear();
+        this.$router.push({ name: "SignIn" });
+        return;
+      }
+      this.$q.notify({
+          message: error.message,
+          color: "negative",
+          position: "top",
+      });
+    },
   },
   created() {
     this.getUsers();
