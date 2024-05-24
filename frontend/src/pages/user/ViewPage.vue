@@ -386,11 +386,11 @@
             </q-card-section>
             <q-card-actions>
               <q-btn outlined label="Cancelar" color="red" @click="limparFiltrosPagina" v-close-popup style="float: left !important; margin-left:10px;" />
-              <q-btn 
-                outlined 
-                label="Salvar" 
-                color="green" 
-                @click="salvarDadosPessoais" 
+              <q-btn
+                outlined
+                label="Salvar"
+                color="green"
+                @click="salvarDadosPessoais"
                 v-close-popup
                 :disabled="!camposObrigatoriosDePessoalPreenchidos()"
                 />
@@ -609,7 +609,7 @@
                     label="Email Principal"
                     outlined
                     type="tel"
-                    :dense="dense" 
+                    :dense="dense"
                     disable
                   />
                 </div>
@@ -680,12 +680,12 @@
               </q-card-section>
               <q-card-actions>
                 <q-btn outlined label="Cancelar" color="red" @click="limparFiltrosPagina" v-close-popup style="float: left !important; margin-left:10px;" />
-                <q-btn 
-                  outlined 
-                  label="Salvar" 
-                  color="green" 
-                  @click="salvarDadosContato" 
-                  v-close-popup style="float: right !important;" 
+                <q-btn
+                  outlined
+                  label="Salvar"
+                  color="green"
+                  @click="salvarDadosContato"
+                  v-close-popup style="float: right !important;"
                   :disabled="!camposObrigatoriosDeContatoPreenchidos()" />
               </q-card-actions>
             </q-card>
@@ -708,6 +708,28 @@
                 </div>
               </q-card-section>
               <q-card-section>
+                <!--NEW Estadual-->
+                <div class="col-12 row q-col-gutter-y-md" v-if="professionalData.regional === 'Estadual' || professionalData.regional === '1'">
+                  <div class="col-12">
+                    <span class="text-grey">Ambito de atuação:</span> Estadual
+                  </div>
+                  <div class="col-12">
+                    <span class="text-grey">Lotação:</span> {{professionalData.lotacao}}
+                  </div>
+                </div>
+
+                <!--NEW Municipal-->
+                <div class="col-12 row q-col-gutter-y-md" v-if="professionalData.regional === 'Municipal' || professionalData.regional === '2'">
+                  <div class="col-12">
+                    <span class="text-grey">Ambito de atuação:</span> Municipal
+                  </div>
+
+                  <div class="col-12" v-if="user.secretaria">
+                    <span class="text-grey">Múnicipio:</span> {{ user.secretaria }}
+                  </div>
+                </div>
+
+                <hr>
                 <!-- ESTADUAL -->
                 <div class="col-12 row q-col-gutter-y-md">
                   <div class="col-12" v-if="professionalData.regional === 'Estadual' || professionalData.regional === '1'">
@@ -797,7 +819,7 @@
                   </div>
                   <!-- Opções de input dependendo do valor do campo Orgão -->
                   <div class="col-12" v-if="professionalData.funcao === 'Conselheiro'">
-                    <span class="text-grey">Segmento:</span> {{professionalData.representante}}
+                    <span class="text-grey">Segmento: </span> {{professionalData.representante}}
                   </div>
                   <div class="col-12" v-if="professionalData.orgao === 'Secretaria Municipal de Assistência Social'">
                     <span class="text-grey">Área de atuação:</span> {{professionalData.area_de_atuacao}}
@@ -817,7 +839,7 @@
                   </div>
                   <!-- Opções de input dependendo do valor do campo Representante -->
                   <div class="col-12" v-if="professionalData.representante === 'Governamental'">
-                    <div class="col-12">
+                    <div class="col-12" v-if="professionalData.funcao === 'Conselheiro'">
                       <span class="text-grey">Representação:</span> {{professionalData.area_representada}}
                     </div>
 
@@ -866,7 +888,7 @@
                     </div>
                   </div>
                   <div class="col-12">
-                    <div class="col-12" v-if="professionalData.area_representada">
+                    <div class="col-12" v-if="professionalData.area_representada && professionalData.funcao !== 'Conselheiro'">
                       <span class="text-grey">Área Representada:</span> {{professionalData.area_representada}}
                     </div>
                     <div class="col-12" v-if="professionalData.area_representada_outro">
@@ -2244,15 +2266,16 @@ export default {
     async getUserProfessionals() {
       try {
         const { data } = await this.apiUser(this.UserId, 'professionals');
+
         if (data) {
           this.professional = data;
           this.professionalData = data;
-          console.log('this.professional', this.professional)
-          console.log('this.professionalData', this.professionalData)
+          console.log('data', data)
+          return;
         }
       } catch (error) {
         this.$q.notify({
-          message: error.message,
+          message: 'Dados Profissionais não encontrado',
           color: "negative",
           position: "top",
         });
@@ -2407,7 +2430,7 @@ export default {
       }
     },
     camposObrigatoriosDePessoalPreenchidos() {
-      const socialNameFilled = this.checkSocialName ? Boolean(this.user.social_name) : true;      
+      const socialNameFilled = this.checkSocialName ? Boolean(this.user.social_name) : true;
       const deficiencyFilled = this.isDeficiency ? (Boolean(this.user.deficiency) && (!this.isDeficiencyStructure || Boolean(this.user.deficiency_structure))) : true;
       const genderIdentityOthersFilled = this.user.gender_identity === 'Outros' ? Boolean(this.user.gender_identity_others) : true;
       const profissionFilled = this.user.profission === 'Outros' ? Boolean(this.user.profission_others) : true;
@@ -2447,8 +2470,10 @@ export default {
         'user_id': this.UserId,
         'profession': this.professionalData,
         'secretary': this.user.secretaria,
-        'service': this.user.service
+        'service': this.professionalData.regional
       }
+      console.log('params', params)
+
       try {
         const result =  await this.$http.post('professionals/updatebyuser', params);
         if (result.status === 200) {
@@ -2458,7 +2483,7 @@ export default {
             position: "top",
           });
         }
-        this.$router.go();
+        //this.$router.go();
       } catch (error) {
         this.validandoToken(error);
       }
@@ -2577,12 +2602,13 @@ export default {
         localStorage.clear();
         this.$router.push({ name: "SignIn" });
         return;
-      }
-      this.$q.notify({
+      } else {
+        this.$q.notify({
           message: error.message,
           color: "negative",
           position: "top",
-      });
+        });
+      }
     },
     voltarPagina() {
       // limpando os dados do usuario

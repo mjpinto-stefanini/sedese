@@ -22,7 +22,7 @@ export default {
           else this.$router.push({ name: "Main" });
         }
       } catch (error) {
-        if (error.response.status === 401 || error.response.status === 404) {
+        if (error.response?.status && error.response?.status === 401 || error.response?.statusText?.toLowerCase?.() == 'unauthorized') {
           this.$q.notify({
             message: error.response.data.message,
             color: error.response.data.type,
@@ -149,17 +149,18 @@ export default {
           return await this.$http.post(`${this.baseURL}${route}/${UserId}/user`, parameters);
         }
       } catch (error) {
-        if (error.response.status === 401 || error.response.statusText == 'Unauthorized') {
+        if (error.response?.status && error.response?.status === 401 || error.response?.statusText?.toLowerCase?.() == 'unauthorized') {
           localStorage.clear();
           this.$router.push({ name: "SignIn" });
           return;
+        } else {
+          this.$q.notify({
+            message: error.response.data.message,
+            color: "negative",
+            position: "top",
+          });
         }
 
-        this.$q.notify({
-          message: error.response.data.message,
-          color: "negative",
-          position: "top",
-        });
       } finally {
         setTimeout(() => {
           this.loadingValidateEmail = false;
@@ -184,16 +185,18 @@ export default {
         }
 
       }  catch (error) {
-        if (error.response.status === 401 || error.response.statusText == 'Unauthorized') {
+        if (error.response?.status && error.response?.status === 401 || error.response?.statusText?.toLowerCase?.() == 'unauthorized') {
           localStorage.clear();
           this.$router.push({ name: "SignIn" });
           return;
+        } else {
+          this.$q.notify({
+            message: error.response.data.message,
+            color: "negative",
+            position: "top",
+          });
         }
-        this.$q.notify({
-          message: error.response.data.message,
-          color: "negative",
-          position: "top",
-        });
+
       } finally {
         setTimeout(() => {
           this.loadingValidateEmail = false;
@@ -211,16 +214,17 @@ export default {
           return;
         }
       } catch (error) {
-        if (error.response.status === 401) {
+        if (error.response?.status && error.response?.status === 401 || error.response?.statusText?.toLowerCase?.() == 'unauthorized') {
           localStorage.clear();
           this.$router.push({ name: "SignIn" });
           return;
+        } else {
+          this.$q.notify({
+            message: "Seu tempo de login expirou, faça login novamente!",
+            color: "negative",
+            position: "top",
+          });
         }
-        this.$q.notify({
-          message: "Seu tempo de login expirou, faça login novamente!",
-          color: "negative",
-          position: "top",
-        });
       } finally {
         setTimeout(() => {
           this.loadingValidateEmail = false;

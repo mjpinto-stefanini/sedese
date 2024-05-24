@@ -113,13 +113,13 @@ class ProfessionalController extends Controller
         // Extração dos dados da representação
         $representacao = $request['profession']['ceas_representacao'] ?? $request['profession']['representante'] ?? '';
         $representacaoTitularidade = $request['profession']['representacao_titularidade'] ?? $request['profession']['ceas_titularidade'] ?? '';
-        $representacaoSegmento = $request['profession']['representacaoSegmento']['label'] ?? $request['profession']['seguimento_governo']['label'] ?? $request['profession']['ceas_segmento']['label'] ?? '';
-        $areaRepresentada = $request['profession']['area_representada']['label'] ?? $request['areaRepresentada'];
-        $representante = $request['profession']['representante']['label'] ?? '';
-
+        $representacaoSegmento = $request['profession']['representacao_segmento'] ?? $request['profession']['seguimento_governo'] ?? $request['profession']['ceas_segmento'] ?? '';
+        $areaRepresentada = $request['profession']['area_representada'] ?? '';
+        $representante = $request['profession']['representante'] ?? '';
+        $regional = $request['profession']['regional'] == 'Estadual' ? '1' : '2';
         // Dados profissionais recebidos na requisição
         $professionalData = [
-            'regional' => $request['profession']['regional'] ?? '',
+            'regional' => $regional,
             'superintendencia' => $request['profession']['superintendencia'] ?? '',
             'lotacao' => $request['profession']['lotacao'] ?? '',
             'protecao_social_basica' => $request['profession']['protecao_social_basica'] ?? '',
@@ -133,7 +133,7 @@ class ProfessionalController extends Controller
             'exe_creas_vinc_empreg' => $request['profession']['exe_creas_vinc_empreg'] ?? '',
             'outros_publicos' => $request['profession']['outros_publicos'] ?? '',
             'outros_publicos_others' => $request['profession']['outros_publicos_others'] ?? '',
-            'parceiros' => $request['profession']['parceiros_insc_interna'] ?? '',
+            'parceiros' => $request['profession']['parceiros'] ?? '',
             'orgao' => $request['profession']['orgao'] ?? '',
             'area_de_atuacao' => $request['profession']['area_de_atuacao'] ?? '',
             'protecao_social_basica_municipal' => $request['profession']['protecao_social_basica_municipal'] ?? '',
@@ -168,6 +168,7 @@ class ProfessionalController extends Controller
         if ($professional) {
             $professional->update($professionalData);
         } else {
+            $professionalData['user_id'] = $request['user_id'];
             Professional::create($professionalData);
         }
 

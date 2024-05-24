@@ -583,16 +583,17 @@ export default {
       return ((value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido");
 		},
     async validandoToken(error) {
-      if (error.response.status && error.response.status === 401 || error.response.statusText == 'Unauthorized') {
+      if (error.response?.status && error.response?.status === 401 || error.response?.statusText?.toLowerCase?.() == 'unauthorized') {
         localStorage.clear();
         this.$router.push({ name: "SignIn" });
         return;
-      }
-      this.$q.notify({
+      } else {
+        this.$q.notify({
           message: error.message,
           color: "negative",
           position: "top",
-      });
+        });
+      }
     },
   },
   created() {
