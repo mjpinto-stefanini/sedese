@@ -596,6 +596,7 @@
               </q-card-section>
             </q-card>
           </div>
+
           <!-- modal para edição de dados de contato -->
           <q-dialog v-model="modalDadosContato">
             <q-card style="width: 80%; max-width: 80vw;">
