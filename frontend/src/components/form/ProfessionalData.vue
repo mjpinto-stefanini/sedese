@@ -16,7 +16,6 @@
                 </div>
                 <!-- ESTADUAL -->
                 <div class="col-12 row q-col-gutter-y-md" v-if="form.regional.value === 1">
-
                     <div class="col-12">
                         <q-select
                             v-model="form.lotacao"
@@ -33,7 +32,7 @@
                     <div class="col-12" v-if="form.lotacao.label === 'Subsecretaria de Assistência Social'">
                         <q-select
                             v-model="form.superintendencia"
-                            :options="superintendenciaList"
+                            :options="parametros.superintendenciaList"
                             label="Superintendência/Assessoria*"
                             name="superintendencia"
                             for="superintendencia"
@@ -45,7 +44,7 @@
                     <div class="col-12" v-if="form.lotacao.label === 'Diretoria Regional de Desenvolvimento Social'">
                         <q-select
                             v-model="form.diretoriaRegionalDesSocial"
-                            :options="diretoriaRegionalDesSocialList"
+                            :options="parametros.diretoriaRegionalDesSocialList"
                             label="Diretorias*"
                             name="diretoriaRegionalDesSocial"
                             for="diretoriaRegionalDesSocial"
@@ -57,7 +56,7 @@
                     <div class="col-12" v-if="form.lotacao.label === 'CREAS Regional'">
                         <q-select
                             v-model="form.creasRegional"
-                            :options="creasRegionalList"
+                            :options="parametros.creasRegionalList"
                             label="Unidade*"
                             name="creasRegional"
                             for="creasRegional"
@@ -68,7 +67,7 @@
                     <div class="col-12" v-if="form.lotacao.label === 'Outros Públicos'">
                         <q-select
                             v-model="form.outrosPublicos"
-                            :options="outrosPublicosList"
+                            :options="parametros.outrosPublicosList"
                             name="outrosPublicos"
                             for="outrosPublicos"
                             label="Órgão de Atuação*"
@@ -100,7 +99,7 @@
                     <div class="col-12" v-if="form.superintendencia.value === 1">
                         <q-select
                             v-model="form.protecaoSocialBasica"
-                            :options="protecaoSocialBasicaList"
+                            :options="parametros.protecaoSocialBasicaList"
                             label="Diretorias*"
                             name="protecaoSocialBasica"
                             for="protecaoSocialBasica"
@@ -111,7 +110,7 @@
                     <div class="col-12" v-if="form.superintendencia.value === 2">
                         <q-select
                             v-model="form.protecaoSocialEspecialEstadual"
-                            :options="protecaoSocialEspecialEstadualList"
+                            :options="parametros.protecaoSocialEspecialEstadualList"
                             label="Diretorias*"
                             name="protecaoSocialEspecialEstadual"
                             for="protecaoSocialEspecialEstadual"
@@ -122,7 +121,7 @@
                     <div class="col-12" v-if="form.superintendencia.value === 3">
                         <q-select
                             v-model="form.vigilanciaCapacitacao"
-                            :options="vigilanciaCapacitacaoList"
+                            :options="parametros.vigilanciaCapacitacaoList"
                             label="Diretorias*"
                             name="vigilanciaCapacitacao"
                             for="vigilanciaCapacitacao"
@@ -134,7 +133,7 @@
                         <div v-if="form.lotacao.label === 'Ceas'">
                             <q-select
                                 v-model="form.funcao"
-                                :options="funcaoDesempenhadaCeasList"
+                                :options="parametros.funcaoDesempenhadaCeasList"
                                 label="Função desempenhada*"
                                 name="funcao"
                                 for="funcao"
@@ -146,7 +145,7 @@
                         <div v-else>
                             <q-select
                                 v-model="form.funcao"
-                                :options="funcaoDesempenhadaList"
+                                :options="parametros.funcaoDesempenhadaList"
                                 label="Função desempenhada*"
                                 name="funcao"
                                 for="funcao"
@@ -158,7 +157,7 @@
                     <div class="col-12" v-if="form.funcao === 'Conselheiro'">
                         <q-select
                             v-model="form.ceas_representacao"
-                            :options="funcaoDesempenhadaSecratariaList"
+                            :options="parametros.funcaoDesempenhadaSecratariaList"
                             label="Segmento*"
                             name="segmento"
                             for="segmento"
@@ -171,7 +170,7 @@
                         <div class="col-12">
                             <q-select
                                 v-model="form.seguimento_governo"
-                                :options="representacaoRepresentacaoList"
+                                :options="parametros.representacaoRepresentacaoList"
                                 label="Representação*"
                                 name="representação"
                                 for="representação"
@@ -183,7 +182,7 @@
                         <div class="col-12" v-if="form.seguimento_governo.value === 1">
                             <q-select
                                 v-model="form.representacaoAreaRepresentada"
-                                :options="representacaoAreaRepresentadaList"
+                                :options="parametros.representacaoAreaRepresentadaList"
                                 label="Área Representada*"
                                 name="representacaoAreaRepresentada"
                                 for="representacaoAreaRepresentada"
@@ -222,7 +221,7 @@
                     <div class="col-12" v-if="form.ceas_representacao === 'Sociedade Civil'">
                         <q-select
                             v-model="form.ceas_segmento"
-                            :options="representacaoSegmentoList"
+                            :options="parametros.representacaoSegmentoList"
                             label="Representação*"
                             name="representação"
                             for="representação"
@@ -249,7 +248,7 @@
                     <div class="col-12" v-if="form.funcao === 'Conselheiro'">
                         <q-select
                             v-model="form.ceas_titularidade"
-                            :options="funcaoDesempenhadaConselheiroList"
+                            :options="parametros.funcaoDesempenhadaConselheiroList"
                             label="Titularidade*"
                             name="titularidade"
                             for="titularidade"
@@ -268,7 +267,7 @@
                             name="orgao"
                             for="orgao"
                             outlined
-                            :options="orgaoList"
+                            :options="parametros.orgaoList"
                             :rules="[isRequired]"
                         />
                     </div>
@@ -290,7 +289,7 @@
                         <!-- Opções para Conselheiro Municipal -->
                         <q-select
                             v-model="form.funcao"
-                            :options="funcaoDesempenhadaCeasList"
+                            :options="parametros.funcaoDesempenhadaCeasList"
                             label="Função desempenhada*"
                             name="funcao"
                             for="funcao"
@@ -301,7 +300,7 @@
                     <div class="col-12" v-else-if="form.orgao.value && form.orgao.value !== 5">
                         <q-select
                             v-model="form.funcao"
-                            :options="funcaoDesempenhadaList"
+                            :options="parametros.funcaoDesempenhadaList"
                             label="Função desempenhada*"
                             name="funcao"
                             for="funcao"
@@ -313,7 +312,7 @@
                     <div class="col-12" v-if="form.funcao === 'Conselheiro'">
                         <q-select
                             v-model="form.representante"
-                            :options="representanteList"
+                            :options="parametros.representanteList"
                             label="Segmento*"
                             name="representante"
                             for="representante"
@@ -325,7 +324,7 @@
                     <div class="col-12" v-if="form.orgao.value === 1">
                         <q-select
                             v-model="form.areadeAtuacao"
-                            :options="areadeAtuacaoList1"
+                            :options="parametros.areadeAtuacaoList1"
                             label="Área de atuação*"
                             name="areadeAtuacao"
                             for="areadeAtuacao"
@@ -338,7 +337,7 @@
                         <div class="col-12" v-if="form.areadeAtuacao.value === 1">
                             <q-select
                                 v-model="form.servicosPrograma"
-                                :options="protecaoSocialList"
+                                :options="parametros.protecaoSocialList"
                                 label="Serviço/Programa*"
                                 name="servicosPrograma"
                                 for="servicosPrograma"
@@ -353,7 +352,7 @@
                         <div class="col-12">
                             <q-select
                                 v-model="form.beneficiosMunicipal"
-                                :options="beneficioslList"
+                                :options="parametros.beneficioslList"
                                 label="Benefício*"
                                 name="beneficiosMunicipal"
                                 for="beneficiosMunicipal"
@@ -378,7 +377,7 @@
                         <div class="col-12">
                             <q-select
                                 v-model="form.areaRepresentada"
-                                :options="representacaoGovernamentalConselheiroList"
+                                :options="parametros.representacaoGovernamentalConselheiroList"
                                 label="Representação*"
                                 name="areaRepresentada"
                                 for="areaRepresentada"
@@ -403,7 +402,7 @@
                     <div class="col-12" v-if="form.representante.value === 2">
                         <q-select
                             v-model="form.areaRepresentada"
-                            :options="areaRepresentadaCivilList"
+                            :options="parametros.areaRepresentadaCivilList"
                             label="Representação*"
                             name="areaRepresentada"
                             for="areaRepresentada"
@@ -415,7 +414,7 @@
                     <div class="col-12" v-if="form.orgao.value === 3">
                         <q-select
                             v-model="form.areadeAtuacao"
-                            :options="areadeAtuacaoList2"
+                            :options="parametros.areadeAtuacaoList2"
                             label="Área de Atuação*"
                             name="areadeAtuacao"
                             for="areadeAtuacao"
@@ -428,7 +427,7 @@
                     <div class="col-12" v-if="form.areadeAtuacao === 1">
                         <q-select
                             v-model="form.areadeAtuacao"
-                            :options="areadeAtuacaoList2"
+                            :options="parametros.areadeAtuacaoList2"
                             label="Área de Atuação*"
                             name="areadeAtuacao"
                             for="areadeAtuacao"
@@ -440,7 +439,7 @@
                     <div class="col-12" v-if="form.areadeAtuacao.value === 2">
                         <q-select
                             v-model="form.protecaoSocialEspecialMunicipal"
-                            :options="protecaoSocialEspecialMunicipalList"
+                            :options="parametros.protecaoSocialEspecialMunicipalList"
                             label="Nível de Complexidade*"
                             name="protecaoSocialEspecialMunicipal"
                             for="protecaoSocialEspecialMunicipal"
@@ -454,7 +453,7 @@
                         <div class="col-12">
                             <q-select
                                 v-model="form.servicosPrograma"
-                                :options="socialEspecialMediaComplexidadeList"
+                                :options="parametros.socialEspecialMediaComplexidadeList"
                                 label="Serviço/Programa*"
                                 name="servicosPrograma"
                                 for="servicosPrograma"
@@ -467,7 +466,7 @@
                         <div class="col-12" v-if="form.areadeAtuacao.value === 2">
                             <q-select
                                 v-model="form.servicosPrograma"
-                                :options="socialEspecialAltaComplexidadeList"
+                                :options="parametros.socialEspecialAltaComplexidadeList"
                                 label="Serviço/Programa*"
                                 name="servicosPrograma"
                                 for="servicosPrograma"
@@ -482,7 +481,7 @@
                         <div class="col-12">
                             <q-select
                                 v-model="form.servicosPrograma"
-                                :options="gestaoDoSuasList"
+                                :options="parametros.gestaoDoSuasList"
                                 label="Serviço/Programa*"
                                 name="servicosPrograma"
                                 for="servicosPrograma"
@@ -518,7 +517,7 @@
                         <div class="col-12">
                             <q-select
                                 v-model="form.servicosPrograma"
-                                :options="gestaoFinanceiraOrcamentariaSuasList"
+                                :options="parametros.gestaoFinanceiraOrcamentariaSuasList"
                                 label="Serviço/Programa*"
                                 name="servicosPrograma"
                                 for="servicosPrograma"
@@ -531,7 +530,7 @@
                         <div class="col-12">
                             <q-select
                                 v-model="form.areaRepresentada"
-                                :options="representacaoAreaRepresentadaList"
+                                :options="parametros.representacaoAreaRepresentadaList"
                                 label="Área Representada*"
                                 name="areaRepresentada"
                                 for="areaRepresentada"
@@ -554,7 +553,7 @@
                     <div class="col-12" v-if="form.areaRepresentada !== ''">
                         <q-select
                             v-model="form.cargo"
-                            :options="cargoList"
+                            :options="parametros.cargoList"
                             label="Titularidade*"
                             name="cargo"
                             for="cargo"
@@ -568,7 +567,7 @@
                 <div class="col-12" v-if="form.funcao === 'Secretaria Executiva'">
                     <q-select
                         v-model="form.vinculoEmpregaticio"
-                        :options="vinculoEmpregaticioList"
+                        :options="parametros.vinculoEmpregaticioList"
                         label="Vínculo empregaticio*"
                         name="vinculoEmpregaticio"
                         for="vinculoEmpregaticio"
@@ -601,7 +600,7 @@
                     <div class="col-12" v-if="form.orgao.value === 2">
                         <q-select
                             v-model="form.representacaoConselho"
-                            :options="representacaoConselhoList"
+                            :options="parametros.representacaoConselhoList"
                             label="Conselho*"
                             name="representacaoConselho"
                             for="representacaoConselho"
@@ -613,7 +612,7 @@
                     <div class="col-12" v-else>
                         <q-select
                             v-model="form.representacaoConselho"
-                            :options="representacaoConselhoCMASList"
+                            :options="parametros.representacaoConselhoCMASList"
                             label="Conselho*"
                             name="representacaoConselho"
                             for="representacaoConselho"
@@ -625,7 +624,7 @@
                     <div class="col-12">
                         <q-select
                             v-model="form.representacaoRepresentacao"
-                            :options="representanteList"
+                            :options="parametros.representanteList"
                             label="Segmento*"
                             name="representacaoRepresentacao"
                             for="representacaoRepresentacao"
@@ -637,7 +636,7 @@
                         <div class="col-12" v-if="form.representacaoRepresentacao.value === 1">
                             <q-select
                                 v-model="form.representacaoSegmento"
-                                :options="representacaoRepresentacaoList"
+                                :options="parametros.representacaoRepresentacaoList"
                                 label="Representação*"
                                 name="representacaoSegmento"
                                 for="representacaoSegmento"
@@ -650,7 +649,7 @@
                         <div class="col-12" v-if="form.representacaoRepresentacao.value === 2">
                             <q-select
                                 v-model="form.representacaoSegmento"
-                                :options="representacaoSegmentoList"
+                                :options="parametros.representacaoSegmentoList"
                                 label="Representação*"
                                 name="representacaoSegmento"
                                 for="representacaoSegmento"
@@ -662,7 +661,7 @@
                         <div class="col-12" v-if="form.representacaoSegmento.value === 1">
                             <q-select
                                 v-model="form.representacaoAreaRepresentada"
-                                :options="representacaoAreaRepresentadaList"
+                                :options="parametros.representacaoAreaRepresentadaList"
                                 label="Área Representada*"
                                 name="representacaoAreaRepresentada"
                                 for="representacaoAreaRepresentada"
@@ -687,7 +686,7 @@
                         <div class="col-12" v-if="form.representacaoRepresentacao.value === 1">
                             <q-select
                                 v-model="form.representacaoSegmento"
-                                :options="representacaoGovernamentalConselheiroList"
+                                :options="parametros.representacaoGovernamentalConselheiroList"
                                 label="Representação*"
                                 name="representacaoSegmento"
                                 for="representacaoSegmento"
@@ -701,7 +700,7 @@
                         <div class="col-12" v-if="form.representacaoRepresentacao.value === 2">
                             <q-select
                                 v-model="form.representacaoSegmento"
-                                :options="areaRepresentadaCivilList"
+                                :options="parametros.areaRepresentadaCivilList"
                                 label="Representação*"
                                 name="representacaoSegmento"
                                 for="representacaoSegmento"
@@ -714,7 +713,7 @@
                     <div class="col-12">
                         <q-select
                             v-model="form.representacaoTitularidade"
-                            :options="representacaoTitularidadeList"
+                            :options="parametros.representacaoTitularidadeList"
                             label="Titularidade*"
                             name="representacaoTitularidade"
                             for="representacaoTitularidade"
@@ -730,11 +729,13 @@
 
 <script>
 import {mapGetters} from "vuex";
+import * as parametros from '../../mixins/parameters';
 
 export default {
     name: "ProfessionalData",
     data() {
         return {
+            parametros,
             form: {
                 regional: "",
                 lotacao: "",
@@ -774,261 +775,9 @@ export default {
 
             },
             parceirosInscInternaList: [],
-            regionalList: [
-                {value: 1, label: "Estadual"},
-                {value: 2, label: "Municipal"},
-            ],
-            /* ESTADUAL */
-            creasRegionalList: [
-                {value: 1, label: "CREAS Regional Alto Jequitinhonha"},
-                {value: 2, label: "CREAS Regional Médio/Baixo Jequitinhonha"},
-                {value: 3, label: "CREAS Regional Mucuri"},
-                {value: 4, label: "CREAS Regional Vale do Rio Doce"},
-            ],
-
-            outrosPublicosList: [
-                {value: 1, label: "Minitério Público"},
-                {value: 2, label: "Direitos Humanos"},
-                {value: 3, label: "Defesa Civil"},
-                {value: 4, label: "Saúde"},
-                {value: 5, label: "Educação"},
-                {value: 6, label: "Esportes"},
-                {value: 7, label: "Trabalho e Emprego"},
-                {value: 8, label: "Outros"},
-            ],
             filterMunicipios: [],
             filterLotacao: [],
-            superintendenciaList: [
-                {value: 1, label: "Superintendência de Proteção Social Básica"},
-                {value: 2, label: "Superintendência de Proteção Social Especial"},
-                {value: 3, label: "Superintendência de Vigilância e Capacitação"},
-                {value: 4, label: "Assessoria de gestão do Fundo Estadual de Assistência Social",},
-                {value: 5, label: "Gabinete"},
-            ],
-            protecaoSocialBasicaList: [
-                "Diretoria de Serviços e Benefícios Socioassistenciais",
-                "Diretoria de Gestão do Cadastro Único e Programas Socioassistenciais",
-                "Não se aplica",
-            ],
-            protecaoSocialEspecialEstadualList: [
-                "Diretoria de Proteção Social Especial de Média Complexidade",
-                "Diretoria de Proteção Social Especial de Alta Complexidade",
-                "Não se aplica",
-            ],
-            vigilanciaCapacitacaoList: [
-                "Diretoria de Vigilância Socioassistencial",
-                "Diretoria de Educação Permanente do SUAS",
-                "Diretoria de Gestão Descentralizada e Regulação do SUAS",
-                "Não se aplica",
-            ],
-            vinculoEmpregaticioList: [
-                "Comissionado",
-                "Contratado",
-                "Efetivo",
-                "Estatutário",
-                "Estagiário",
-                "Temporário",
-                "Outro",
-            ],
-            funcaoList: [
-                "Profissional de Nível Superior",
-                "Profissional de Nível Médio",
-                "Superintendente",
-                "Diretor(a)",
-                "Estagiário",
-                "Auxiliar/Assessor",
-                "Coordenação",
-                "Outro",
-            ],
-            funcaoDesempenhadaList: [
-                "Profissional de Nível Superior",
-                "Profissional de Nível Médio",
-                "Gestor de assistência social",
-                "Coordenador",
-                "Estagiário",
-                "Assessor(a)",
-            ],
-            funcaoDesempenhadaCeasList: [
-                "Conselheiro",
-                "Secretaria Executiva",
-            ],
-            diretoriaRegionalDesSocialList: [
-                "Almenara",
-                "Araçuaí",
-                "Curvelo",
-                "Diamantina",
-                "Divinópolis",
-                "Governador Valadares",
-                "Ituiutaba",
-                "Juiz de Fora",
-                "Metropolitana",
-                "Montes Claros",
-                "Muriaé",
-                "Paracatu",
-                "Passos",
-                "Patos de Minas",
-                "Poços de Caldas",
-                "Salinas",
-                "São João Del Rei",
-                "Teófilo Otoni",
-                "Timóteo",
-                "Uberaba",
-                "Uberlândia",
-                "Varginha",
-            ],
-            funcaoDesempenhadaConselheiroList: [
-                'Titular',
-                'Suplente',
-                'Vice Presidente',
-                'Presidente',
-            ],
-            funcaoDesempenhadaSecratariaList: [
-                'Governamental',
-                'Sociedade Civil',
-            ],
-            seguimentoGovernoList: [
-                'Assistência Social',
-                'Saúde',
-                'Educação',
-                'Trabalho e Emprego',
-                'Fazenda',
-                'Habitação',
-                'Planejamento',
-                'Assessoria/Gabinete da Prefeitura',
-                'Outro',
-            ],
-            sociedadeCivilList: [
-                'Usuário',
-                'Trabalhador',
-                'Entidade',
-            ],
-            /* MUNICIPAL */
-            orgaoList: [
-                {value: 1, label: "Secretaria Municipal de Assistência Social"},
-                {value: 2, label: "Conselho Municipal de Assistência Social"},
-                {value: 3, label: "Entidades e Organizações de Assistência Social"},
-                {value: 4, label: "Outras secretarias/orgãos da Prefeitura"},
-                {value: 5, label: "Conselho Tutelar"},
-            ],
-            areadeAtuacaoList1: [
-                {value: 1, label: "Proteção Social Básica"},
-                {value: 2, label: "Proteção Social Especial"},
-                {value: 3, label: "Gestão do SUAS"},
-                {value: 4, label: "Gestão Financeira e Orçamentária do SUAS"},
-            ],
-            areadeAtuacaoList2: [
-                {value: 5, label: "Atendimento"},
-                {value: 6, label: "Assessoramento"},
-                {value: 7, label: "Defesa e garantia de direitos"},
-            ],
-            protecaoSocialList: [
-                {value: 1,label: "Serviço de Proteção e Atendimento Integral à Família (PAIF)",},
-                {value: 2,label: "Serviço de Convivência e Fortalecimento de Vínculos (SCFV)",},
-                {value: 3,label:"Serviço de Proteção Social Básica no Domicílio para pessoas com deficiência e idosas",},
-                {value: 4,label: "Gestão de Benefícios Socioassistenciais/Cad. Único",},
-            ],
-            beneficioslList: [
-                "Programa Bolsa Família e/ou outra ação de transferência de renda",
-                "Benefício de Prestação Continuada (BPC)",
-                "Benefício Eventuais",
-                "Outro",
-            ],
-            protecaoSocialEspecialMunicipalList: [
-                {value: 1, label: "Média Complexidade"},
-                {value: 2, label: "Alta Complexidade"},
-            ],
-            socialEspecialMediaComplexidadeList: [
-                "Serviço de Proteção e Atendimento Especializado a Famílias e Indivíduos (PAEFI)",
-                "Serviço Especializado em Abordagem Social",
-                "Serviço de Proteção Social a adolescentes em cumprimentos de medida socioeducativa de Liberdade Assistida (LA) e Prestação a Serviços à Comunidade (PSC)",
-                "Serviço de Proteção Social Especial para Pessoas com Deficiência, Idosas e suas Famílias",
-                "Serviço Especializado para Pessoas em Situação de Rua",
-            ],
-            socialEspecialAltaComplexidadeList: [
-                "Serviço de Acolhimento Institucional",
-                "Serviço de Acolhimento em República",
-                "Serviço de Acolhimento em Família Acolhedora",
-                "Serviço de proteção em situações de calamidades públicas e de emergências",
-            ],
-            gestaoDoSuasList: [
-                "Vigilância Socioassistencial(Monitoramento)",
-                "Gestão do Trabalho/Educação Permanente do SUAS",
-                "Regulação do SUAS",
-                "Outro",
-            ],
-            gestaoFinanceiraOrcamentariaSuasList: [
-                "Gestão Financeira e Orçamentária(FMAS)",
-                "Outro",
-            ],
-            conselheiroList: [
-                {value: 1, label: "Representação"},
-                {value: 2, label: "Área Representada"},
-                {value: 3, label: "Cargo"},
-            ],
-            representanteList: [
-                {value: 1, label: "Governamental"},
-                {value: 2, label: "Sociedade Civil"},
-            ],
-            representacaoGovernamentalConselheiroList: [
-                "Representante Governamental",
-            ],
-            areaRepresentadaGovernamentalList: [
-                "Assistência Social",
-                "Saúde",
-                "Educação",
-                "Trabalho e Emprego",
-                "Fazenda",
-                "Habitação",
-                "Planejamento",
-                "Assessoria/Gabinete da Prefeitura",
-                "Outro",
-            ],
-            areaRepresentadaCivilList: [
-                {value: 1, label: "Usuários de Assistencia Social"},
-                {value: 2, label: "Trabalhadores de Assistencia Social"},
-                {value: 3, label: "Entidades de Assistencia Social"},
-            ],
-            cargoList: [
-                {value: 1, label: "Titular"},
-                {value: 2, label: "Suplente"},
-                {value: 3, label: "Presidente"},
-                {value: 4, label: "Vice-Presidente"},
-                //{value: 5, label: "Membro"},
-            ],
-            representacaoConselhoCMASList: [
-                {value: 1, label: "Conselho Estadual de Assistência Social (CEAS)"},
-                {value: 2, label: "Conselho Municipal de Assistência Social (CMAS)"},
-
-            ],
-            representacaoConselhoList: [
-                {value: 1, label: "Conselho Estadual de Assistência Social (CEAS)"},
-            ],
-            representacaoTitularidadeList: [
-                "Titular",
-                "Suplente",
-                "Presidente",
-                "Vice-Presidente",
-            ],
-            representacaoRepresentacaoList: [
-                {value: 1, label: "Representante Governamental"},
-                {value: 2, label: "CMAS Governamental"},
-            ],
-            representacaoSegmentoList: [
-                {value: 1, label: "Usuários de Assistencia Social"},
-                {value: 2, label: "Trabalhadores de Assistencia Social"},
-                {value: 3, label: "Entidades de Assistencia Social"},
-                {value: 4, label: "CMAS Sociedade Civil"},
-            ],
-            representacaoAreaRepresentadaList: [
-                "Assistência Social",
-                "Saúde",
-                "Educação",
-                "Trabalho e Emprego",
-                "Fazenda",
-                "Habitação",
-                "Planejamento",
-                "Outros",
-            ],
+            regionalList: parametros.regionalList,
         };
     },
     computed: {

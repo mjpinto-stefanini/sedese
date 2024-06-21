@@ -98,6 +98,8 @@
 
 <script>
 import axios from "axios";
+import {stateList, urlCep} from '../../mixins/parameters';
+import {isRequired, isNumber, isLetter} from "../../mixins/validates";
 
 export default {
 	name: "AddressData",
@@ -114,55 +116,30 @@ export default {
 
 			},
 			stateFiltered: [],
-			stateList: [
-				"AC",
-				"AL",
-				"AP",
-				"AM",
-				"BA",
-				"CE",
-				"DF",
-				"ES",
-				"GO",
-				"MA",
-				"MT",
-				"MS",
-				"MG",
-				"PA",
-				"PB",
-				"PR",
-				"PE",
-				"PI",
-				"RJ",
-				"RN",
-				"RS",
-				"RO",
-				"RR",
-				"SC",
-				"SP",
-				"SE",
-				"TO",
-			],
-			baseUrlViaCep: "https://viacep.com.br/ws/",
+			stateList: stateList,
+			baseUrlViaCep: urlCep,
 		};
 	},
 	methods: {
 		isRequired(value) {
-			return !!value || "Campo obrigatório";
+			return isRequired(value);
+			//return !!value || "Campo obrigatório";
 		},
 		isNumber(value) {
-			if(value){
+			return isNumber(value);
+			/*if(value){
 				return (
 					(value && /^\d+$/.test(value)) || "Somente números"
 				);
-			}
+			}*/
 		},
 		isLetter(value) {
-			if(value){
+			return isLetter(value);
+			/*if(value){
 				return (
 					(value && /^[a-zA-ZÀ-ÿ ]+$/.test(value)) || "Nome deve conter apenas letras"
 				);
-			}
+			}*/
 		},
 		onStateFilter(val, update) {
 			if (val === "") {

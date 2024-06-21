@@ -214,7 +214,7 @@
             <div class="q-gutter-xs q-pa-xs">
               <q-btn
                 size="sm"
-                color="secondary"
+                color="primary"
                 no-caps
                 unelevated
                 padding="sm"
@@ -222,7 +222,7 @@
                 icon="visibility"
               />
               <q-tooltip
-                class="bg-secondary text-caption"
+                class="bg-primary text-caption"
                 :offset="[10, 10]"
                 style="max-width: 600px"
                 >Ver Dados do Usuário

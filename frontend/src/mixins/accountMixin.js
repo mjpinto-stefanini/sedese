@@ -231,6 +231,21 @@ export default {
         }, 2000);
       }
     },
+    async secretaryById(secretaryId) {
+      try {
+        const { data } = await this.apiGlobal(`ambitoatuacao/show/${secretaryId}`);
+        if (data) {
+          return {
+            status: true,
+            dados: data
+          };
+        }
+        return { status: false };
+      } catch (error) {
+        this.validandoToken(error);
+        return { status: false };
+      }
+    },
     async isAuthenticated() {
       // Implemente a lógica para verificar se o usuário está autenticado ou não
       // Por exemplo, verifique se há um token de autenticação válido ou se o usuário está logado de alguma outra forma

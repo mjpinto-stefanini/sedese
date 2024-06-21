@@ -82,6 +82,7 @@
 
 <script>
 import accountMixin from "../mixins/accountMixin";
+import { isEmail, isCpf } from "../mixins/validates";
 
 export default {
 	name: "SignInPage",
@@ -96,11 +97,12 @@ export default {
 		};
 	},
 	methods: {
-        isEmail(value) {
-            return ((value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido");
+		isEmail(value) {
+			return isEmail(value);
         },
         isCPf(value) {
-            return ((value && /^[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}$/.test(value)) || "CPF deve ser válido");
+			return isCpf(value);
+            //return ((value && /^[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}$/.test(value)) || "CPF deve ser válido");
         },
         async onLogin() {
 			let response = await this.logIn();
