@@ -214,7 +214,7 @@
             <div class="q-gutter-xs q-pa-xs">
               <q-btn
                 size="sm"
-                color="secondary"
+                color="primary"
                 no-caps
                 unelevated
                 padding="sm"
@@ -222,7 +222,7 @@
                 icon="visibility"
               />
               <q-tooltip
-                class="bg-secondary text-caption"
+                class="bg-primary text-caption"
                 :offset="[10, 10]"
                 style="max-width: 600px"
                 >Ver Dados do Usuário
@@ -583,16 +583,17 @@ export default {
       return ((value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido");
 		},
     async validandoToken(error) {
-      if (error.response.status && error.response.status === 401 || error.response.statusText == 'Unauthorized') {
+      if (error.response?.status && error.response?.status === 401 || error.response?.statusText?.toLowerCase?.() == 'unauthorized') {
         localStorage.clear();
         this.$router.push({ name: "SignIn" });
         return;
-      }
-      this.$q.notify({
+      } else {
+        this.$q.notify({
           message: error.message,
           color: "negative",
           position: "top",
-      });
+        });
+      }
     },
   },
   created() {

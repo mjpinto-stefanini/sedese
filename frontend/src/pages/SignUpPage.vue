@@ -172,6 +172,8 @@
 
 <script>
 import accountMixin from "../mixins/accountMixin";
+import * as parametros from '../mixins/parameters';
+import * as Validates from "../mixins/validates";
 
 export default {
     name: "SignUpPage",
@@ -194,62 +196,27 @@ export default {
             showPassword: false,
             allSecretaries: [],
             filterSecretaries: [],
-            services: [
-                { label: "Estadual", value: 1 },
-                { label: "Municipal", value: 2 },
-            ],
+            services: parametros.regionalList,
         };
     },
     methods: {
         isRequired(value) {
-            return !!value || "Campo obrigatório";
+            return Validates.isRequired(value)
         },
         isCpf(cpf) {
-            const validar = cpf => checkAll(prepare(cpf))
-
-            const notDig = i => !['.', '-', ' '].includes(i)
-            const prepare = cpf => cpf.trim().split('').filter(notDig).map(Number)
-            const is11Len = cpf => cpf.length === 11
-            const notAllEquals = cpf => !cpf.every(i => cpf[0] === i)
-            const onlyNum = cpf => cpf.every(i => !isNaN(i))
-
-            const calcDig = limit => (a, i, idx) => a + i * ((limit + 1) - idx)
-            const somaDig = (cpf, limit) => cpf.slice(0, limit).reduce(calcDig(limit), 0)
-            const resto11 = somaDig => 11 - (somaDig % 11)
-            const zero1011 = resto11 => [10, 11].includes(resto11) ? 0 : resto11
-
-            const getDV = (cpf, limit) => zero1011(resto11(somaDig(cpf, limit)))
-            const verDig = pos => cpf => getDV(cpf, pos) === cpf[pos]
-
-            const checks = [is11Len, notAllEquals, onlyNum, verDig(9), verDig(10)]
-            const checkAll = cpf => checks.map(f => f(cpf)).every(r => !!r)
-
-            return validar(cpf) || "Formato de CPF inválido";
+            return Validates.isCpf(cpf);
         },
-        isEmail(value) {
-            return (
-                    (value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido"
-            );
+        isEmail(email) {
+            return Validates.isEmail(email);
         },
         emailMatch(value) {
-            if (value !== this.form.email) {
-                return "Os emails informados não conferem, favor, preencher o campo novamente.";
-            }
-            return true;
+            return Validates.isMatch(value, this.form.email, 'Os emails informados não conferem, favor, preencher o campo novamente.');
         },
         passwordMatch(value) {
-            if (value !== this.form.password) {
-                return "As senhas informadas não conferem, favor, preencher o campo novamente.";
-            }
-            return true;
+            return Validates.isMatch(value, this.form.password, 'As senhas informadas não conferem, favor, preencher o campo novamente.');
         },
         onlyLetter(e) {
-            let char = String.fromCharCode(e.keyCode);
-            if (/^[A-Za-z\s]+$/.test(char)) {
-                return true;
-            } else {
-                e.preventDefault();
-            }
+            return Validates.onlyLetter(e);
         },
         filterFn(val, update) {
             if (val === "") {

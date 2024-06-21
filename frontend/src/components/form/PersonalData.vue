@@ -243,6 +243,9 @@
 </template>
 
 <script>
+import { genderIdentityList, educationList, professionList, deficiencyList, stateList } from '../../mixins/parameters';
+import {isRequired, isNumber, onlyLetter, isLetter} from "../../mixins/validates";
+
 export default {
     name: "PersonalData",
     data() {
@@ -270,123 +273,54 @@ export default {
                 is_active: false,
                 erroValidacao: "",
             },
-            genderIdentityList: [
-                "Homem (cis ou trans)",
-                "Mulher (cis ou trans)",
-                "Não binário",
-                "Outros",
-            ],
-            educationList: [
-                "Ensino Fundamental Completo",
-                "Ensino Fundamental Incompleto",
-                "Ensino Médio Completo",
-                "Ensino Médio Incompleto",
-                "Superior Completo",
-                "Superio Incompleto",
-                "Pós-Graduação Lato-Sensu Completa",
-                "Pós-Graduação Lato-Sensu Incompleta",
-                "Mestrado Completo",
-                "Mestrado Incompleto",
-                "Doutorado Completo",
-                "Doutorado Incompleto",
-                "Curso Técnico",
-            ],
             educationFiltered: [],
-            professionList: [
-                "Assistente Social",
-                "Psicólogo",
-                "Advogado",
-                "Administrador",
-                "Antropólogo",
-                "Economista",
-                "Empregada Doméstico",
-                "Pedagogo",
-                "Sociólogo",
-                "Terapeuta",
-                "Terapeuta Ocupacional",
-                "Musicoterapeuta",
-                "Contador",
-                "Estudante",
-                "Sem formação Profissional",
-                "Outros",
-            ],
             professionFiltered: [],
             isDeficiency: false,
             isDeficiencyStructure: false,
-            deficiencyList: [
-                "Auditiva",
-                "Física",
-                "Intelectual",
-                "Transtorno do Espectro;",
-                "Mental",
-                "Visual",
-                "Multipla",
-                "Autista",
-                "Outros",
-            ],
             deficiencyFiltered: [],
             checkSocialName: false,
             ufFiltered: [],
-            ufList: [
-                "AC",
-                "AL",
-                "AP",
-                "AM",
-                "BA",
-                "CE",
-                "DF",
-                "ES",
-                "GO",
-                "MA",
-                "MT",
-                "MS",
-                "MG",
-                "PA",
-                "PB",
-                "PR",
-                "PE",
-                "PI",
-                "RJ",
-                "RN",
-                "RS",
-                "RO",
-                "RR",
-                "SC",
-                "SP",
-                "SE",
-                "TO",
-            ],
-        inputValue: "",
-        ignoredValue: "",
+            genderIdentityList: genderIdentityList,
+            educationList: educationList,
+            professionList: professionList,
+            deficiencyList: deficiencyList,
+            ufList: stateList,
+            inputValue: "",
+            ignoredValue: "",
 
         };
     },
     methods: {
         isRequired(value) {
-            return !!value || "Campo obrigatório";
+            return isRequired(value);
+            //return !!value || "Campo obrigatório";
         },
         isNumber(value) {
-            if(value){
+            return isNumber(value);
+            /*if(value){
                 return (
                     (!!value && /^[\d.-]+$/.test(value)) || "Somente números"
                 );
-            }
+            }*/
 
         },
         onlyLetter(e) {
-            let char = String.fromCharCode(e.keyCode);
+            return onlyLetter(e);
+            /*let char = String.fromCharCode(e.keyCode);
             if (/^[A-Za-z\s]+$/.test(char)) {
                 return true;
             } else {
                 e.preventDefault();
-            }
+            }*/
         },
         isLetter(value) {
+            return isLetter(value);
+            /*
             if(value){
                 return (
                     (!!value && /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/.test(value)) || "Somente letras"
                 );
-            }
+            }*/
         },
         isMax12(value) {
             this.erroValidacao = "Corrija as informações inseridas"
@@ -395,12 +329,12 @@ export default {
             );
         },
         parseStringFilter(text) {
-        const er = /[^a-z0-9]/gi;
-        return text
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace(er, "")
-            .toLowerCase();
+            const er = /[^a-z0-9]/gi;
+            return text
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(er, "")
+                .toLowerCase();
         },
         onEducationFilter(val, update) {
             if (val === "") {
