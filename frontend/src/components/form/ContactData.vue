@@ -69,6 +69,7 @@
 						mask="(##) ####-####"
 						min="11"
 						max="14"
+						:rules="[isPhoneNumber]"
 					/>
 				</div>
 				<div class="col-12">
