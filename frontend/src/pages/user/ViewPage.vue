@@ -611,7 +611,7 @@
                     outlined
                     type="tel"
                     :dense="dense"
-                    disable
+                    :rules="[isRequired, isEmail]"
                   />
                 </div>
                 <div class="col-12">
@@ -710,7 +710,7 @@
                         outlined
                         v-model="professionalData.regional"
                         :options="services"
-                        label="Ambito de Atuação"
+                        label="Âmbito de Atuação"
                         :rules="[isRequired]"
                         lazy-rules
                         style="padding: 0 5px"

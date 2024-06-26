@@ -195,51 +195,57 @@ class Users extends Controller
         }
 
         $personalData = [
-            'user_id' => $user['id'],
-            'name' => $request['personal']['name'],
-            'social_name' => $request['personal']['socialName'],
-            'gender_identity' => $request['personal']['genderIdentity'],
-            'gender_identity_others' => $request['personal']['genderIdentityOthers'],
-            'rg' => $request['personal']['RG']?? '',
-            'issuing_body' => $request['personal']['issuingBody'] ?? '',
-            'uf' => $request['personal']['uf']?? '',
-            'education' => $request['personal']['education'],
-            'profission' => $request['personal']['profession'],
-            'profission_others' => $request['personal']['profissionOthers'],
-            'is_deficiency' => $request['personal']['isDeficiency'],
-            'deficiency' => $request['personal']['deficiency'],
-            'deficiency_others' => $request['personal']['deficiencyOthers'],
-            'deficiency_structure' => $request['personal']['deficiencyStructure'],
-            //'birthday' => date('Y-m-d', strtotime($request['personal']['birthday'])),
+            'user_id'                   => $user['id'],
+            'name'                      => $request['personal']['name'],
+            'social_name'               => $request['personal']['socialName'],
+            'gender_identity'           => $request['personal']['genderIdentity'],
+            'gender_identity_others'    => $request['personal']['genderIdentityOthers'],
+            'rg'                        => $request['personal']['RG']?? '',
+            'issuing_body'              => $request['personal']['issuingBody'] ?? '',
+            'uf'                        => $request['personal']['uf']?? '',
+            'education'                 => $request['personal']['education'],
+            'profission'                => $request['personal']['profession'],
+            'profission_others'         => $request['personal']['profissionOthers'],
+            'is_deficiency'             => $request['personal']['isDeficiency'],
+            'deficiency'                => $request['personal']['deficiency'],
+            'deficiency_others'         => $request['personal']['deficiencyOthers'],
+            'deficiency_structure'      => $request['personal']['deficiencyStructure'],
+            'birthday'                  => date('Y-m-d', strtotime(date('Y-m-d', strtotime($request['personal']['birthday'])))),
         ];
 
         $personalResult = Personal::query()->create($personalData);
+        
         if (!$personalResult) {
             $errormsg = [
-                'status' => 'error',
-                'message' => 'Error creating personal data',
-                'code' => self::HTTP_INTERNAL_SERVER_ERROR,
+                'status'    => 'error',
+                'message'   => 'Error creating personal data',
+                'code'      => self::HTTP_INTERNAL_SERVER_ERROR,
             ];
+
+            return response()->json($errormsg, 500);
         }
 
         $addressData = [
-            'user_id' => $user['id'],
-            'zip_code' => $request['address']['zip_code'],
-            'street' => $request['address']['street'],
-            'number' => $request['address']['number'],
-            'complement' => $request['address']['complement'] ?? '',
-            'neighborhood' => $request['address']['neighborhood'],
-            'city' => $request['address']['city'],
-            'state' => $request['address']['state'],
+            'user_id'       => $user['id'],
+            'zip_code'      => $request['address']['zip_code'],
+            'street'        => $request['address']['street'],
+            'number'        => $request['address']['number'],
+            'complement'    => $request['address']['complement'] ?? '',
+            'neighborhood'  => $request['address']['neighborhood'],
+            'city'          => $request['address']['city'],
+            'state'         => $request['address']['state'],
         ];
 
         $addressResult = Address::query()->create($addressData);
+        
         if (!$addressResult) {
             $errormsg = [
-                'status' => 'error',
-                'message' => 'Error creating address data',
-                'code' => self::HTTP_INTERNAL_SERVER_ERROR,
+                'status'    => 'error',
+                'message'   => 'Error creating address data',
+                'code'      => self::HTTP_INTERNAL_SERVER_ERROR,
             ];
+
+            return response()->json($errormsg, 500);
         }
 
         $isWhatsapp = false;
@@ -253,22 +259,25 @@ class Users extends Controller
         }
 
         $contactData = [
-            'user_id' => $user['id'],
-            'phone' => $request['contact']['phone'],
-            'cell_phone' => $request['contact']['cell_phone'],
-            'cell_phone_whatsapp' => $request['contact']['cell_phone_whatsapp'],
-            'institutional_phone' => $request['contact']['institutional_phone'],
-            'institutional_email' => $request['contact']['institutional_email'],
-            'isWhatsapp' => $isWhatsapp,
+            'user_id'               => $user['id'],
+            'phone'                 => $request['contact']['phone'],
+            'cell_phone'            => $request['contact']['cell_phone'],
+            'cell_phone_whatsapp'   => $request['contact']['cell_phone_whatsapp'],
+            'institutional_phone'   => $request['contact']['institutional_phone'],
+            'institutional_email'   => $request['contact']['institutional_email'],
+            'isWhatsapp'            => $isWhatsapp,
         ];
 
         $contactResult = Contact::query()->create($contactData);
+        
         if (!$contactResult) {
             $errormsg = [
-                'status' => 'error',
-                'message' => 'Error creating contact data',
-                'code' => self::HTTP_INTERNAL_SERVER_ERROR,
+                'status'    => 'error',
+                'message'   => 'Error creating contact data',
+                'code'      => self::HTTP_INTERNAL_SERVER_ERROR,
             ];
+
+            return response()->json($errormsg, 500);
         }
 
         $representacao =  '';
@@ -301,47 +310,47 @@ class Users extends Controller
         $areaRepresentada = $request['professional']['areaRepresentada']['label'] ?? $request['professional']['areaRepresentada'];
 
         $professionalData = [
-            'user_id' => $user['id'],
-            'regional' => $request['professional']['regional']['label'] ?? '',
-            'superintendencia' => $request['professional']['superintendencia']['label'] ?? '',
-            'lotacao' => $request['professional']['lotacao']['label'] ?? '',
-            'protecao_social_basica' => $request['professional']['protecaoSocialBasica'] ?? '',
-            'protecao_social_especial' => $request['professional']['protecaoSocialEspecialEstadual'] ?? '',
-            'vigilancia_capacitacao' => $request['professional']['vigilanciaCapacitacao'] ?? '',
-            'vinculo_empregaticio' => $request['professional']['vinculoEmpregaticio'] ?? '',
-            'funcao' => $request['professional']['funcao'] ?? '',
-            'diretoria_regional_des_social' => $request['professional']['diretoriaRegionalDesSocial'] ?? '',
-            'creas_regional' => $request['professional']['creasRegional']['label'] ?? '',
-            'exe_creas_funcao' => '',
-            'exe_creas_vinc_empreg' => '',
-            'outros_publicos' => $request['professional']['outrosPublicos']['label'] ?? '',
-            'outros_publicos_others' => $request['professional']['outrosPublicosOutro'] ?? '',
-            'parceiros' => $request['professional']['parceirosInscInterna']['label'] ?? '',
-            'orgao' => $request['professional']['orgao']['label'] ?? '',
-            'area_de_atuacao' => $request['professional']['areadeAtuacao']['label'] ?? '',
-            'protecao_social_basica_municipal' => '',
-            'beneficios_socioassistenciais' => '',
-            'protecao_social_especial_municipal' => $request['professional']['protecaoSocialEspecialMunicipal']['label'] ?? '',
-            'social_especial_municipal_media_complexidade' => $request['professional']['socialEspecialMunicipalMediaComplexidade'] ?? '',
-            'social_especial_municipal_alta_complexidade' => $request['professional']['socialEspecialMunicipalAltaComplexidade'] ?? '',
-            'representacao' => $representacao,
-            'area_representada' => $areaRepresentada ?? '',
-            'area_representada_outros' => $request['professional']['areaRepresentadaOutro'] ?? '',
-            'cargo' => $request['professional']['cargo']['label'] ?? '',
-            'representante' => $representante,
-            'representacao_titularidade' => $representacaoTitularidade,
-            'representacao_segmento' => $representacaoSegmento,
-            'representacao_representacao' => $request['professional']['representacaoRepresentacao']['label'] ?? '',
-            'representacao_conselho' => $request['professional']['representacaoConselho']['label'] ?? '',
-            'representacao_area_representada_outros' => $request['professional']['outrosRepresentacaoAreaRepresentada'] ?? '',
-            'representacao_area_representada' => $request['professional']['representacaoAreaRepresentada'] ?? '',
-            'funcao_outro' => $request['professional']['funcaoOutro'] ?? '',
-            'vinculo_empregaticio_outro' => $request['professional']['vinculoEmpregaticioOutro'] ?? '',
-            'municipio_id' => $request['professional']['municipio']['id'] ?? null,
-            'servicos_programa_outro' => $request['professional']['servicosProgramaOutro'] ?? '',
-            'servicos_programa' => $request['professional']['servicosPrograma']['label'] ?? '',
-            'beneficios_municipal_outro' => $request['professional']['beneficiosMunicipalOutro'] ?? '',
-            'beneficios_municipal' => $request['professional']['beneficiosMunicipal'] ?? '',
+            'user_id'                                       => $user['id'],
+            'regional'                                      => $request['professional']['regional']['label'] ?? '',
+            'superintendencia'                              => $request['professional']['superintendencia']['label'] ?? '',
+            'lotacao'                                       => $request['professional']['lotacao']['label'] ?? '',
+            'protecao_social_basica'                        => $request['professional']['protecaoSocialBasica'] ?? '',
+            'protecao_social_especial'                      => $request['professional']['protecaoSocialEspecialEstadual'] ?? '',
+            'vigilancia_capacitacao'                        => $request['professional']['vigilanciaCapacitacao'] ?? '',
+            'vinculo_empregaticio'                          => $request['professional']['vinculoEmpregaticio'] ?? '',
+            'funcao'                                        => $request['professional']['funcao'] ?? '',
+            'diretoria_regional_des_social'                 => $request['professional']['diretoriaRegionalDesSocial'] ?? '',
+            'creas_regional'                                => $request['professional']['creasRegional']['label'] ?? '',
+            'exe_creas_funcao'                              => '',
+            'exe_creas_vinc_empreg'                         => '',
+            'outros_publicos'                               => $request['professional']['outrosPublicos']['label'] ?? '',
+            'outros_publicos_others'                        => $request['professional']['outrosPublicosOutro'] ?? '',
+            'parceiros'                                     => $request['professional']['parceirosInscInterna']['label'] ?? '',
+            'orgao'                                         => $request['professional']['orgao']['label'] ?? '',
+            'area_de_atuacao'                               => $request['professional']['areadeAtuacao']['label'] ?? '',
+            'protecao_social_basica_municipal'              => '',
+            'beneficios_socioassistenciais'                 => '',
+            'protecao_social_especial_municipal'            => $request['professional']['protecaoSocialEspecialMunicipal']['label'] ?? '',
+            'social_especial_municipal_media_complexidade'  => $request['professional']['socialEspecialMunicipalMediaComplexidade'] ?? '',
+            'social_especial_municipal_alta_complexidade'   => $request['professional']['socialEspecialMunicipalAltaComplexidade'] ?? '',
+            'representacao'                                 => $representacao,
+            'area_representada'                             => $areaRepresentada ?? '',
+            'area_representada_outros'                      => $request['professional']['areaRepresentadaOutro'] ?? '',
+            'cargo'                                         => $request['professional']['cargo']['label'] ?? '',
+            'representante'                                 => $representante,
+            'representacao_titularidade'                    => $representacaoTitularidade,
+            'representacao_segmento'                        => $representacaoSegmento,
+            'representacao_representacao'                   => $request['professional']['representacaoRepresentacao']['label'] ?? '',
+            'representacao_conselho'                        => $request['professional']['representacaoConselho']['label'] ?? '',
+            'representacao_area_representada_outros'        => $request['professional']['outrosRepresentacaoAreaRepresentada'] ?? '',
+            'representacao_area_representada'               => $request['professional']['representacaoAreaRepresentada'] ?? '',
+            'funcao_outro'                                  => $request['professional']['funcaoOutro'] ?? '',
+            'vinculo_empregaticio_outro'                    => $request['professional']['vinculoEmpregaticioOutro'] ?? '',
+            'municipio_id'                                  => $request['professional']['municipio']['id'] ?? null,
+            'servicos_programa_outro'                       => $request['professional']['servicosProgramaOutro'] ?? '',
+            'servicos_programa'                             => $request['professional']['servicosPrograma']['label'] ?? '',
+            'beneficios_municipal_outro'                    => $request['professional']['beneficiosMunicipalOutro'] ?? '',
+            'beneficios_municipal'                          => $request['professional']['beneficiosMunicipal'] ?? '',
         ];
 
         User::find($user['id'])->update([
@@ -349,16 +358,17 @@ class Users extends Controller
         ]);
 
         $professionalResult = Professional::query()->create($professionalData);
+        
         if (!$professionalResult) {
             $errormsg = [
-                'status' => 'error',
-                'message' => 'Error creating professional data',
-                'code' => self::HTTP_INTERNAL_SERVER_ERROR,
+                'status'    => 'error',
+                'message'   => 'Error creating professional data',
+                'code'      => self::HTTP_INTERNAL_SERVER_ERROR,
             ];
         }
 
         if ($errormsg) {
-            return response()->json($errormsg, $errormsg['code']);
+            return response()->json($errormsg, 501);
         }
 
         $user['second_stage'] = true;
@@ -368,13 +378,19 @@ class Users extends Controller
         // enviando email de confirmação para o usuário
         try {
             $mailData = [
-                'name' => $user['name'],
+                'name'  => $user['name'],
                 'email' => $user['email'],
                 'token' => $user['remember_token'],
             ];
             Mail::to($user['email'])->send(new Confirmation($mailData));
         } catch (\Exception $e) {
-            $msg = response()->json($e->getMessage(), $e->getCode());
+            $errormsg = [
+                'status'    => 'error',
+                'message'   => $e->getMessage(),
+                'code'      => $e->getCode(),
+            ];
+
+            return response()->json($errormsg, 501);
         }
 
         return response()->json([

@@ -11,7 +11,7 @@
                         outlined
                         v-model="form.service"
                         :options="services"
-                        label="Ambito de Atuação"
+                        label="Âmbito de Atuação"
                         :rules="[isRequired]"
                         lazy-rules
                     >
@@ -256,13 +256,14 @@ export default {
                         type: "positive",
                     }, 5000);
 
-                    if (this.form.secretary.label == 'Subsecretaria de Assistência Social' || this.form.secretary.label == 'Diretoria Regional de Desenvolvimento Social') {
-                        this.$q.notify({
-                            message: "Seu cadastro está pendente de confirmação. Quando for aprovado, você receberá um e-mail",
-                            color: "info",
-                            position: "top",
-                        });
-                    }
+                    // PSS-16-06 - Essa mensagem só deve aparecer ao fim do cadastro
+                    //if (this.form.secretary.label == 'Subsecretaria de Assistência Social' || this.form.secretary.label == 'Diretoria Regional de Desenvolvimento Social') {
+                    //    this.$q.notify({
+                    //        message: "Seu cadastro está pendente de confirmação. Quando for aprovado, você receberá um e-mail",
+                    //        color: "info",
+                    //        position: "top",
+                    //    });
+                    //}
                     const { data, status } = await this.$http.post("auth/login", this.form);
                     if (status === 200 || status === 201) {
                         // antes de continuar com os dados cadastrais, é setado o usuárioe sua autenticação
@@ -278,6 +279,8 @@ export default {
                     color: "negative",
                     position: "top",
                 });
+
+                this.$q.loading.hide();
             }
         },
 

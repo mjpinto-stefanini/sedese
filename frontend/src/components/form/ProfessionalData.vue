@@ -45,7 +45,7 @@
                         <q-select
                             v-model="form.diretoriaRegionalDesSocial"
                             :options="parametros.diretoriaRegionalDesSocialList"
-                            label="Diretorias*"
+                            label="Diretoria*"
                             name="diretoriaRegionalDesSocial"
                             for="diretoriaRegionalDesSocial"
                             outlined
@@ -100,7 +100,7 @@
                         <q-select
                             v-model="form.protecaoSocialBasica"
                             :options="parametros.protecaoSocialBasicaList"
-                            label="Diretorias*"
+                            label="Diretoria*"
                             name="protecaoSocialBasica"
                             for="protecaoSocialBasica"
                             outlined
@@ -111,7 +111,7 @@
                         <q-select
                             v-model="form.protecaoSocialEspecialEstadual"
                             :options="parametros.protecaoSocialEspecialEstadualList"
-                            label="Diretorias*"
+                            label="Diretoria*"
                             name="protecaoSocialEspecialEstadual"
                             for="protecaoSocialEspecialEstadual"
                             outlined
@@ -122,7 +122,7 @@
                         <q-select
                             v-model="form.vigilanciaCapacitacao"
                             :options="parametros.vigilanciaCapacitacaoList"
-                            label="Diretorias*"
+                            label="Diretoria*"
                             name="vigilanciaCapacitacao"
                             for="vigilanciaCapacitacao"
                             outlined

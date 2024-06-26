@@ -761,7 +761,7 @@
                     <span class="text-grey">Superintendência/Assessoria:</span> {{professionalData.superintendencia}}
                   </div>
                   <div class="col-12" v-if="professionalData.lotacao === 'Diretoria Regional de Desenvolvimento Social'">
-                    <span class="text-grey">Diretorias:</span> {{professionalData.diretoria_regional_des_social}}
+                    <span class="text-grey">Diretoria:</span> {{professionalData.diretoria_regional_des_social}}
                   </div>
                   <div class="col-12" v-if="professionalData.lotacao === 'CREAS Regional'">
                     <span class="text-grey">Unidade:</span> {{professionalData.creas_regional}}
@@ -776,13 +776,13 @@
                     <span class="text-grey">Parceiros:</span> {{professionalData.parceiros_insc_interna}}
                   </div>
                   <div class="col-12" v-if="professionalData.superintendencia === 'Superintendência de Proteção Social Básica'">
-                    <span class="text-grey">Diretorias:</span> {{professionalData.protecao_social_basica}}
+                    <span class="text-grey">Diretoria:</span> {{professionalData.protecao_social_basica}}
                   </div>
                   <div class="col-12" v-if="professionalData.superintendencia === 'Superintendência de Proteção Social Especial'">
-                    <span class="text-grey">Diretorias:</span> {{professionalData.protecao_social_especial_estadual}}
+                    <span class="text-grey">Diretoria:</span> {{professionalData.protecao_social_especial_estadual}}
                   </div>
                   <div class="col-12" v-if="professionalData.superintendencia === 'Superintendência de Vigilância e Capacitação'">
-                    <span class="text-grey">Diretorias:</span> {{professionalData.vigilancia_capacitacao}}
+                    <span class="text-grey">Diretoria:</span> {{professionalData.vigilancia_capacitacao}}
                   </div>
                   <div class="col-12" v-if="professionalData.regional === '1' || professionalData.regional === 'Estadual'">
                     <span class="text-grey">Função desempenhada:</span> {{professionalData.funcao}}
@@ -967,7 +967,7 @@
                         outlined
                         v-model="professionalData.regional"
                         :options="services"
-                        label="Ambito de Atuação"
+                        label="Âmbito de Atuação"
                         :rules="[isRequired]"
                         lazy-rules
                         style="padding: 0 5px"
@@ -1065,7 +1065,7 @@
                           <q-select
                             v-model="professionalData.diretoria_regional_des_social"
                             :options="diretoriaRegionalDesSocialList"
-                            label="Diretorias*"
+                            label="Diretoria*"
                             name="diretoriaRegionalDesSocial"
                             for="diretoriaRegionalDesSocial"
                             outlined
@@ -1114,7 +1114,7 @@
                         <q-select
                           v-model="professionalData.protecao_social_basica"
                           :options="protecaoSocialBasicaList"
-                          label="Diretorias*"
+                          label="Diretoria*"
                           name="protecaoSocialBasica"
                           for="protecaoSocialBasica"
                           outlined
@@ -1124,7 +1124,7 @@
                         <q-select
                           v-model="professionalData.protecao_social_especial_estadual"
                           :options="protecaoSocialEspecialEstadualList"
-                          label="Diretorias*"
+                          label="Diretoria*"
                           name="protecaoSocialEspecialEstadual"
                           for="protecaoSocialEspecialEstadual"
                           outlined
@@ -1134,7 +1134,7 @@
                         <q-select
                           v-model="professionalData.vigilancia_capacitacao"
                           :options="vigilanciaCapacitacaoList"
-                          label="Diretorias*"
+                          label="Diretoria*"
                           name="vigilanciaCapacitacao"
                           for="vigilanciaCapacitacao"
                           outlined

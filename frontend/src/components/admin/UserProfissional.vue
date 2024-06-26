@@ -17,7 +17,7 @@
         <!--Estadual-->
         <div class="col-12 row q-col-gutter-y-md" v-if="professionalData.regional === 'Estadual' || professionalData.regional === '1'">
           <div class="col-12">
-            <span class="text-grey">Ambito de atuação:</span> Estadual
+            <span class="text-grey">Âmbito de atuação:</span> Estadual
           </div>
           <div class="col-12">
             <span class="text-grey">Lotação:</span> {{ professionalData.lotacao }}

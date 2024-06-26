@@ -12,7 +12,7 @@
                             outlined
                             v-model="profissionalData.regional"
                             :options="services"
-                            label="Ambito de Atuação"
+                            label="Âmbito de Atuação"
                             :rules="[isRequired]"
                             lazy-rules
                             style="padding: 0 5px"
@@ -117,7 +117,7 @@
                             <q-select
                                 v-model="profissionalData.diretoria_regional_des_social"
                                 :options="parametros.diretoriaRegionalDesSocialList"
-                                label="Diretorias*"
+                                label="Diretoria*"
                                 name="diretoriaRegionalDesSocial"
                                 for="diretoriaRegionalDesSocial"
                                 outlined
@@ -161,7 +161,7 @@
                             <q-select
                                 v-model="profissionalData.protecao_social_basica"
                                 :options="parametros.protecaoSocialBasicaList"
-                                label="Diretorias*"
+                                label="Diretoria*"
                                 name="protecaoSocialBasica"
                                 for="protecaoSocialBasica"
                                 outlined
@@ -173,7 +173,7 @@
                             <q-select
                                 v-model="profissionalData.protecao_social_especial"
                                 :options="parametros.protecaoSocialEspecialEstadualList"
-                                label="Diretorias*"
+                                label="Diretoria*"
                                 name="protecaoSocialEspecialEstadual"
                                 for="protecaoSocialEspecialEstadual"
                                 outlined
@@ -184,7 +184,7 @@
                             <q-select
                                 v-model="profissionalData.vigilancia_capacitacao"
                                 :options="parametros.vigilanciaCapacitacaoList"
-                                label="Diretorias*"
+                                label="Diretoria*"
                                 name="vigilanciaCapacitacao"
                                 for="vigilanciaCapacitacao"
                                 outlined

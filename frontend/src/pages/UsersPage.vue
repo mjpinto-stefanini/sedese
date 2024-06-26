@@ -134,7 +134,7 @@
                   :options="ambitoAtuacaoOptions"
                   outlined
                   lazy-rules
-                  label="Ambito Atuação">
+                  label="Âmbito Atuação">
                   <template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">

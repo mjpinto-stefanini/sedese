@@ -223,7 +223,7 @@ export default {
 				// },
 				{
 					name: "service",
-					label: "Ambito de atuação",
+					label: "Âmbito de atuação",
 					field: "service",
 					align: "left",
 					sortable: true,

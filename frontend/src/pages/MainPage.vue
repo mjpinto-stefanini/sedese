@@ -146,11 +146,14 @@ export default {
 					backgroundColor: 'indigo',
                 });
 
-                const user = JSON.parse(localStorage.getItem("user"));
+                const user   = JSON.parse(localStorage.getItem("user"));
                 const result = await this.$http.patch(
                     `users/${user.id}/secondstage`,
                     values
                 );
+
+                console.log(result);
+
                 if (result.status === 201 || result.status === 200) {
                     // vai fazer o login
                     this.$q.notify({

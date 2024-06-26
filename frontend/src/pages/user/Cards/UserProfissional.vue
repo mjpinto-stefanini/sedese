@@ -15,7 +15,7 @@
         <q-markup-table v-if="profissional.regional === 'Estadual' || profissional.regional === 1">
             <tbody>
                 <tr>
-                    <td class="text-left"><span class="text-grey">Ambito de atuação</span> Estadual</td>
+                    <td class="text-left"><span class="text-grey">Âmbito de atuação</span> Estadual</td>
                 </tr>
                 <tr>
                     <td class="text-left"><span class="text-grey">Lotação</span> {{ profissional.lotacao }}</td>
@@ -24,7 +24,7 @@
                     <td class="text-left"><span class="text-grey">Superintendência/Assessoria</span> <div>{{ profissional.superintendencia }}</div></td>
                 </tr>
                 <tr v-if="profissional.lotacao === 'Diretoria Regional de Desenvolvimento Social' && profissional.diretoria_regional_des_social">
-                    <td class="text-left"><span class="text-grey">Diretorias</span> {{ profissional.diretoria_regional_des_social }}</td>
+                    <td class="text-left"><span class="text-grey">Diretoria</span> {{ profissional.diretoria_regional_des_social }}</td>
                 </tr>
                 <tr v-if="profissional.lotacao === 'CREAS Regional' && profissional.creas_regional">
                     <td class="text-left"><span class="text-grey">Unidade</span> {{ profissional.creas_regional }}</td>
@@ -36,13 +36,13 @@
                     <td class="text-left"><span class="text-grey">Parceiros</span> {{ profissional.parceiros }}</td>
                 </tr>
                 <tr v-if="profissional.superintendencia === 'Diretoria de Serviços e Benefícios Socioassistenciais' && profissional.protecao_social_basica">
-                    <td class="text-left"><span class="text-grey">Diretorias</span> {{ profissional.protecao_social_basica }}</td>
+                    <td class="text-left"><span class="text-grey">Diretoria</span> {{ profissional.protecao_social_basica }}</td>
                 </tr>
                 <tr v-if="profissional.superintendencia === 'Diretoria de Gestão do Cadastro Único e Programas Socioassistenciais' && profissional.protecao_social_especial">
-                    <td class="text-left"><span class="text-grey">Diretorias</span> {{ profissional.protecao_social_especial }}</td>
+                    <td class="text-left"><span class="text-grey">Diretoria</span> {{ profissional.protecao_social_especial }}</td>
                 </tr>
                 <tr v-if="profissional.superintendencia === 'Superintendência de Vigilância e Capacitação' && profissional.vigilancia_capacitacao">
-                    <td class="text-left"><span class="text-grey">Diretorias</span> {{ profissional.vigilancia_capacitacao }}</td>
+                    <td class="text-left"><span class="text-grey">Diretoria</span> {{ profissional.vigilancia_capacitacao }}</td>
                 </tr>
                 <tr v-if="profissional.representacao">
                     <td class="text-left"><span class="text-grey">Representação</span> {{ profissional.representacao }}</td>
@@ -70,7 +70,7 @@
         <q-markup-table v-if="profissional.regional === 'Municipal' || profissional.regional === 2">
             <tbody>
                 <tr>
-                    <td class="text-left"><span class="text-grey">Ambito de atuação</span> Municipal</td>
+                    <td class="text-left"><span class="text-grey">Âmbito de atuação</span> Municipal</td>
                 </tr>
                 <tr v-if="secretaria">
                     <td class="text-left"><span class="text-grey">Múnicipio</span> {{ secretaria.nome }}</td>

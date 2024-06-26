@@ -6,7 +6,7 @@
             </q-card-section>
             <q-card-section>
                 <div class="col-12" style="margin:10px 0px; margin-bottom: 20px;">
-                    <q-input v-model="user.email" label="Email Principal" outlined type="tel" disable />
+                    <q-input v-model="user.email" label="Email Principal" outlined type="email" :rules="[isRequired, isEmail]" />
                 </div>
                 <div class="col-12">
                     <q-input v-model="contato.phone" label="Telefone Residencial" outlined clear-icon="close"
