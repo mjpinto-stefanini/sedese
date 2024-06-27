@@ -11,22 +11,28 @@
             <div class="col-12" style="margin: 5px 0;">
               <q-select v-model="consulta.status" :options="options" outlined label="Status" />
             </div>
+            
             <div class="col-12" style="margin: 5px 0;">
               <q-input v-model="consulta.nomeParceiro" label="Nome do Parceiro" outlined clear-icon="close" clearable />
             </div>
+            
             <div class="col-12" style="margin: 5px 0;">
               <q-input v-model="consulta.nomeEmpresa" label="Nome da Empresa" outlined clear-icon="close" clearable />
             </div>
+            
             <div class="col-12" style="margin: 5px 0;">
               <q-input v-model="consulta.cpf_cnpj" label="CPF / CNPJ" outlined clear-icon="close" clearable v-mask="['###.###.###-##', '##.###.###/####-##']"  maxlength="20" />
             </div>
+            
             <div class="col-12" style="margin: 5px 0;">
               <q-input v-model="consulta.email" label="E-mail" outlined clear-icon="close" clearable />
             </div>
+            
             <div class="col-5">
               <q-btn outline @click="consultaPorCampo">Pesquisar</q-btn>
               <q-btn outline @click="limparFiltrosPagina" style="margin-left: 5px;">Limpar Campos</q-btn>
             </div>
+            
             <div class="col-3 offset-4">
               <q-btn outline style="float: right;" @click="modalNovoParceiro = true">Novo Parceiro</q-btn>
             </div>
@@ -34,6 +40,7 @@
         </div>
       </div>
     </q-card>
+
     <div class="row" style="margin-top: 35px;">
       <div class="col-8 offset-2">
         <q-table 
@@ -53,6 +60,7 @@
               </div>
             </q-td>
           </template>
+          
           <template v-slot:body-cell-id="props">
             <q-td :props="props">
               <q-btn
@@ -64,6 +72,7 @@
                 @click="$router.replace('/parceiro/' + props.row.uuid )"
                 icon="visibility"
               />
+              
               <q-tooltip
                 class="bg-secondary text-caption"
                 :offset="[10, 10]"
@@ -79,43 +88,51 @@
     <q-dialog v-model="modalNovoParceiro" persistent transition-show="scale" transition-hide="scale">
       <q-card class="bg-blue text-white" style="width: 700px; max-width: 80vw;">
         <q-card-section>
-          <div class="text-h6">Cadatrar Novo Parceiro</div>
+          <div class="text-h6">Cadastrar Novo Parceiro</div>
         </q-card-section>
 
         <q-card-section class="bg-white">
           <q-form class="row">
             <q-card style="padding: 5px 15px; margin-bottom: 10px; width: 100%;" class="row">
               <div class="col-12">
-                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.nomeInstituicao" label="Nome da Instituição" :rules="[isRequired]"/>
+                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.nomeInstituicao" label="Nome da Instituição*" :rules="[isRequired]"/>
               </div>
+              
               <div class="col-12">
-                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.cnpj" label="CNPJ" mask="##.###.###/####-##" :rules="[isRequired]"/>
+                <q-input outlined style="margin: 5px 0;" v-model="novoParceiro.cnpj" label="CNPJ*" mask="##.###.###/####-##" :rules="[isRequired]"/>
               </div>
             </q-card>
+            
             <q-card style="padding: 5px 15px; margin-bottom: 10px;" class="row">
               <div class="col-12">
-                <q-input outlined style="margin: 0px 0;" v-model="novoParceiro.nomeResponsavel" label="Responsavel Legal" :rules="[isRequired]"/>
+                <q-input outlined style="margin: 0px 0;" v-model="novoParceiro.nomeResponsavel" label="Responsavel Legal*" :rules="[isRequired]"/>
               </div>
+              
               <div class="col-12">
-                <q-input outlined style="margin: 0px 0;" v-model="novoParceiro.cpf" label="CPF" mask="###.###.###-##" :rules="[isRequired]" />
+                <q-input outlined style="margin: 0px 0;" v-model="novoParceiro.cpf" label="CPF*" mask="###.###.###-##" :rules="[isRequired]" />
               </div>
+              
               <div class="col-12">
                 <q-input outlined style="margin: 0px 0;" v-model="novoParceiro.telefone" label="Telefone" v-mask="['(##) ####-####', '(##) #####-####']" />
               </div>
+              
               <div class="col-12">
-                <q-input outlined style="margin: 25px 0px 5px 0px;" v-model="novoParceiro.email" label="E-mail" :rules="[isRequired, isEmail]"/>
+                <q-input outlined style="margin: 25px 0px 5px 0px;" v-model="novoParceiro.email" label="E-mail*" :rules="[isRequired, isEmail]"/>
               </div>
+              
               <div class="col-12" style="margin: 5px 0;">
-                <q-input v-model="novoParceiro.confirmarEmail" label="Repetir E-mail" outlined clear-icon="close" clearable :rules="[emailMatch]" />
+                <q-input v-model="novoParceiro.confirmarEmail" label="Repetir E-mail*" outlined clear-icon="close" clearable :rules="[isRequired, emailMatch]" />
               </div>
+              
               <div class="col-12">
                 <q-input outlined v-model="novoParceiro.observacao" label="Observações" type="textarea" maxlength="250" />
               </div>
             </q-card>
+            
             <div class="row">
               <div class="col-12">
                 <q-btn flat label="Cancelar" class="bg-red text-white" style="margin: 5px;" v-close-popup />
-                <q-btn flat label="Salvar" class="bg-green text-white" style="margin: 5px;" @click="salvarParceiros"  v-close-popup />
+                <q-btn flat label="Salvar" class="bg-green text-white" style="margin: 5px;" @click="salvarParceiros" />
               </div>
             </div>
           </q-form>
@@ -128,6 +145,7 @@
 <style></style>
 <script>
 import { ref } from 'vue';
+import * as Validates from "../mixins/validates";
 
 const columns = [
   {
@@ -179,23 +197,24 @@ export default {
       parceirosRow: [],
       options,
       consulta: {
-        status: null,
+        status:       null,
         nomeParceiro: null,
-        nomeEmpresa: null,
-        cpf_cnpj: null,
-        email: null,
+        nomeEmpresa:  null,
+        cpf_cnpj:     null,
+        email:        null,
       },
       novoParceiro:{
-        nomeInstituicao: null,
-        cnpj:null,
-        nomeResponsavel:null,
-        cpf:null,
-        email:null,
-        telefone:null,
-        observacao:null
+        nomeInstituicao:  null,
+        cnpj:             null,
+        nomeResponsavel:  null,
+        cpf:              null,
+        email:            null,
+        telefone:         null,
+        observacao:       null
       }
     };
   },
+
   setup() {
     return {
       modalNovoParceiro: ref(false),
@@ -205,6 +224,10 @@ export default {
     }
   },
   methods: {
+    isRequired(value) {
+        return Validates.isRequired(value)
+    },
+
     async salvarParceiros() {
       try {
         this.$q.loading.show();
@@ -287,9 +310,7 @@ export default {
     limparFiltrosPagina() {
       this.$router.go();
     },
-    isRequired(value) {
-      return !!value || "Campo obrigatório";
-    },
+
     isEmail(value) {
       return (
         (value && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) || "E-mail deve ser válido"
